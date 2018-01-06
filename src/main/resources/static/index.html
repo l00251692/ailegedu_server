@@ -2,7 +2,7 @@
 <html lang='en'>
 <meta charset='utf-8'>
 <head>
-<title>For优后台管理</title>
+<title>积木平台</title>
 <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css'>
 <link rel='stylesheet' type='text/css' href='css/style.css'>
 <link rel="shortcut icon" href="img/icon.png">
@@ -51,7 +51,7 @@ a:hover {
 	<header class='navbar blue blue2 navbar-fixed-top'>
 		<div class='navbar-inner'>
 			<div class='container-fluid'>
-				<a class='brand pull-left'><img src="img/icon.png" width="20px" height="auto">&nbsp;For优</a>
+				<a class='brand pull-left'><img src="img/icon.png" width="20px" height="auto">&nbsp;积木平台</a>
 				<ul class='nav pull-right'>
 					<li>
 						<div>
@@ -63,7 +63,7 @@ a:hover {
 						<div class="dropdown" id="campusDropdown">
 							<button type="button" class="btn dropdown-toggle"
 								id="dropdownMenu1" data-toggle="dropdown">
-								校区 <span class="caret"></span>
+								店铺 <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" role="menu"
 								aria-labelledby="dropdownMenu1" id="dropdown-campus">
@@ -83,12 +83,12 @@ a:hover {
 			<div class="sideBar left">
 				<br />
 				<ul>
-					<li class="active"><figure>
+					<!-- <li class="active"><figure>
 							<i class='icon-home'></i>
 							<a href="pages/main.html" target="content">首页&nbsp;&nbsp;</a>
-						</figure><hr /></li>
+						</figure><hr /></li> -->
 					
-					<li><figure>
+					<li class="active"><figure>
 							<a href="pages/user.html" target="content"> <i
 								class='icon-user'></i> 用戶&nbsp;&nbsp;
 							</a>
@@ -211,7 +211,7 @@ a:hover {
 
 			</div>
 			<div class='right' style="width:1050px;border-left:1px solid #eee;">
-				<iframe id="content" name="content" src="pages/main.html"
+				<iframe id="content" name="content" src="pages/user.html"
 					style="height:720px;width:1100px" scroling="yes" frameborder="0"
 					border="0" marginwidth="0" marginheight="0"></iframe>
 			</div>
@@ -249,21 +249,21 @@ $(function(){
 	//根据校区状态显示或隐藏“一键开店”按钮
 	//如果是总校区管理员，隐藏“一键开店”按钮
 	if(adminType==0){
-		//校区管理员
+		//商户
 		if(status==0){
-			//校区处于休息状态
+			//店铺处于休息状态
 		}else if(status==1){
-			//校区处于营业状态
+			//店铺处于营业状态
 			$("#one_key_open").hide();
 		}
 	}else if(adminType==1){
-		//总管理员
+		//系统管理员
 		$("#one_key_open").hide();
 	}
 	
 	//根据管理员类型判断是否显示校区下拉菜单
 	//如果是校区管理员，使用他管理的校区Button替换校区下拉菜单，且隐藏校区管理和校区管理员管理
-	if(getCookie("type")==1){
+	if(getCookie("type")==1){//商户
 		$("#campusDropdown").css("visibility", "visible");
 		if(campusId!=null&&typeof(campusId)!="undefined"){
 			$.post('campus/getCampusById', {

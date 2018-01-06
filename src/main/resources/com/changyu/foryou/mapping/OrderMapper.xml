@@ -1084,7 +1084,8 @@
 
 	<!-- 获取指定时间段和指定校区的订单交易额 -->
 	<select id="getTradeVolumeByCampusId" resultType="Float">
-		SELECT sum(total_price)
+		
+		<!-- SELECT sum(total_price)
 		from together_order
 		<where>
 			campus_id=#{campusId,jdbcType=INTEGER} and status=4
@@ -1098,7 +1099,7 @@
 			<if test="payWay!=null">
 				AND pay_way=#{payWay,jdbcType=SMALLINT}
 			</if>
-		</where>
+		</where> -->
 	</select>
 	
 	<!-- 从磁盘删除订单 -->

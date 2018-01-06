@@ -11,7 +11,7 @@ import com.changyu.foryou.model.CityWithCampus;
 public interface CampusService {
 
 	List<Campus> getAllCampus(Map<String, Object> paramMap);
-
+	
 	List<CityWithCampus> getCampusWithCity(Map<String, Object> paramMap);
 
 	Integer getIdByName(Map<String, Object> paramMap);

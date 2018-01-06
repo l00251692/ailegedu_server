@@ -2,7 +2,7 @@
 <html lang='en'>
 <meta charset='utf-8'>
 <head>
-	<title>For优后台管理</title>
+	<title>积木平台</title>
 	<link rel='stylesheet' type='text/css' href='css/bootstrap.min.css'>
 	<link rel="shortcut icon" href="img/icon.png">
 	<script type='text/javascript' src="js/jquery-1.7.2.min.js"></script>
@@ -33,7 +33,7 @@
 				return;
 			};
 			
-			if($('#dropdownMenu1').text()!='总校区管理员'&&$('#dropdownMenu1').text()!='校区管理员'){
+			if($('#dropdownMenu1').text()!='系统管理员'&&$('#dropdownMenu1').text()!='商户'){
 				$("#message").html("请选择您的角色");
 				return;
 			}
@@ -42,11 +42,11 @@
 				function(text){
 					var json=text;
 					if (json.status=="success") {
-						//0是总校区管理员，1是校区管理员
+						//0是商户，1是系统管理员
 						if(json.type==0||json.type==1){
 							if(json.type==1){
-								//匹配下拉菜单为总校区管理员
-								if($("#dropdownMenu1").text()=='总校区管理员'){
+								//匹配下拉菜单为系统管理员
+								if($("#dropdownMenu1").text()=='系统管理员'){
 									//将用户名和密码存到cookie
 									document.cookie = "campusAdmin="+phone;
 									document.cookie = "password="+password;
@@ -69,19 +69,18 @@
 										},"json");
 										
 									},"json");
-								}else if($("#dropdownMenu1").text()=='校区管理员'){
-									$("#message").html("对不起，您不是校区管理员！");
+								}else if($("#dropdownMenu1").text()=='商户'){
+									$("#message").html("对不起，您不是商户！");
 								}
 							}else if(json.type==0){
 								//匹配下拉菜单为校区管理员
-								if($("#dropdownMenu1").text()=='总校区管理员'){
-									$("#message").html("对不起，您不是总校区管理员！");
-								}else if($("#dropdownMenu1").text()=='校区管理员'){
+								if($("#dropdownMenu1").text()=='系统管理员'){
+									$("#message").html("对不起，您不是系统管理员！");
+								}else if($("#dropdownMenu1").text()=='商户'){
 									//将用户名和密码存到cookie
 									document.cookie = "campusAdmin="+phone;
 									document.cookie = "password="+password;
-									//将当前管理员管理的校区id存到cookie
-									//getSellerById获取校区管理员信息
+									//getSellerById获取商铺信息
 									$.post("seller/getSellerById",{
 										campusAdmin : phone,server:"56846a8a2fee49d14901d39cc48b8b2a"
 									},function(data){
@@ -125,7 +124,7 @@
 
 				<div class="modal show" id="loginModal" aria-hidden="true">
 					<div class="modal-header">
-						<h2>For优管理平台</h2>
+						<h2>积木平台</h2>
 					</div>
 					<div class="modal-body">
 						<form class="form-horizontal" >
@@ -151,10 +150,10 @@
 								</button>
 								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 									<li role="presentation">
-										<a role="menuitem" tabindex="-1" href="javascript:void(0)">校区管理员</a>
+										<a role="menuitem" tabindex="-1" href="javascript:void(0)">商户</a>
 									</li>
 									<li role="presentation">
-										<a role="menuitem" tabindex="-1" href="javascript:void(0)">总校区管理员</a>
+										<a role="menuitem" tabindex="-1" href="javascript:void(0)">系统管理员</a>
 									</li>
 								</ul>
 							</div>

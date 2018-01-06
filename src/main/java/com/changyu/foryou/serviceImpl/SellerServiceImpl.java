@@ -47,5 +47,10 @@ public class SellerServiceImpl implements SellerService {
 	{
 		return sellerMapper.getAllSellers();
 	}
+	
+	public Sellers getSellerInfo(Integer seller_id)
+	{
+		return sellerMapper.getSellerInfo(seller_id);
+	}
 
 }

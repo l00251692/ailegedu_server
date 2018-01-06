@@ -10,15 +10,7 @@
 		<result column="last_login_date" property="lastLoginDate"
 			jdbcType="DATE" />
 	</resultMap>
-	
-	<resultMap id="SellerResultMap" type="com.changyu.foryou.model.Sellers" >
-		<id column="seller_id" property="seller_id" jdbcType="INTEGER" />
-   		<result column="seller_name" property="seller_name" jdbcType="VARCHAR" />
-    	<result column="sales" property="sales" jdbcType="INTEGER" />
-    	<result column="min_price" property="min_price" jdbcType="INTEGER" />
-    	<result column="reach_time" property="reach_time" jdbcType="INTEGER" />
-    	<result column="pic_url" property="pic_url" jdbcType="VARCHAR" />
-	</resultMap>
+
 
 	<sql id="Base_Column_List">
 		campus_admin,password,type,campus_id,last_login_date
@@ -74,14 +66,5 @@
 			</if>
 		</trim>
 	</insert>
-	
-	<select id="getAllSellers" resultMap="SellerResultMap" useCache="false">
-		select
-		*
-		from
-		tb_sellers
-		where
-		1
-	</select>
 </mapper>
 

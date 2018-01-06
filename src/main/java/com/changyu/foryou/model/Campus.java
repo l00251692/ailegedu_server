@@ -24,6 +24,38 @@ public class Campus {
 	/* private Double locationX;
 
     private Double locationY;*/
+	
+	private int sales;
+	private int min_price;
+	private int reach_time;
+	private String pic_url;
+	
+
+	public String getPic_url() {
+		return pic_url;
+	}
+	public void setPic_url(String pic_url) {
+		this.pic_url = pic_url;
+	}
+
+	public int getSales() {
+		return sales;
+	}
+	public void setSales(int sales) {
+		this.sales = sales;
+	}
+	public int getMin_price() {
+		return min_price;
+	}
+	public void setMin_price(int min_price) {
+		this.min_price = min_price;
+	}
+	public int getReach_time() {
+		return reach_time;
+	}
+	public void setReach_time(int reach_time) {
+		this.reach_time = reach_time;
+	}
 
 	public Integer getCampusId() {
 		return campusId;

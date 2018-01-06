@@ -2,10 +2,12 @@ package com.changyu.foryou.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.CampusAdmin;
 import com.changyu.foryou.model.City;
 import com.changyu.foryou.model.CityWithCampus;
+import com.changyu.foryou.model.Sellers;
 import com.changyu.foryou.service.CampusService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.Md5;
@@ -422,4 +424,99 @@ public class CampusController {
 
         return resultMap;
     }
+    
+    /**
+	 * 小程序获得所有商家列表
+	 * add by ljt
+	 */
+	
+	@RequestMapping("/getAllCampusWx")
+    public @ResponseBody Map<String,String> getAllCampusWx() {
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+        List<Campus> campuslist = campusService.getAllCampus(paramMap);
+						
+		JSONArray jsonarray = new JSONArray(); 
+				
+		for (Campus campus: campuslist)
+		{
+			JSONObject node = new JSONObject();  
+			node.put("seller_id", String.valueOf(campus.getCampusId()));
+			node.put("seller_name", campus.getCampusName());
+			node.put("sales", String.valueOf(campus.getSales()));
+			node.put("min_price", String.valueOf(campus.getMin_price()));
+			node.put("reach_time", String.valueOf(campus.getReach_time()));
+			node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
+			node.put("distanceFormat", "10000");//设置店铺与买家地址的距离，先写死
+			node.put("pic_url", campus.getPic_url());
+			jsonarray.add(node);
+		}
+		System.out.println(jsonarray.toString());
+		Map<String,String> data = new HashMap<String, String>();
+		data.put("State", "Success");
+		data.put("data", jsonarray.toString());				
+		return data;
+		
+	}	
+	
+	/**
+	 * 获得商家信息
+	 * add by ljt
+	 */
+	
+	@RequestMapping("/getCampusByIdWx")
+    public @ResponseBody Map<String,String> getCampusByIdWx(@RequestParam String seller_id,@RequestParam String longitude,@RequestParam String latitude) {
+		
+		System.out.println("enter:");
+				
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("campusId", seller_id);
+        Campus campus = campusService.getCampusById(paramMap);
+					
+		JSONObject node = new JSONObject();  
+		node.put("seller_id", String.valueOf(campus.getCampusId()));
+		node.put("seller_name", campus.getCampusName());
+		node.put("sales", String.valueOf(campus.getSales()));
+		node.put("min_price", String.valueOf(campus.getMin_price()));
+		node.put("reach_time", String.valueOf(campus.getReach_time()));
+		node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
+		node.put("distanceFormat", "10000");//设置店铺与买家地址的距离，先写死
+		node.put("pic_url", campus.getPic_url());
+		
+		System.out.println("return:" + node.toString());
+
+		Map<String,String> data = new HashMap<String, String>();
+		data.put("State", "Success");
+		data.put("data", node.toString());				
+		return data;
+		
+	}	
+	
+	/**
+	 * 获得商家信息
+	 * add by ljt
+	 */
+	
+	@RequestMapping("/getReviews")
+    public @ResponseBody Map<String,String> getReviews(@RequestParam String seller_id,@RequestParam String page) {
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+        List<Campus> campuslist = campusService.getAllCampus(paramMap);
+		
+		JSONArray jsonarray = new JSONArray(); 
+				
+		for (Campus seller: campuslist)
+		{
+			JSONObject node = new JSONObject();  
+			node.put("timeFormat", "");
+			node.put("time", "12345678");
+			jsonarray.add(node);
+		}
+		System.out.println(jsonarray.toString());
+		Map<String,String> data = new HashMap<String, String>();
+		data.put("State", "Success");
+		data.put("data", jsonarray.toString());				
+		return data;
+		
+	}	
 }

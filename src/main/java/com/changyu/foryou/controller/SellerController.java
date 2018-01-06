@@ -156,45 +156,5 @@ public class SellerController {
 
 		return map;
 	}	
-	
-	/**
-	 * 获得所有商家列表
-	 * @param campusAdmin
-	 * @param password
-	 * @param campusId
-	 * @return
-	 */
-	
-	@RequestMapping("/getAllSellers")
-    public @ResponseBody Map<String,String> getAllSellers() {
 		
-		LOGGER.info("getAllSellers enter:");
-		
-		System.out.println("enter:");
-		
-		List<Sellers> sellerslist = sellerService.getAllSellers();
-		
-		System.out.println(String.valueOf(sellerslist.size()));
-		JSONArray jsonarray = new JSONArray(); 
-				
-		for (Sellers seller: sellerslist)
-		{
-			JSONObject node = new JSONObject();  
-			node.put("seller_id", String.valueOf(seller.getSeller_id()));
-			node.put("seller_name", seller.getSeller_name());
-			node.put("sales", String.valueOf(seller.getSales()));
-			node.put("min_price", String.valueOf(seller.getMin_price()));
-			node.put("reach_time", String.valueOf(seller.getReach_time()));
-			node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
-			node.put("pic_url", seller.getPic_url());
-			jsonarray.add(node);
-		}
-		System.out.println(jsonarray.toString());
-		Map<String,String> data = new HashMap<String, String>();
-		data.put("State", "Success");
-		data.put("data", jsonarray.toString());				
-		return data;
-		
-	}	
-	
 }

@@ -16,5 +16,7 @@ public interface SellerMapper {
     int insertSellective(Sellers seller);
     
     List<Sellers> getAllSellers();
+    
+    Sellers getSellerInfo(Integer seller_id);
 
 }

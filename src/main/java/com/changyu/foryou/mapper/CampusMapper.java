@@ -22,6 +22,7 @@ public interface CampusMapper {
     int updateByPrimaryKey(Campus record);
 
     List<Campus> selectAllCampus(Map<String, Object> paramMap);
+    
 
 	List<CityWithCampus> getCampusWithCity(Map<String, Object> paramMap);
 

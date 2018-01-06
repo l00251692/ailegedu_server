@@ -27,7 +27,7 @@ public class CampusServiceImpl implements CampusService {
 	public List<Campus> getAllCampus(Map<String, Object> paramMap) {
 		return campusMapper.selectAllCampus(paramMap);
 	}
-
+	
 	@Override
 	public List<CityWithCampus> getCampusWithCity(Map<String, Object> paramMap) {
 		return campusMapper.getCampusWithCity(paramMap);
@@ -49,6 +49,7 @@ public class CampusServiceImpl implements CampusService {
 		// TODO Auto-generated method stub
 		return campusMapper.selectCampusById(paramMap);
 	}
+	
 
 	@Override
 	public CampusAdmin getCampusIdByAdmin(Map<String, Object> paramMap) {

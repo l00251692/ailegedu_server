@@ -14,4 +14,6 @@ public interface SellerService {
 	void addASeller(Sellers seller);
 	
 	List<Sellers> getAllSellers();
+	
+	Sellers getSellerInfo(Integer seller_id);
 }
