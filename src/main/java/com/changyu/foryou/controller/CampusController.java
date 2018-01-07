@@ -11,6 +11,8 @@ import com.changyu.foryou.model.Sellers;
 import com.changyu.foryou.service.CampusService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.Md5;
+import com.mysql.cj.x.json.JsonArray;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -482,7 +484,91 @@ public class CampusController {
 		node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
 		node.put("distanceFormat", "10000");//设置店铺与买家地址的距离，先写死
 		node.put("pic_url", campus.getPic_url());
+		node.put("promotion", "");//优惠活动数组
+		node.put("delivery_fee", "2");//配送费2元
 		
+		JSONObject shangpin = new JSONObject();
+		
+		shangpin.put("goods_id", "1");
+		shangpin.put("pic_url", "aidu.png");
+		shangpin.put("goods_name", "热牛奶");
+		shangpin.put("sales", "100");
+		shangpin.put("price", "10");
+		shangpin.put("sub_goods", ""); //子规格数组
+		
+		JSONObject shangpin2 = new JSONObject();
+		
+		shangpin2.put("goods_id", "2");
+		shangpin2.put("pic_url", "aidu.png");
+		shangpin2.put("goods_name", "开开开牛奶");
+		shangpin2.put("sales", "100");
+		shangpin2.put("price", "10");
+		shangpin2.put("sub_goods", ""); //子规格数组
+		
+		
+		
+		
+		
+		JSONArray  food = new JSONArray ();
+		
+		food.add(shangpin);
+		food.add(shangpin2);
+		
+		JSONObject category1 = new JSONObject();
+		category1.put("menu_id", "1");
+		category1.put("menu_name", "醇香牛奶");
+		category1.put("goods2", food);
+		
+		JSONObject shangpin3 = new JSONObject();
+		
+		shangpin3.put("goods_id", "3");
+		shangpin3.put("pic_url", "aidu.png");
+		shangpin3.put("goods_name", "水果牛奶");
+		shangpin3.put("sales", "100");
+		shangpin3.put("price", "10");
+		shangpin3.put("sub_goods", ""); //子规格数组
+		
+		
+		
+		JSONArray  food2 = new JSONArray ();
+		
+		food2.add(shangpin3);
+		
+		JSONObject category2 = new JSONObject();
+		category2.put("menu_id", "2");
+		category2.put("menu_name", "水果牛奶");
+		category2.put("goods2", food2);
+		
+		
+		
+		JSONArray footCategory = new JSONArray();
+		footCategory.add(category1);
+		footCategory.add(category2);
+		
+		
+		
+		//String footCategory[] = {"醇香牛奶","水果牛奶"};
+		
+		node.put("menus", footCategory);
+		
+		JSONObject good1 = new JSONObject();
+		
+		good1.put("goods_id", "10");
+		good1.put("goods_name", "热牛奶");
+		good1.put("price", "10");
+		good1.put("packing_fee", "1");
+		
+		JSONObject good2 = new JSONObject();
+		
+		good2.put("goods_id", "20");
+		good2.put("goods_name", "开开开牛奶");
+		good2.put("price", "12");
+		good2.put("packing_fee", "1");
+		
+		JSONArray goods_map = new JSONArray();
+		goods_map.add(good1);
+		goods_map.add(good2);
+		node.put("goods_map", goods_map);
 		System.out.println("return:" + node.toString());
 
 		Map<String,String> data = new HashMap<String, String>();

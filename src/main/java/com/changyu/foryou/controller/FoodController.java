@@ -801,7 +801,7 @@ public class FoodController {
      * @param categoryIds
      * @return
      */
-    @RequestMapping("/deleteFoodCategory.do")
+    @RequestMapping("/deleteFoodCategory")
     public @ResponseBody
     Map<String, Object> deleteFoodCategory(@RequestParam Integer campusId,
                                            @RequestParam String categoryIds) {

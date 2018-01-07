@@ -28,13 +28,13 @@
 					<div class="page-header">
 						<h1>商品分类管理</h1>
 					</div>
-					
+
 					<div style="text-align:center;">
 						<span id="operate-success">
     						设置成功
     					</span>
 					</div>
-					
+
 					<div id="toolbar" class="btn-group">
 						<button id="plus" type="button" class="btn btn-default">
 							<i class="glyphicon glyphicon-plus"></i>
@@ -46,14 +46,14 @@
 							<i class="glyphicon glyphicon-minus"></i>
 						</button>
 					</div>
-					<table id="table" 
-					data-id-field="categoryId"         
+					<table id="table"
+					data-id-field="categoryId"
 					data-toolbar="#toolbar"
 					data-pagination="true"
 					data-search="true"
 					data-show-refresh="true"
 					data-show-toggle="true"
-					data-show-columns="true" 
+					data-show-columns="true"
 					data-show-export="true"
 					data-height="80%"
 					data-click-to-select="true">
@@ -62,7 +62,7 @@
 							<th data-field="state" data-checkbox="true"></th>
 							<th data-align="center" data-field="categoryId" data-visible="false">商品分类Id</th>
 							<th data-align="center" data-field="category">分类名称</th>
-							<th data-align="center" data-field="isOpen" data-formatter="isOpenFormatter">是否开通</th>
+							<th data-align="center" data-field="isOpen" data-formatter="isOpenFormatter">是否上架</th>
 							<th data-align="center" data-field="dasd" data-formatter="operateFormatter" data-events="operateEvents">操作</th>
 						</tr>
 					</thead>
@@ -156,19 +156,19 @@ var campusId = getCookie("campusId");
 			$("#table>tbody>tr>td:odd:odd").text("fdsdfgd");
 		});*/
 	});
-	
+
 	function isOpenFormatter(value, row){
 		if(value==1){
 			return "是";
-			//<a href="javascript:void(0)" data-name="name" data-pk="undefined" 
-			//data-value="Item 0" class="editable editable-click" 
+			//<a href="javascript:void(0)" data-name="name" data-pk="undefined"
+			//data-value="Item 0" class="editable editable-click"
 			//data-original-title="" title="">Item 0</a>
 		}
 		else{
 			return "否";
 		}
 	}
-	
+
 	function operateFormatter(value, row, index) {
 		if(adminType==1){
 			return "无操作权限";
@@ -177,32 +177,32 @@ var campusId = getCookie("campusId");
 				return [
 			            '</a>',
 			            '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
-			                '关闭',
+			                '下架',
 			            '</a>'
 			        ].join('');
 			}else if(row.isOpen==0){
 				return [
 			            '<a class="like" href="javascript:void(0)" title="Like">',
-			                '开通',
+			                '上架',
 			            '</a>'
 			        ].join('');
 			}
 	        return "无操作权限";
 		}
-		
+
     }
 
     window.operateEvents = {
         'click .like': function (e, value, row, index) {
-        	
+
             //alert('You click like icon, row: ' + JSON.stringify(row));
             //console.log(value, row, index);
-            if(confirm("确认开通此分类吗？")){
+            if(confirm("确认上架此分类吗？")){
             	$("#table").bootstrapTable('updateRow', {index: index, row: {
             			isOpen: 1
             		}
             	});
-            	
+
             	//alert(campusId);
             	$.post("../service/updateFoodCategory",{
             		categoryId : row.categoryId,
@@ -219,13 +219,13 @@ var campusId = getCookie("campusId");
         },
         'click .remove': function (e, value, row, index) {
         	//alert('You click like icon, row: ' + JSON.stringify(row));
-        	if(row.serial>0&&row.serial<9){
+        	//if(row.serial>0&&row.serial<9){
         		//这些分类不能删，不能关
         		//alert("抱歉，此分类为主要分类，无法关闭");
         		//return;
-        	}
+        	//}
             //console.log(value, row, index);
-        	if(confirm("确认关闭此分类吗？")){
+        	if(confirm("确认下架此分类吗？")){
             	$("#table").bootstrapTable('updateRow', {index: index, row: {
             			isOpen: 0
             		}
@@ -252,12 +252,12 @@ var campusId = getCookie("campusId");
 	});*/
 </script>
 <Script>
-	
+
 	var $plusButton = $("#plus");
 	var $editButton = $("#edit");
 	var $deleteButton = $("#delete");
 	var flag;
-	
+
 	$(function() {
 		$editButton.click(function() {
 			var array = $table.bootstrapTable('getSelections');
@@ -268,7 +268,7 @@ var campusId = getCookie("campusId");
 				alert("请先选中某条记录！");
 			} else {
 				$("#myModalLabel").text("编辑商品分类");
-				$("#myModal").modal('show');           
+				$("#myModal").modal('show');
 				$("#category_id").val(array[0].categoryId);
 				$("#category_name").val(array[0].category);
 				$("#category_id").attr("disabled",true);
@@ -279,22 +279,22 @@ var campusId = getCookie("campusId");
 
 	$(function() {
 		$deleteButton.click(function() {
-			
-			if(confirm("是否确定删除？")){
+
+			 if(confirm("是否确定删除？")){
 				var array = $table.bootstrapTable('getSelections');
 				var categoryIds="";
 				for (var i = array.length - 1; i >= 0; i--) {
 					//判断序列是否是1-8，是的话，不能删除
-					if(array[i].serial>0&&array[i].serial<9){
+					/*if(array[i].serial>0&&array[i].serial<9){
 						alert("主要分类不能删除！");
 						return;
-					}
+					}*/
 					categoryIds+=array[i].categoryId+",";
 				};
 					//alert(data.seller.campusId);
 					var campusId = getCookie("campusId");
-					$.post("../service/deleteFoodCategory", { server:"56846a8a2fee49d14901d39cc48b8b2a",categoryIds:categoryIds, campusId:campusId}, function(json){
-						json = eval('(' + json + ')');
+					$.post("../service/deleteFoodCategory", { campusId:campusId, categoryIds:categoryIds,server:"56846a8a2fee49d14901d39cc48b8b2a"}, function(data){
+						var json = eval(data);
 						if (json.status=="success") {
 							for (var i = array.length - 1; i >= 0; i--) {
 								$('#table').bootstrapTable('remove', {field: 'categoryId', values: [array[i].categoryId]});
@@ -313,17 +313,17 @@ var campusId = getCookie("campusId");
 			$("#myModalLabel").text("添加商品分类");
 			$("#category_id").attr("disabled",false);
 			$("#myModal").modal('show');
-			
+
 		});
 	});
-	$("#myModal").on("hidden.bs.modal", function() {  
+	$("#myModal").on("hidden.bs.modal", function() {
 		$("#category_id").val("");
-		$("#category_name").val("");  
-	});  
+		$("#category_name").val("");
+	});
 
 	function submitData(){
 		var categoryId=$("#category_id").val();
-		var categoryName=$("#category_name").val(); 
+		var categoryName=$("#category_name").val();
 
 		$(function(){
 				var campusId = getCookie("campusId");
@@ -335,7 +335,7 @@ var campusId = getCookie("campusId");
 					isOpen : 1,
 					server:"56846a8a2fee49d14901d39cc48b8b2a"
 				}, function(text) {
-					var json = eval('(' + text + ')');
+					var json = eval(text);
 					if (json.status == "success") {
 						$("#myModal").modal('hide');
 						$('#table').bootstrapTable('refresh', {
