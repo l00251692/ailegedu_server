@@ -7,11 +7,10 @@ import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.CampusAdmin;
 import com.changyu.foryou.model.City;
 import com.changyu.foryou.model.CityWithCampus;
-import com.changyu.foryou.model.Sellers;
 import com.changyu.foryou.service.CampusService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.Md5;
-import com.mysql.cj.x.json.JsonArray;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -303,20 +303,20 @@ public class FoodController {
             if (status != -1) {
                 if (status != 0) {
                     map.put(Constants.STATUS, Constants.SUCCESS);
-                    map.put(Constants.MESSAGE, "删除零食成功！");
+                    map.put(Constants.MESSAGE, "删除成功！");
                 } else {
                     map.put(Constants.STATUS, Constants.FAILURE);
-                    map.put(Constants.MESSAGE, "有不存在零食，无法删除！");
+                    map.put(Constants.MESSAGE, "有不存在商品，无法删除！");
                 }
             } else {
                 map.put(Constants.STATUS, Constants.FAILURE);
-                map.put(Constants.MESSAGE, "删除零食失败！");
+                map.put(Constants.MESSAGE, "删除商品失败！");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             map.put(Constants.STATUS, Constants.FAILURE);
-            map.put(Constants.MESSAGE, "删除零食失败！");
+            map.put(Constants.MESSAGE, "删除商品失败！");
         }
 
         return map;
@@ -853,13 +853,16 @@ public class FoodController {
             Long foodId = Long.valueOf(request.getParameter("foodId")); // 获取食品id
             Float price = Float.valueOf(request.getParameter("price")); // 获取价格
             String name = request.getParameter("foodName"); // 获取食品名称
-            Float discountPrice = Float.valueOf(request
-                    .getParameter("discountPrice")); // 获取折扣价
+            /*Float discountPrice = Float.valueOf(request
+                    .getParameter("discountPrice")); // 获取折扣价*/
+            Float discountPrice = null;
             Short status = Short.valueOf(request.getParameter("status")); // 获取食品上架下架状态
-            Short isDiscount = Short.valueOf(request
+            /*Short isDiscount = Short.valueOf(request
                     .getParameter("is_discount")); // 是否打折
             Short isFullDiscount = Short.valueOf(request
-                    .getParameter("isFullDiscount")); // 是否参加满减
+                    .getParameter("isFullDiscount")); // 是否参加满减*/
+            Short isDiscount = null;
+            Short isFullDiscount = null;
             String foodFlag = request.getParameter("foodTag"); // 食品标签
             Integer categoryId = Integer.valueOf(request
                     .getParameter("parentId")); // 获取分类Id
@@ -867,10 +870,11 @@ public class FoodController {
 
             String message = request.getParameter("message");
             System.out.println(message);
-            String temp1 = request.getParameter("primeCost"); // 获取成本价
-            String temp2 = request.getParameter("foodCount"); // 获取食品数量
+            /*String temp1 = request.getParameter("primeCost"); // 获取成本价*/
+            String temp1 = null;
+            String temp2 = request.getParameter("foodCount"); // 获取哭尊
             Integer campusId = Integer
-                    .valueOf(request.getParameter("campusId")); // 获取校区
+                    .valueOf(request.getParameter("campusId")); // 获取店铺
             if (temp1 != null && !temp1.trim().equals("")) {
                 primeCost = Float.valueOf(request.getParameter("primeCost"));
             }

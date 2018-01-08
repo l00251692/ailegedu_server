@@ -45,7 +45,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div style="text-align:center;">
 						<span id="operate-success">
     						设置成功
@@ -79,21 +79,21 @@
 							<th data-align="left" data-field="name">名&nbsp;&nbsp;&nbsp;&nbsp;称</th>
 							<th data-align="left" data-field="message" data-sortable="true" data-visible="false">商品介绍</th>
 							<th data-align="left" data-field="price" data-sortable="true">商品价格</th>
-							<th data-align="left" data-field="discountPrice"
+							<!-- <th data-align="left" data-field="discountPrice"
 							data-sortable="true" data-sortable="true">折扣价</th>
-							<th data-align="left" data-field="isDiscount"  data-formatter="discountFormatter">打折?</th>
+							<th data-align="left" data-field="isDiscount"  data-formatter="discountFormatter">打折?</th> -->
 							<th data-align="left" data-field="foodCount">库存</th>
 							<th data-align="left" data-field="status" data-sortable="true" data-formatter="statusFormatter">商品状态</th>
-							<th data-align="left" data-field="primeCost"
-							data-sortable="true">成本价</th>
+							<!-- <th data-align="left" data-field="primeCost"
+							data-sortable="true">成本价</th> -->
 							<th data-align="left" data-field="foodFlag"
 							data-sortable="true">商品标签</th>
-							<th data-align="left" data-field="categoryId" data-visible="false"
+							<th data-align="left" data-field="categoryId" data-formatter="categoryFmt"
 							data-sortable="true">所属分类</th>
-							<th data-align="left" data-field="isFullDiscount" data-formatter="isFullDiscountFormatter">是否满减</th>
+							<!-- <th data-align="left" data-field="isFullDiscount" data-formatter="isFullDiscountFormatter">是否满减</th>
 							<th data-align="left" data-field="toHome"
 							 data-formatter="toHomeOperateFormatter" data-events="homeImageEvents">推到首页</th>
-							<th data-align="center" data-field="homeImage" data-formatter="homeImageFormatter">首页商品</th>
+							<th data-align="center" data-field="homeImage" data-formatter="homeImageFormatter">首页商品</th> -->
 							<th data-align="left" data-field="homeImageManage"
 							 data-sortable="true" data-formatter="detailImageManageFormatter" data-events="detailImageOperateEvents">详情管理</th>
 						</tr>
@@ -117,7 +117,7 @@
 					enctype="multipart/form-data" action="../service/updateFoods?server=56846a8a2fee49d14901d39cc48b8b2a">
 					<div class="modal-body">
 						<div class="form-group" style="display:none">
-							<label class="control-label col-md-4" for="campusId2">校区Id</label>
+							<label class="control-label col-md-4" for="campusId2">店铺ID</label>
 							<div class="col-md-8">
 								<input type="text" id="campusId2" name="campusId" readonly="readonly">
 							</div>
@@ -136,7 +136,7 @@
 								class="selectpicker">
 								</select>
 							</div>
-							
+
 						</div>
 						<div class="form-group">
 							<label class="control-label col-md-4" for="foodName2">商品名称</label>
@@ -159,7 +159,7 @@
 									placeholder="Present Price"> <span class="add-on">￥</span>
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label class="control-label col-md-4" for="discountPrice2">折扣价</label>
 							<div class="col-md-8">
 								<input type="text" id="discountPrice2" name="discountPrice"
@@ -172,7 +172,7 @@
 								<input type="text" id="primeCost2" name="primeCost"
 									placeholder="Prime Cost"> <span class="add-on">￥</span>
 							</div>
-						</div>
+						</div> -->
 						<div class="form-group">
 							<label class="control-label col-md-4" for="foodTag2">商品标签</label>
 							<div class="col-md-8">
@@ -193,7 +193,7 @@
 								<input type="text" id="foodCount2" name="foodCount"
 									placeholder="foodCount">
 							</div>
-						</div>	
+						</div>
 
 						<div class="form-group">
 							<label class="control-label col-md-4" for="status">商品状态</label>
@@ -205,7 +205,7 @@
 								</label>
 							</div>
 						</div>
-						<div class="form-group">
+						<!-- <div class="form-group">
 							<label class="control-label col-md-4" for="is_discount">是否打折</label>
 							<div class="col-md-8">
 								<label class="radio inline"> <input type="radio"
@@ -215,18 +215,18 @@
 									name="is_discount" id="is_discount2" value="1"> 打折
 								</label>
 							</div>
-						</div>
- 						
- 						<div class="form-group">
-							<label class="control-label col-md-4" for="status">是否满减</label>
-							<div class="col-md-8">
-								<label class="radio inline"> <input type="radio"
-									name="isFullDiscount" id="isFullDiscount" value="1" checked> 是
-								</label> <label class="radio inline margin-left6"> <input type="radio"
-									name="isFullDiscount" id="isFullDiscount" value="0"> 否
-								</label>
-							</div>
-						</div>
+						</div> -->
+
+ 						<!-- <div class="form-group">
+ 													<label class="control-label col-md-4" for="status">是否满减</label>
+ 													<div class="col-md-8">
+ 														<label class="radio inline"> <input type="radio"
+ 															name="isFullDiscount" id="isFullDiscount" value="1" checked> 是
+ 														</label> <label class="radio inline margin-left6"> <input type="radio"
+ 															name="isFullDiscount" id="isFullDiscount" value="0"> 否
+ 														</label>
+ 													</div>
+ 						</div> -->
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -240,9 +240,9 @@
 	</div>
 	<!-- /.modal -->
 	<!-- 添加商品Modal End -->
-	
+
 	<!-- 推送图片到主页 modal start -->
-	<div class="modal fade" id="pushToHomeModal" tabindex="-1" roal="dialog"
+	<!-- <div class="modal fade" id="pushToHomeModal" tabindex="-1" roal="dialog"
 	aria-labelledby="pushToHomeModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 		<div class="modal-content">
@@ -282,7 +282,7 @@
 					<div class="control-group">
 						<label class="control-label" for="homeImg">推送图片</label>
 						<div class="controls">
-							<input type="file" id="homeImageFile" 
+							<input type="file" id="homeImageFile"
 							name="homeImageFile" placeholder="Choose Picture">
 						</div>
 					</div>
@@ -294,10 +294,10 @@
 			</form>
 			</div>
 		</div>
-	</div>
+	</div> -->
 	<!-- 推送图片到主页 modal end -->
-	
-	
+
+
 	<!-- 详情图片管理 modal start -->
 	<div class="modal fade" id="manageDetailImageModal" tabindex="-1" role="dialog"
 	aria-labelledby="manageDetailImageModalLabel" aria-hidden="true">
@@ -379,7 +379,7 @@
 					    	<input type="checkbox" id="is_delete3" class="inline" name="is_delete3"/> 删除
 					    </div>
 					</div>
-					
+
 				</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -390,7 +390,7 @@
 		</div>
 	</div><!-- /.modal -->
 	<!-- 详情图片管理 modal end -->
-	
+
 	<!-- 添加库存modal start -->
 	<div class="modal fade" id="addFoodCountModal" tabindex="-1" role="dialog" aria-labelledby="addFoodCountModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -404,7 +404,7 @@
 				<form class="form-horizontal" role="form">
 					<div class="modal-body">
 						<div class="form-group none">
-							<label for="campus_id_add_count" class="control-label col-md-4">校区ID</label>
+							<label for="campus_id_add_count" class="control-label col-md-4">店铺ID</label>
 							<div class="col-md-8">
 								<input type="text" class="form-control" id="campus_id_add_count" name="campusId" readonly>
 							</div>
@@ -421,7 +421,7 @@
 						<button type="button" class="btn btn-primary" id="addFoodCountSubmit">提交更改</button>
 					</div>
 				</form>
-				
+
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal -->
 	</div>
@@ -468,7 +468,7 @@ if(adminType==1){
 }else if(adminType==0){
 	$("#toolbar").show();
 }
-	$("#campusId2").val(getCookie("campusId"));
+$("#campusId2").val(getCookie("campusId"));
 </script>
 <Script>
 	var $table = $("#table");
@@ -483,6 +483,37 @@ if(adminType==1){
 	var obj = document.getElementById("categoryId2");
 							//这个兼容IE与firefox
 	//初始化表格数据
+	//
+	//
+	//
+	function categoryFmt(value,row,index)
+	{
+		$.get("../service/getAllFoodCategories4Client?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+campusId,
+			function(text) {
+			var json = eval(text);
+			console.log("ljthhahhh")
+			console.log(json)
+			console.log(value)
+			for ( var i = 0; i < json.length; i++) {
+				if (value == json[i].categoryId)
+				{
+					console.log("xiangdeng le ");
+					console.log(json[i].category);
+					value = json[i].category;
+					break;
+				}
+			}
+			console.log(value);
+			/*return [
+				'<a>',
+				value,
+				'</a>'
+			].join('');*/
+			return value;
+		});
+	}
+
+
 	$table.bootstrapTable({
 		url : "../service/getAllFoods?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+getCookie("campusId")
 	});
@@ -500,8 +531,8 @@ if(adminType==1){
 				// var div = document.getElementById("myModal");
 				// div.scrollTop = div.scrollHeight;
 			}
-		});*/ 
-		
+		});*/
+
 	/*	var uploadImageUrl="../service/uploadDetailImage?campusId="+getCookie('campusId');
 
         $("#detailImg").attr("action",uploadImageUrl);*/
@@ -555,14 +586,14 @@ if(adminType==1){
 			$("#foodCount2").val("");
 			$("#message").val("");
             obj.options.length = 0;
-            
+
 			var status=document.getElementsByName("status")
 			status[0].checked=true;
 
-			var is_discount=document.getElementsByName("is_discount");
+			/*var is_discount=document.getElementsByName("is_discount");
 			is_discount[0].checked=true;
 			var isFullDiscount=document.getElementsByName("isFullDiscount");
-			isFullDiscount[0].checked=true;
+			isFullDiscount[0].checked=true;*/
 			//var default_special=document.getElementsByName("default_special");
 			//default_special[0].checked=true;
 		});
@@ -590,7 +621,7 @@ if(adminType==1){
 			$("#foodCount2").val("");
 			$("#message").val("");
             obj.options.length = 0;
-            
+
 			var status=document.getElementsByName("status")
 			status[0].checked=true;
 
@@ -605,29 +636,28 @@ if(adminType==1){
         $("#myModal").on(
 			"shown.bs.modal",
 			function() {
-				  
+
 				$.get(
 					"../service/getAllFoodCategories4Client?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+campusId,
 					function(text) {
-						var json = eval('(' + text
-							+ ')');
+						var json = eval(text);
+						console.log(json)
 						for ( var i = 0; i < json.length; i++) {
-							obj.options
-							.add(new Option(
+							obj.options.add(new Option(
 								json[i].category,
 								json[i].categoryId));
 						}
 						;
-						var array = $table
-						.bootstrapTable('getSelections');
+
+/*						var array = $table.bootstrapTable('getSelections');
+						console.log(array);
 						console.log(array[0]);
 						for ( var i = obj.options.length - 1; i >= 0; i--) {
 							if (array[0].categoryId == obj.options[i].value) {
 								obj.options[i].selected = true;
 							}
-							;
 						}
-						;
+					*/
 					});
 		});
 		$deleteButton.click(function() {
@@ -646,13 +676,15 @@ if(adminType==1){
 				;
 
 				if (confirm("是否确定要执行删除操作！")) {
+					console.log(foodIdString);
+					console.log(getCookie("campusId"));
 					//做删除的访问请求
-					$.post("service/deleteFood", {
+					$.post("../service/deleteFood", {
 						foodId : foodIdString,
 						campusId : getCookie("campusId"),
 						server:"56846a8a2fee49d14901d39cc48b8b2a"
 					}, function(text) {
-						var json = eval('(' + text + ')');
+						var json = eval(text);
 						if (json.status == "success") {
 							for ( var i = array.length - 1; i >= 0; i--) {
 								$('#table').bootstrapTable('remove', {
@@ -762,7 +794,7 @@ if(adminType==1){
 		$("#specialId3").val("");
 		$("#specialMessage").html("");
 		$("#specialName1").val("");
-		$("#specialCount1").val(""); 
+		$("#specialCount1").val("");
 		$("#specialName2").val("");
 		$("#specialCount2").val("");
 		$("#specialName3").val("");
@@ -785,7 +817,7 @@ if(adminType==1){
 		var isDelete1=$("#is_delete1:checked").is(':checked');
 		var isDelete2=$("#is_delete2:checked").is(':checked');
 		var isDelete3=$("#is_delete3:checked").is(':checked');
-		
+
 		if (specialCount1!=null&&specialCount1!=""&&!(/^\d+$/.test(specialCount1))) {
 			alert("口味1数量中包含非法字符，请检查后再提交。");
 			return;
@@ -811,7 +843,7 @@ if(adminType==1){
 			specialCount2:specialCount2,
 			isDelete1:isDelete1,
 			isDelete2:isDelete2,
-			isDelete3:isDelete3   	
+			isDelete3:isDelete3
 		},function(text){
 			var json = eval('(' + text + ')');
 			if(json.status="success")
@@ -844,15 +876,15 @@ $("#commitFoodDataButton").on("click",function(){
         	return;
         }
 
-        if(!(/^\d+(\.\d{1,2})?$/).test(discountPrice)){
+        /*if(!(/^\d+(\.\d{1,2})?$/).test(discountPrice)){
         	alert("商品折扣价输入格式有问题,检查后重新输入。");
         	return;
-        }
+        }*/
 
-        if(primeCost!=null&&primeCost!=""&&!(/^\d+(\.\d{1,2})?$/).test(primeCost)){
+       /* if(primeCost!=null&&primeCost!=""&&!(/^\d+(\.\d{1,2})?$/).test(primeCost)){
         	alert("商品成本价输入格式有问题,检查后重新输入。");
         	return;
-        }
+        }*/
 
         if(foodName==null||foodName==""){
         	alert("商品名称不能为空!");
@@ -941,7 +973,7 @@ window.detailImageOperateEvents={
 			  };
 			},"json"
 		);
-	}	
+	}
 };
 
 function toHomeOperateFormatter(value, row, index){
@@ -982,7 +1014,7 @@ window.homeImageEvents = {
 			$table.bootstrapTable('refresh');
 		},"json");
 	}
-	
+
 };
 
 function isFullDiscountFormatter(value, row, index){
@@ -1006,10 +1038,10 @@ $(function(){
 			$("#addFoodCountModal").modal('hide');
 			$("#table").bootstrapTable('refresh',{silent:true});
 			alert(data.message);
-			
+
 		},"json");
 	});
-	
+
 	var $addFoodCountBtn = $("#addFoodCountBtn");
 	$addFoodCountBtn.click(function(){
 		/*var array = $("#table").bootstrapTable('getSelections');
