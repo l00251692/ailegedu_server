@@ -29,7 +29,7 @@
 		<id column="food_id" property="foodId" jdbcType="BIGINT" />
 		<result column="campus_id" property="campusId" jdbcType="INTEGER" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
-		<result column="price" property="price" jdbcType="REAL" />
+		<result column="price" property="price" jdbcType="VARCHAR" />
 		<result column="discount_price" property="discountPrice"
 			jdbcType="REAL" />
 		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
@@ -114,7 +114,7 @@
 		values (#{foodId,jdbcType=BIGINT},
 		#{campusId,jdbcType=INTEGER},
 		#{name,jdbcType=VARCHAR},
-		#{price,jdbcType=REAL},
+		#{price,jdbcType=VARCHAR},
 		#{discountPrice,jdbcType=REAL},
 		#{grade,jdbcType=REAL},
 		#{imgUrl,jdbcType=VARCHAR},
@@ -199,7 +199,7 @@
 				#{name,jdbcType=VARCHAR},
 			</if>
 			<if test="price != null">
-				#{price,jdbcType=REAL},
+				#{price,jdbcType=VARCHAR},
 			</if>
 			<if test="discountPrice != null">
 				#{discountPrice,jdbcType=REAL},
@@ -258,7 +258,7 @@
 				name = #{name,jdbcType=VARCHAR},
 			</if>
 			<if test="price != null">
-				price = #{price,jdbcType=REAL},
+				price = #{price,jdbcType=VARCHAR},
 			</if>
 			<if test="discountPrice != null">
 				discount_price = #{discountPrice,jdbcType=REAL},
@@ -308,7 +308,7 @@
 		set
 		food_count=#{foodCount,jdbcType=INTEGER},
 		name = #{name,jdbcType=VARCHAR},
-		price = #{price,jdbcType=REAL},
+		price = #{price,jdbcType=VARCHAR},
 		discount_price = #{discountPrice,jdbcType=REAL},
 		grade =
 		#{grade,jdbcType=REAL},

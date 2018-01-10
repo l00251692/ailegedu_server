@@ -6,7 +6,7 @@ public class ShortFood {
     
 	private String name;
 
-	private Float price;
+	private String price;
 
 	private Integer foodCount;
 	
@@ -34,11 +34,11 @@ public class ShortFood {
 		this.name = name;
 	}
 
-	public Float getPrice() {
+	public String getPrice() {
 		return price;
 	}
 
-	public void setPrice(Float price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 

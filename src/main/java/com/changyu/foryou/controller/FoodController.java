@@ -52,6 +52,8 @@ public class FoodController {
     private FoodService foodService;
     private OrderService orderService;
     private CampusService campusService;
+    
+    private static final Logger logger = LoggerFactory.getLogger(FoodController.class);
 
     protected static final Logger LOG = LoggerFactory
             .getLogger(FoodController.class);
@@ -417,9 +419,9 @@ public class FoodController {
             paramMap.put("campusId", campusId);
             foods = foodService.getAllFoods(paramMap);
         } catch (Exception e) {
-            e.getStackTrace();
+            System.out.println(e);
         }
-
+        System.out.println("foodsize:"+ String.valueOf(foods.size()));
         return foods;
     }
 
@@ -851,7 +853,7 @@ public class FoodController {
                               HttpServletRequest request) {
         try {
             Long foodId = Long.valueOf(request.getParameter("foodId")); // 获取食品id
-            Float price = Float.valueOf(request.getParameter("price")); // 获取价格
+            String price = request.getParameter("price"); // 获取价格
             String name = request.getParameter("foodName"); // 获取食品名称
             /*Float discountPrice = Float.valueOf(request
                     .getParameter("discountPrice")); // 获取折扣价*/
@@ -863,7 +865,7 @@ public class FoodController {
                     .getParameter("isFullDiscount")); // 是否参加满减*/
             Short isDiscount = null;
             Short isFullDiscount = null;
-            String foodFlag = request.getParameter("foodTag"); // 食品标签
+            String foodFlag = request.getParameter("foodTag"); // 商品属性
             Integer categoryId = Integer.valueOf(request
                     .getParameter("parentId")); // 获取分类Id
             Float primeCost = null;

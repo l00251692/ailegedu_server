@@ -87,7 +87,7 @@
 							<!-- <th data-align="left" data-field="primeCost"
 							data-sortable="true">成本价</th> -->
 							<th data-align="left" data-field="foodFlag"
-							data-sortable="true">商品标签</th>
+							data-sortable="true">商品属性</th>
 							<th data-align="left" data-field="categoryId" data-formatter="categoryFmt"
 							data-sortable="true">所属分类</th>
 							<!-- <th data-align="left" data-field="isFullDiscount" data-formatter="isFullDiscountFormatter">是否满减</th>
@@ -158,6 +158,8 @@
 								<input type="text" id="price2" name="price"
 									placeholder="Present Price"> <span class="add-on">￥</span>
 							</div>
+							<br/>
+							<a>中杯：12；大杯：14</a>
 						</div>
 						<!-- <div class="form-group">
 							<label class="control-label col-md-4" for="discountPrice2">折扣价</label>
@@ -174,11 +176,13 @@
 							</div>
 						</div> -->
 						<div class="form-group">
-							<label class="control-label col-md-4" for="foodTag2">商品标签</label>
+							<label class="control-label col-md-4" for="foodTag2">商品属性</label>
 							<div class="col-md-8">
 								<input type="text" id="foodTag2" name="foodTag"
-									placeholder="商品标签之间请以逗号隔开">
+									placeholder="可供用户选择的属性">
 							</div>
+							<br/>
+							<a>甜度：微糖，中糖，多糖；温度：常温，热，少冰</a>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-md-4" for="imgUrl2">商品主图片</label>
@@ -481,38 +485,17 @@ $("#campusId2").val(getCookie("campusId"));
 	var tag=0;
 	var rowId;
 	var obj = document.getElementById("categoryId2");
+
+	var footCategories;
+
+	$.get("../service/getAllFoodCategories4Client?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+campusId,function(text) {
+				footCategories = eval(text);
+	});
 							//这个兼容IE与firefox
 	//初始化表格数据
 	//
 	//
 	//
-	function categoryFmt(value,row,index)
-	{
-		$.get("../service/getAllFoodCategories4Client?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+campusId,
-			function(text) {
-			var json = eval(text);
-			console.log("ljthhahhh")
-			console.log(json)
-			console.log(value)
-			for ( var i = 0; i < json.length; i++) {
-				if (value == json[i].categoryId)
-				{
-					console.log("xiangdeng le ");
-					console.log(json[i].category);
-					value = json[i].category;
-					break;
-				}
-			}
-			console.log(value);
-			/*return [
-				'<a>',
-				value,
-				'</a>'
-			].join('');*/
-			return value;
-		});
-	}
-
 
 	$table.bootstrapTable({
 		url : "../service/getAllFoods?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+getCookie("campusId")
@@ -676,8 +659,6 @@ $("#campusId2").val(getCookie("campusId"));
 				;
 
 				if (confirm("是否确定要执行删除操作！")) {
-					console.log(foodIdString);
-					console.log(getCookie("campusId"));
 					//做删除的访问请求
 					$.post("../service/deleteFood", {
 						foodId : foodIdString,
@@ -871,10 +852,10 @@ $("#commitFoodDataButton").on("click",function(){
         	return;
         }
 
-        if(!(/^\d+(\.\d{1,2})?$/).test(price)){
+       /* if(!(/^\d+(\.\d{1,2})?$/).test(price)){
         	alert("商品单价格式有问题,检查后重新输入。");
         	return;
-        }
+        }*/
 
         /*if(!(/^\d+(\.\d{1,2})?$/).test(discountPrice)){
         	alert("商品折扣价输入格式有问题,检查后重新输入。");
@@ -909,6 +890,20 @@ $("#commitFoodDataButton").on("click",function(){
         $foodCommitDataForm.submit();
     });
 //});
+//
+
+
+function categoryFmt(value,row,index)
+{
+	for ( var i = 0; i < footCategories.length; i++) {
+		if (value == footCategories[i].categoryId)
+		{
+			return footCategories[i].category;
+		}
+	}
+	return value;
+}
+
 function statusFormatter(value, row, index) {
 	if (value == "0")
 		return "下架";

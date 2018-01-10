@@ -1,14 +1,14 @@
 package com.changyu.foryou.model;
 
 import java.util.Date;
-import java.util.List;
+
 
 public class Food {
 	private Long foodId;
 
 	private String name;
 
-	private Float price;
+	private String price;
 
 	private Float discountPrice;
 
@@ -59,7 +59,7 @@ public class Food {
 	public Food(){
 		
 	}
-	public Food(Integer campusId,Long foodId2, String name2, Float price2, Float discountPrice2, String imageurl, String info, Short status2, String foodFlag2, Short isDiscount2, Integer categoryId2, Float primeCost2){
+	public Food(Integer campusId,Long foodId2, String name2, String price2, Float discountPrice2, String imageurl, String info, Short status2, String foodFlag2, Short isDiscount2, Integer categoryId2, Float primeCost2){
 		foodId=foodId2;
 		name=name2;
 		price=price2;
@@ -89,7 +89,7 @@ public class Food {
 			name=name2;
 		}
 		
-		price=Float.valueOf(price2);
+		price=price2;
 		
 		if(discountPrice2!=null){
 		   discountPrice=Float.valueOf(discountPrice2);
@@ -150,11 +150,11 @@ public class Food {
 		this.name = name == null ? null : name.trim();
 	}
 
-	public Float getPrice() {
+	public String getPrice() {
 		return price;
 	}
 
-	public void setPrice(Float price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 
