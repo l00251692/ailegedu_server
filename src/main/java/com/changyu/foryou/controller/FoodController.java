@@ -853,7 +853,7 @@ public class FoodController {
                               HttpServletRequest request) {
         try {
             Long foodId = Long.valueOf(request.getParameter("foodId")); // 获取食品id
-            String price = request.getParameter("price"); // 获取价格
+            String price = request.getParameter("price").replaceAll(" ", "");; // 获取价格，去掉空格
             String name = request.getParameter("foodName"); // 获取食品名称
             /*Float discountPrice = Float.valueOf(request
                     .getParameter("discountPrice")); // 获取折扣价*/
@@ -865,7 +865,7 @@ public class FoodController {
                     .getParameter("isFullDiscount")); // 是否参加满减*/
             Short isDiscount = null;
             Short isFullDiscount = null;
-            String foodFlag = request.getParameter("foodTag"); // 商品属性
+            String foodFlag = request.getParameter("foodTag").replaceAll(" ", ""); // 商品属性，去掉空格
             Integer categoryId = Integer.valueOf(request
                     .getParameter("parentId")); // 获取分类Id
             Float primeCost = null;

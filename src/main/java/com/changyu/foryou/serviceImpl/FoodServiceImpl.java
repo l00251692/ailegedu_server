@@ -124,10 +124,7 @@ public class FoodServiceImpl implements FoodService{
 
 	public List<Food> getAllFoods(Map<String,Object> paramMap) {
 		
-		List<Food> tmp = foodMapper.getAllFoods(paramMap);
-	    System.out.println("foodsize:" + String.valueOf(tmp.size()));
-		//return foodMapper.getAllFoods(paramMap);
-		return tmp;
+		return foodMapper.getAllFoods(paramMap);
 	}
 
 	public Integer getFoodSpecialCount(Map<String,Object> paramMap) {

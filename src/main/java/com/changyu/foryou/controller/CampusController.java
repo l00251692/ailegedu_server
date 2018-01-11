@@ -7,7 +7,10 @@ import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.CampusAdmin;
 import com.changyu.foryou.model.City;
 import com.changyu.foryou.model.CityWithCampus;
+import com.changyu.foryou.model.Food;
+import com.changyu.foryou.model.FoodCategory;
 import com.changyu.foryou.service.CampusService;
+import com.changyu.foryou.service.FoodService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.Md5;
 
@@ -20,21 +23,33 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.security.auth.message.callback.PrivateKeyCallback.IssuerSerialNumRequest;
+
 @Controller
 @RequestMapping("/campus")
 public class CampusController {
     private CampusService campusService;
+    
+    private FoodService foodService;
+    
 
     @Autowired
     public void setCampusService(CampusService campusService) {
         this.campusService = campusService;
     }
 
+    
+    @Autowired
+    public void setFoodService(FoodService foodService) {
+        this.foodService = foodService;
+    }
+    
     /**
      * 获取校区
      *
@@ -485,88 +500,155 @@ public class CampusController {
 		node.put("pic_url", campus.getPic_url());
 		node.put("promotion", "");//优惠活动数组
 		node.put("delivery_fee", "2");//配送费2元
+					
+		//获取店铺的商品分类和商品信息
+		List<FoodCategory> categoryList = foodService.getFirstCategory(paramMap);
 		
-		JSONObject shangpin = new JSONObject();
+		List<Food> foods = new ArrayList<Food>();
+        foods = foodService.getAllFoods(paramMap);
+        
+        JSONArray foodCategory = new JSONArray();
+        
+        System.out.println("1:"+ String.valueOf(categoryList.size()));
+        System.out.println("2:"+ String.valueOf(foods.size()));
 		
-		shangpin.put("goods_id", "1");
-		shangpin.put("pic_url", "aidu.png");
-		shangpin.put("goods_name", "热牛奶");
-		shangpin.put("sales", "100");
-		shangpin.put("price", "10");
-		shangpin.put("sub_goods", ""); //子规格数组
+		for(FoodCategory category: categoryList)
+		{
+			System.out.println("3:"+ String.valueOf(category.getCategoryId()));
+			JSONObject categorytmp = new JSONObject();
+			categorytmp.put("menu_id", String.valueOf(category.getCategoryId()));
+			categorytmp.put("menu_name", category.getCategory());
+			JSONArray  food = new JSONArray ();
+			for(int i = 0 ;i < foods.size(); i++)
+			{
+				//将每个商品添加到返回的店铺商品信息里面
+				System.out.println("4:"+ String.valueOf(foods.get(i).getCategoryId()));
+				if(category.getCategoryId().equals(foods.get(i).getCategoryId()))
+				{
+					System.out.println("3:"+ foods.get(i).getName());
+					JSONObject shangpin = new JSONObject();
+					shangpin.put("goods_id", String.valueOf(foods.get(i).getFoodId()));
+					shangpin.put("pic_url", foods.get(i).getImgUrl());
+					shangpin.put("goods_name", foods.get(i).getName());
+					shangpin.put("sales", String.valueOf(foods.get(i).getSaleNumber()));
+					
+					//TODO:商品信息在goodsmap已返回，这里可以优化，需要注意小程序同步优化
+					if(foods.get(i).getPrice().matches("[0-9]+"))//纯数字
+					{
+						shangpin.put("price", foods.get(i).getPrice());
+					}
+					else						
+					{	
+						JSONArray subgoods = new JSONArray();
+						String tmp = foods.get(i).getPrice();
+						System.out.println("666:"+ tmp);
+						tmp = tmp.replace('：', ':');
+						tmp = tmp.replace('；', ';');
+						System.out.println("777:"+ tmp);
+						String[] strArray = tmp.split("\\;");
+						for (int j = 0; j < strArray.length; j++)
+						{
+							JSONObject nodeTmp = new JSONObject();
+							System.out.println("5:"+ strArray[j]);
+							String[] priceArray = strArray[j].split("\\:");
+							System.out.println("5:"+ priceArray[0]);
+							nodeTmp.put("sub_id", String.valueOf(j)); //子规格数组
+							nodeTmp.put("sub_name", priceArray[0]); //子规格数组
+							nodeTmp.put("price", priceArray[1]); //子规格数组
+							subgoods.add(nodeTmp);
+						}
+						shangpin.put("sub_goods", subgoods);
+					}	
+					//返回商品的属性
+					//甜度：微糖，中糖，多糖；温度：常温，热，少冰
+					if(!foods.get(i).getFoodFlag().isEmpty())
+					{
+						JSONArray property = new JSONArray();
+						
+						String tmp = foods.get(i).getFoodFlag().replace('；', ';');
+						tmp = tmp.replace('：', ':');
+						tmp = tmp.replace('，', ',');
+						String[] strArray = tmp.split("\\;");
+
+						for(int j = 0; j < strArray.length; j++)
+						{
+							JSONObject nodeTmp = new JSONObject();
+							String[] strArray2 = strArray[j].split("\\:");
+							nodeTmp.put("property_name", strArray2[0]); //子规格数组
+							nodeTmp.put("property_value", strArray2[1]); //子规格数组
+							property.add(nodeTmp);
+						}
+						shangpin.put("property", property);
+					}
+					
+					food.add(shangpin);
+				}
+			}
+			categorytmp.put("goods2", food);
+			foodCategory.add(categorytmp);						
+		}
 		
-		JSONObject shangpin2 = new JSONObject();
-		
-		shangpin2.put("goods_id", "2");
-		shangpin2.put("pic_url", "aidu.png");
-		shangpin2.put("goods_name", "开开开牛奶");
-		shangpin2.put("sales", "100");
-		shangpin2.put("price", "10");
-		shangpin2.put("sub_goods", ""); //子规格数组
-		
-		
-		
-		
-		
-		JSONArray  food = new JSONArray ();
-		
-		food.add(shangpin);
-		food.add(shangpin2);
-		
-		JSONObject category1 = new JSONObject();
-		category1.put("menu_id", "1");
-		category1.put("menu_name", "醇香牛奶");
-		category1.put("goods2", food);
-		
-		JSONObject shangpin3 = new JSONObject();
-		
-		shangpin3.put("goods_id", "3");
-		shangpin3.put("pic_url", "aidu.png");
-		shangpin3.put("goods_name", "水果牛奶");
-		shangpin3.put("sales", "100");
-		shangpin3.put("price", "10");
-		shangpin3.put("sub_goods", ""); //子规格数组
-		
-		
-		
-		JSONArray  food2 = new JSONArray ();
-		
-		food2.add(shangpin3);
-		
-		JSONObject category2 = new JSONObject();
-		category2.put("menu_id", "2");
-		category2.put("menu_name", "水果牛奶");
-		category2.put("goods2", food2);
-		
-		
-		
-		JSONArray footCategory = new JSONArray();
-		footCategory.add(category1);
-		footCategory.add(category2);
-		
-		
-		
-		//String footCategory[] = {"醇香牛奶","水果牛奶"};
-		
-		node.put("menus", footCategory);
-		
-		JSONObject good1 = new JSONObject();
-		
-		good1.put("goods_id", "10");
-		good1.put("goods_name", "热牛奶");
-		good1.put("price", "10");
-		good1.put("packing_fee", "1");
-		
-		JSONObject good2 = new JSONObject();
-		
-		good2.put("goods_id", "20");
-		good2.put("goods_name", "开开开牛奶");
-		good2.put("price", "12");
-		good2.put("packing_fee", "1");
+		node.put("menus", foodCategory);
 		
 		JSONArray goods_map = new JSONArray();
-		goods_map.add(good1);
-		goods_map.add(good2);
+		for(int i = 0 ;i < foods.size(); i++)
+		{
+			JSONObject good1 = new JSONObject();
+			good1.put("goods_id", String.valueOf(foods.get(i).getFoodId()));
+			good1.put("goods_name", foods.get(i).getName());
+			good1.put("price", "10");
+			good1.put("packing_fee", "0");
+			
+			if(foods.get(i).getPrice().matches("[0-9]+"))//纯数字
+			{
+				good1.put("price", foods.get(i).getPrice());
+			}
+			else						
+			{	
+				JSONArray subgoods = new JSONArray();
+				String tmp = foods.get(i).getPrice();
+				System.out.println("666:"+ tmp);
+				tmp = tmp.replace('：', ':');
+				tmp = tmp.replace('；', ';');
+				System.out.println("777:"+ tmp);
+				String[] strArray = tmp.split("\\;");
+				for (int j = 0; j < strArray.length; j++)
+				{
+					JSONObject nodeTmp = new JSONObject();
+					System.out.println("5:"+ strArray[j]);
+					String[] priceArray = strArray[j].split("\\:");
+					System.out.println("5:"+ priceArray[0]);
+					nodeTmp.put("sub_id", String.valueOf(j)); //子规格数组
+					nodeTmp.put("sub_name", priceArray[0]); //子规格数组
+					nodeTmp.put("price", priceArray[1]); //子规格数组
+					subgoods.add(nodeTmp);
+				}
+				good1.put("sub_goods", subgoods);
+			}	
+			//返回商品的属性
+			//甜度：微糖，中糖，多糖；温度：常温，热，少冰
+			if(!foods.get(i).getFoodFlag().isEmpty())
+			{
+				JSONArray property = new JSONArray();
+				
+				String tmp = foods.get(i).getFoodFlag().replace('；', ';');
+				tmp = tmp.replace('：', ':');
+				tmp = tmp.replace('，', ',');
+				String[] strArray = tmp.split("\\;");
+
+				for(int j = 0; j < strArray.length; j++)
+				{
+					JSONObject nodeTmp = new JSONObject();
+					String[] strArray2 = strArray[j].split("\\:");
+					nodeTmp.put("property_name", strArray2[0]); //子规格数组
+					nodeTmp.put("property_value", strArray2[1]); //子规格数组
+					property.add(nodeTmp);
+				}
+				good1.put("property", property);
+			}
+			
+			goods_map.add(good1);
+		}
 		node.put("goods_map", goods_map);
 		System.out.println("return:" + node.toString());
 
