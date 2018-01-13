@@ -546,6 +546,7 @@ public class CampusController {
 						tmp = tmp.replace('；', ';');
 						System.out.println("777:"+ tmp);
 						String[] strArray = tmp.split("\\;");
+						int minPrice = 0;
 						for (int j = 0; j < strArray.length; j++)
 						{
 							JSONObject nodeTmp = new JSONObject();
@@ -555,9 +556,14 @@ public class CampusController {
 							nodeTmp.put("sub_id", String.valueOf(j)); //子规格数组
 							nodeTmp.put("sub_name", priceArray[0]); //子规格数组
 							nodeTmp.put("price", priceArray[1]); //子规格数组
-							subgoods.add(nodeTmp);
+							subgoods.add(nodeTmp);							
+							if(Integer.parseInt(priceArray[1]) < minPrice  || minPrice ==0)
+							{
+								minPrice = Integer.parseInt(priceArray[1]);
+							}						
 						}
 						shangpin.put("sub_goods", subgoods);
+						shangpin.put("price", String.valueOf(minPrice));
 					}	
 					//返回商品的属性
 					//甜度：微糖，中糖，多糖；温度：常温，热，少冰
@@ -574,8 +580,19 @@ public class CampusController {
 						{
 							JSONObject nodeTmp = new JSONObject();
 							String[] strArray2 = strArray[j].split("\\:");
+							nodeTmp.put("property_id", String.valueOf(j)); //子规格数组
 							nodeTmp.put("property_name", strArray2[0]); //子规格数组
-							nodeTmp.put("property_value", strArray2[1]); //子规格数组
+							
+							JSONArray propertyValue = new JSONArray();
+							String[] strArray3 = strArray2[1].split("\\,");
+							for (int k = 0 ; k < strArray3.length; k++)
+							{
+								JSONObject nodeTmp2 = new JSONObject();
+								nodeTmp2.put("value_id", String.valueOf(10*j + k)); //子规格数组
+								nodeTmp2.put("value_name", strArray3[k]); //子规格数组
+								propertyValue.add(nodeTmp2);
+							}
+							nodeTmp.put("property_value", propertyValue); //子规格数组
 							property.add(nodeTmp);
 						}
 						shangpin.put("property", property);
@@ -607,17 +624,13 @@ public class CampusController {
 			{	
 				JSONArray subgoods = new JSONArray();
 				String tmp = foods.get(i).getPrice();
-				System.out.println("666:"+ tmp);
 				tmp = tmp.replace('：', ':');
 				tmp = tmp.replace('；', ';');
-				System.out.println("777:"+ tmp);
 				String[] strArray = tmp.split("\\;");
 				for (int j = 0; j < strArray.length; j++)
 				{
 					JSONObject nodeTmp = new JSONObject();
-					System.out.println("5:"+ strArray[j]);
 					String[] priceArray = strArray[j].split("\\:");
-					System.out.println("5:"+ priceArray[0]);
 					nodeTmp.put("sub_id", String.valueOf(j)); //子规格数组
 					nodeTmp.put("sub_name", priceArray[0]); //子规格数组
 					nodeTmp.put("price", priceArray[1]); //子规格数组
@@ -640,8 +653,20 @@ public class CampusController {
 				{
 					JSONObject nodeTmp = new JSONObject();
 					String[] strArray2 = strArray[j].split("\\:");
+					nodeTmp.put("property_id", String.valueOf(j));
 					nodeTmp.put("property_name", strArray2[0]); //子规格数组
-					nodeTmp.put("property_value", strArray2[1]); //子规格数组
+					
+					JSONArray propertyValue = new JSONArray();
+					String[] strArray3 = strArray2[1].split("\\,");
+					for (int k = 0 ; k < strArray3.length; k++)
+					{
+						JSONObject nodeTmp2 = new JSONObject();
+						nodeTmp2.put("value_id", String.valueOf(k)); //子规格数组
+						nodeTmp2.put("value_name", strArray3[k]); //子规格数组
+						propertyValue.add(nodeTmp2);
+					}
+					nodeTmp.put("property_value", propertyValue); //子规格数组
+					
 					property.add(nodeTmp);
 				}
 				good1.put("property", property);
