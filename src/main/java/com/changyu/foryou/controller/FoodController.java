@@ -877,19 +877,19 @@ public class FoodController {
             String temp2 = request.getParameter("foodCount"); // 获取哭尊
             Integer campusId = Integer
                     .valueOf(request.getParameter("campusId")); // 获取店铺
-            if (temp1 != null && !temp1.trim().equals("")) {
+            /*if (temp1 != null && !temp1.trim().equals("")) {
                 primeCost = Float.valueOf(request.getParameter("primeCost"));
-            }
+            }*/
             Integer foodCount = null;
             if (temp2 != null && !temp2.trim().equals("")) {
                 foodCount = Integer.valueOf(request.getParameter("foodCount"));
             }
-
+     
             String realPath = request.getSession().getServletContext()
                     .getRealPath("/");
-            realPath = realPath.replace("foryou", "ForyouImage");
-            realPath = realPath.concat("food/");
-            System.out.println(realPath); // 打印出服务器路径
+
+            //realPath = realPath.replace("foryou", "ForyouImage");
+            realPath = realPath.concat("JiMuImage/food/");
 
             List<String> imageUrl = new ArrayList<String>();
             for (MultipartFile file : myfile) {

@@ -508,13 +508,9 @@ public class CampusController {
         foods = foodService.getAllFoods(paramMap);
         
         JSONArray foodCategory = new JSONArray();
-        
-        System.out.println("1:"+ String.valueOf(categoryList.size()));
-        System.out.println("2:"+ String.valueOf(foods.size()));
-		
+        	
 		for(FoodCategory category: categoryList)
 		{
-			System.out.println("3:"+ String.valueOf(category.getCategoryId()));
 			JSONObject categorytmp = new JSONObject();
 			categorytmp.put("menu_id", String.valueOf(category.getCategoryId()));
 			categorytmp.put("menu_name", category.getCategory());
@@ -522,7 +518,6 @@ public class CampusController {
 			for(int i = 0 ;i < foods.size(); i++)
 			{
 				//将每个商品添加到返回的店铺商品信息里面
-				System.out.println("4:"+ String.valueOf(foods.get(i).getCategoryId()));
 				if(category.getCategoryId().equals(foods.get(i).getCategoryId()))
 				{
 					System.out.println("3:"+ foods.get(i).getName());
@@ -556,6 +551,7 @@ public class CampusController {
 							nodeTmp.put("sub_id", String.valueOf(j)); //子规格数组
 							nodeTmp.put("sub_name", priceArray[0]); //子规格数组
 							nodeTmp.put("price", priceArray[1]); //子规格数组
+							nodeTmp.put("packing_fee", "0");
 							subgoods.add(nodeTmp);							
 							if(Integer.parseInt(priceArray[1]) < minPrice  || minPrice ==0)
 							{
@@ -597,6 +593,10 @@ public class CampusController {
 						}
 						shangpin.put("property", property);
 					}
+					else
+					{
+						shangpin.put("property", null); //没起作用
+					}
 					
 					food.add(shangpin);
 				}
@@ -634,6 +634,7 @@ public class CampusController {
 					nodeTmp.put("sub_id", String.valueOf(j)); //子规格数组
 					nodeTmp.put("sub_name", priceArray[0]); //子规格数组
 					nodeTmp.put("price", priceArray[1]); //子规格数组
+					nodeTmp.put("packing_fee", "0");
 					subgoods.add(nodeTmp);
 				}
 				good1.put("sub_goods", subgoods);
@@ -670,6 +671,11 @@ public class CampusController {
 					property.add(nodeTmp);
 				}
 				good1.put("property", property);
+			}
+			else
+			{
+				System.out.println("here2 enter");
+				good1.put("property", null);
 			}
 			
 			goods_map.add(good1);
