@@ -74,7 +74,7 @@ public interface FoodService {
 
 	List<FoodComment> getCommentInfoById(Map<String, Object> paramMap);
 
-	Object getAllComments(Map<String, Object> paramMap);
+	List<FoodComment> getAllComments(Map<String, Object> paramMap);
 
 	Integer deleteFoodCommentById(Map<String, Object> paramMap);
 

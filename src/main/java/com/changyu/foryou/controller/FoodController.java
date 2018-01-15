@@ -390,6 +390,7 @@ public class FoodController {
         if (sort != null && sort.equals("foodId")) {
             sort = "food_id";
         }
+       
         paramMap.put("limit", limit);
         paramMap.put("offset", offset);
         paramMap.put("sort", sort);

@@ -47,7 +47,7 @@
 
     	window.actionEvents = {
     		'click .delete': function (e, value, row, index) {
-    			$.post("service/deleteFoodCommentById",
+    			$.post("../service/deleteFoodCommentById",
     			{
     				campusId : getCookie("campusId"),
     				foodId:row.foodId,
@@ -60,13 +60,14 @@
     					alert("删除评价失败");
     				}else{
     					$('#table').bootstrapTable('refresh', {silent: true,query: {foo:'bar'}});
+    					alert("删除评价成功");
     				}
 
     			}
     			);
     		},
     	};
-    	
+
     	$(function(){
     		var campusId = getCookie("campusId");
         		//alert(campusId);
@@ -74,7 +75,7 @@
         		url:"../service/getAllComments?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+campusId
         	});
     	});
-    	
+
     </script>
     <body>
     	<div class="container">
@@ -85,15 +86,15 @@
     				</h1>
     			</div>
     			<div>
-    				<table id="table" 
+    				<table id="table"
     				data-id-field="phone"
     				data-pagination="true"
     				data-side-pagination="server"
     				data-search="true"
     				data-height="80%"
-    				data-show-refresh="true" 
-    				data-show-columns="true"   
-    				data-show-toggle="true" 
+    				data-show-refresh="true"
+    				data-show-columns="true"
+    				data-show-toggle="true"
     				data-toolbar-align="right"
     				>
     				<thead>

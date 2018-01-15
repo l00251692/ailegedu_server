@@ -9,6 +9,7 @@ import com.changyu.foryou.model.City;
 import com.changyu.foryou.model.CityWithCampus;
 import com.changyu.foryou.model.Food;
 import com.changyu.foryou.model.FoodCategory;
+import com.changyu.foryou.model.FoodComment;
 import com.changyu.foryou.service.CampusService;
 import com.changyu.foryou.service.FoodService;
 import com.changyu.foryou.tools.Constants;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -500,6 +502,9 @@ public class CampusController {
 		node.put("pic_url", campus.getPic_url());
 		node.put("promotion", "");//优惠活动数组
 		node.put("delivery_fee", "2");//配送费2元
+		node.put("overall", "5");//综合评分
+		node.put("quality", "4");//商家评分
+		node.put("service", "5");//配送评分
 					
 		//获取店铺的商品分类和商品信息
 		List<FoodCategory> categoryList = foodService.getFirstCategory(paramMap);
@@ -696,25 +701,40 @@ public class CampusController {
 	 */
 	
 	@RequestMapping("/getReviews")
-    public @ResponseBody Map<String,String> getReviews(@RequestParam String seller_id,@RequestParam String page) {
+    public @ResponseBody Map<String,String> getAllReviewsWx(@RequestParam String seller_id,@RequestParam String page) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
         List<Campus> campuslist = campusService.getAllCampus(paramMap);
-		
+        
+        paramMap.put("limit", null);
+        paramMap.put("offset", null);
+        paramMap.put("sort", "date");
+        paramMap.put("order", "desc");
+        paramMap.put("search", null);
+        paramMap.put("campusId", seller_id);
+        
+        List<FoodComment> commentlist = foodService.getAllComments(paramMap);
+
 		JSONArray jsonarray = new JSONArray(); 
+		
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 				
-		for (Campus seller: campuslist)
+		for (FoodComment comment: commentlist)
 		{
-			JSONObject node = new JSONObject();  
-			node.put("timeFormat", "");
-			node.put("time", "12345678");
+			JSONObject node = new JSONObject();
+			node.put("head_pic", comment.getImgUrl());
+			node.put("nick", comment.getNickName());
+			node.put("quality", comment.getGrade());
+			node.put("content", comment.getComment());
+			node.put("time", sdf.format(comment.getDate()));
 			jsonarray.add(node);
 		}
-		System.out.println(jsonarray.toString());
-		Map<String,String> data = new HashMap<String, String>();
-		data.put("State", "Success");
-		data.put("data", jsonarray.toString());				
-		return data;
+		
+		System.out.println("reviews return:" + jsonarray.toString());		
+		Map<String, String> map = new HashMap<String, String>();
+        map.put("State", "Success");
+        map.put("data", jsonarray.toString());				
+		return map;
 		
 	}	
 }
