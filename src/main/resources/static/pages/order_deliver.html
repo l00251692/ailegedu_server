@@ -39,16 +39,16 @@
 				配送订单管理
 			</h1>
 		</div>
-		<table id="table" 
+		<table id="table"
 		       data-id-field="phone"
 		       data-pagination="true"
 		       data-side-pagination="server"
 		       data-search="true"
 		       data-height="80%"
-		       data-show-refresh="true" 
-		       data-show-columns="true"   
-		       data-show-toggle="true" 
-		       data-toolbar-align="right" 
+		       data-show-refresh="true"
+		       data-show-columns="true"
+		       data-show-toggle="true"
+		       data-toolbar-align="right"
 	      >
 			<thead>
 				<tr>
@@ -67,7 +67,7 @@
 					<th data-align="left" data-field="receiverPhone"
 						data-sortable="true">待货人</th>
 					<th data-align="left" data-field="adminName"
-						data-sortable="true">配送人</th>	
+						data-sortable="true">配送人</th>
 				</tr>
 			</thead>
 		</table>
@@ -78,10 +78,10 @@ $(function(){
 	var campusId = getCookie("campusId");
 		//alert(campusId);
 	$("#table").bootstrapTable({
-		url:"order/getPCSimpleOrder?server=56846a8a2fee49d14901d39cc48b8b2a&status=3&campusId="+campusId
+		url:"../order/getPCSimpleOrder?server=56846a8a2fee49d14901d39cc48b8b2a&status=3&campusId="+campusId
 	});
 
-	
+
 });
 </script>
 </html>

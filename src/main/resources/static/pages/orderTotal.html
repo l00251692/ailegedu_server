@@ -5,7 +5,7 @@
   <meta http-equiv="Content-type" content="text/html" />
   <meta name="title" content="foryou" />
   <meta name="language" content="zh" />
-  <title>foryou后台管理系统</title>
+  <title>积木平台</title>
   <link rel="stylesheet" href="../css/order.css">
   <link rel="stylesheet" href="../css/bootstrap-datepicker3.css">
   <link rel="stylesheet"
@@ -80,8 +80,8 @@
     });
   });
 
-  
-	//需要校区ID
+
+	//需要店铺ID
 	function getTotalDate(datetime) {
 
 		var campusId = getCookie("campusId");
@@ -91,7 +91,7 @@
 			campusId : campusId,
 			server:"56846a8a2fee49d14901d39cc48b8b2a"
 		}, function(text) {
-			var data = eval('(' + text + ')');
+			var data = eval(text);
 			$("h2[name='counts']").text("订单列表(" + data.counts + ")");
 			$("span[name='counts']").text(data.counts);
 			$("span[name='total_price']").text(data.total_price);

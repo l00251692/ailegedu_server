@@ -501,6 +501,7 @@ public class CampusController {
 			node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
 			node.put("distanceFormat", "10000");//设置店铺与买家地址的距离，先写死
 			node.put("pic_url", campus.getPic_url());
+			node.put("is_rest", String.valueOf(campus.getStatus()==1 ? 0:1));//status 为营业
 			jsonarray.add(node);
 		}
 		System.out.println(jsonarray.toString());

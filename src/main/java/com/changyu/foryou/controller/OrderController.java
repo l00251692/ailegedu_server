@@ -914,7 +914,7 @@ public class OrderController {
 	 * @param search
 	 * @return
 	 */
-	@RequestMapping(value = "/getPCSimpleOrder")
+	@RequestMapping("/getPCSimpleOrder")
 	public @ResponseBody Map<String, Object> getPcOrders(Short status,@RequestParam Integer campusId,
 			Integer limit, Integer offset, String search) {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -925,19 +925,25 @@ public class OrderController {
         paramMap.put("offset", offset);
         paramMap.put("search", search);
         paramMap.put("status", status);
+        System.out.println("limit:" + limit);
+        System.out.println("offset:" + offset);
+        System.out.println("search:" + search);
+        System.out.println("status:" + status);
 		List<PCOrder> lists = orderService.getPCSimpleOrders(paramMap);
 		DecimalFormat df = new DecimalFormat("####.00");
 
 		for (PCOrder order : lists) {
 			// 如果是完成订单，直接显示交易价格，否则计算应收取的价格
 			if (order.getPrice() == null) {
-				if (order.getIsDiscount() == 0) {
+				/*if (order.getIsDiscount() == 0) {
 					order.setPrice(Float.parseFloat(df.format(order
 							.getFoodPrice() * order.getOrderCount())));
 				} else {
 					order.setPrice(Float.parseFloat(df.format(order
 							.getDiscountPrice() * order.getOrderCount())));
-				}
+				}*/
+				//先设置个价格
+				order.setPrice(0.0f);
 			}
 		}
 
@@ -988,7 +994,7 @@ public class OrderController {
 	 * @param date
 	 * @return
 	 */
-	@RequestMapping(value = "getOrdersByDate")
+	@RequestMapping("/getOrdersByDate")
 	@ResponseBody
 	public Map<String, Object> getOrdersByDate(String date,
 			@RequestParam Integer campusId, Integer limit, Integer page) {
@@ -997,10 +1003,13 @@ public class OrderController {
 
 		try {
 			if (date.equals("") || date.equals("null"))
+			{
 				date = null;
+			}
 			else
-				date = date.replace("年", "-").replace("月", "-")
-				.replace("日", "");
+			{
+				date = date.replace("年", "-").replace("月", "-").replace("日", "");
+			}
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("date", date);
 			paramMap.put("campusId", campusId);
@@ -1010,10 +1019,13 @@ public class OrderController {
 				paramMap.put("offset", (page - 1) * limit);
 			}
 
-			System.out.println(date);
+			System.out.println("getOrdersByDate:" + date);
+			System.out.println("campusId:" +campusId.toString());
+			//TODO:现在不输入日子是查出来所有的订单，后面改回去查看今天的订单
 			List<DeliverOrder> deliverOrders = orderService
 					.selectOrdersByDate(paramMap);
 			Float totalPrice = 0f;
+			System.out.println("deliverOrders size:" + String.valueOf(deliverOrders.size()));
 			for (DeliverOrder deliverOrder : deliverOrders) {
 				String togetherId = deliverOrder.getTogetherId();
 				System.out.println(JSON.toJSON(deliverOrder.getTogetherDate()));
@@ -1122,7 +1134,7 @@ public class OrderController {
 	 * @param togetherId
 	 * @return
 	 */
-	@RequestMapping("modifyOrderStatus")
+	@RequestMapping("/modifyOrderStatus")
 	public @ResponseBody Map<String, Object> modifyOrderStatus(	@RequestParam final String togetherId, @RequestParam Short status, Long orderId){
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Map<String, Object> requestMap = new HashMap<String, Object>();

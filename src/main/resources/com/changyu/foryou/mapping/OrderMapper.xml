@@ -818,9 +818,9 @@
 			and
 			DATE_FORMAT(together_date,"%Y-%m-%d")=#{date,jdbcType=DATE}
 		</if>
-		<if test="date==null">
+		<!-- <if test="date==null">
 			and DATE_FORMAT(together_date,"%Y-%m-%d")=CURDATE()
-		</if>
+		</if>-->
 		ORDER BY
 		together_date ASC
 	</select>
