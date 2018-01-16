@@ -7,6 +7,9 @@
 		<result column="campus_name" property="campusName" jdbcType="VARCHAR" />
 		<result column="city_id" property="cityId" jdbcType="INTEGER" />
 		<result column="city_name" property="cityName" jdbcType="VARCHAR"/>
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="notice" property="notice" jdbcType="VARCHAR" />
+		<result column="deliver" property="deliver" jdbcType="VARCHAR" />
 		<result column="open_time" property="openTime" jdbcType="TIMESTAMP" />
 		<result column="close_time" property="closeTime" jdbcType="TIMESTAMP" />
 		<result column="close_reason" property="closeReason" jdbcType="VARCHAR" />
@@ -144,7 +147,7 @@
 
 	<select id="selectAllCampus" resultMap="BaseResultMap">
 		select campus_id,campus_name,campus.city_id,city.city_name,
-		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url
+		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver
 		 from 
 		 campus,city where campus.city_id=city.city_id
 	</select>
@@ -180,8 +183,11 @@
 	</update>
 
 	<select id="selectCampusById" resultMap="BaseResultMap">
-		select * from campus
-		where campus_id=#{campusId,jdbcType=INTEGER}
+		select campus_id,campus_name,campus.city_id,city.city_name,
+		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver
+		 from 
+		 campus,city where campus.city_id=city.city_id
+		 and campus_id=#{campusId,jdbcType=INTEGER}
 	</select>
 
 	<select id="getCampusIdByAdmin" resultMap="CampusAdminMap" useCache="false">
@@ -218,10 +224,13 @@
 	<!-- 添加校区 -->
 	<insert id="addCampus">
 		INSERT INTO campus
-		(campus_id,campus_name,city_id,open_time,close_time,status,custom_service) VALUES
+		(campus_id,campus_name,city_id,address,notice,deliver,open_time,close_time,status,custom_service) VALUES
 		(#{campusId,jdbcType=INTEGER},
 		#{campusName, jdbcType=VARCHAR},
 		#{cityId,jdbcType=INTEGER},
+		#{address, jdbcType=VARCHAR},
+		#{notice, jdbcType=VARCHAR},
+		#{deliver, jdbcType=VARCHAR},
 		#{openTime,jdbcType=TIMESTAMP},
 		#{closeTime,jdbcType=TIMESTAMP},
 		#{status,jdbcType=SMALLINT},
@@ -272,6 +281,9 @@
 		update campus set 
 		campus_name=#{campusName,jdbcType=VARCHAR},
 		city_id=#{cityId,jdbcType=INTEGER},
+		address=#{address,jdbcType=VARCHAR},
+		notice=#{notice,jdbcType=VARCHAR},
+		deliver=#{deliver,jdbcType=VARCHAR},
 		open_time=#{openTime,jdbcType=TIMESTAMP},
 		close_time=#{closeTime,jdbcType=TIMESTAMP},
 		status=#{status,jdbcType=SMALLINT},

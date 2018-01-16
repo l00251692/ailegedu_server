@@ -180,6 +180,34 @@ public class CampusController {
 
         return map;
     }
+    
+    /**
+     * 获取校区
+     *
+     * @return
+     */
+    @RequestMapping("/getCampusById2")
+    public @ResponseBody
+    JSONArray getCampusById2(@RequestParam Integer campusId) {
+
+    	try 
+        {
+            Map<String, Object> paramMap = new HashMap<String, Object>();
+            paramMap.put("campusId", campusId);
+            Campus campus = campusService.getCampusById(paramMap);  
+            System.out.println("campus:" + campus.toString());
+            JSONArray array = new JSONArray();
+            array.add(campus);
+            //JSONArray array = JSON.parseArray(JSON.toJSONStringWithDateFormat(
+            //        campus, "HH:mm:ss"));//yyyy-MM-dd HH:mm:ss
+            return array;
+
+        } catch (Exception e) 
+        {
+            e.getStackTrace();
+        }       
+    	return null;       
+    }
 
     @RequestMapping("getCampusIdByAdmin")
     public @ResponseBody
@@ -287,7 +315,7 @@ public class CampusController {
      */
     @RequestMapping("addCampus")
     public @ResponseBody
-    Map<String, Object> addCampus(@RequestParam String campusName, @RequestParam String cityName, @RequestParam String openTime, @RequestParam String closeTime, @RequestParam Short status, @RequestParam String customService) throws ParseException {
+    Map<String, Object> addCampus(@RequestParam String campusName, @RequestParam String cityName, @RequestParam String address, @RequestParam String notice, @RequestParam String deliver, @RequestParam String openTime, @RequestParam String closeTime, @RequestParam Short status, @RequestParam String customService) throws ParseException {
         Map<String, Object> responseMap;
         Map<String, Object> paramMap = new HashMap<String, Object>();
 
@@ -298,6 +326,9 @@ public class CampusController {
         paramMap.put("campusId", null);
         paramMap.put("campusName", campusName);
         paramMap.put("cityId", campusService.getCityByName(cityName).getCityId());
+        paramMap.put("address", address);
+        paramMap.put("notice", notice);
+        paramMap.put("deliver", deliver);
         paramMap.put("openTime", openTimeDate);
         paramMap.put("closeTime", closeTimeDate);
         paramMap.put("status", status);                    //默认开启校区
@@ -381,7 +412,7 @@ public class CampusController {
 
     @RequestMapping("updateCampus")
     @ResponseBody
-    public Map<String, Object> updateCampus(@RequestParam String campusId, @RequestParam String campusName, @RequestParam String cityName, @RequestParam String openTime, @RequestParam String closeTime, @RequestParam Short status, @RequestParam String customService) {
+    public Map<String, Object> updateCampus(@RequestParam String campusId, @RequestParam String campusName, @RequestParam String cityName, @RequestParam String address, @RequestParam String notice, @RequestParam String deliver, @RequestParam String openTime, @RequestParam String closeTime, @RequestParam Short status, @RequestParam String customService) {
         //管理端这些值都要传过来，传之前判空
         Map<String, Object> responseMap = new HashMap<String, Object>();
         Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -389,6 +420,9 @@ public class CampusController {
         paramMap.put("campusId", campusId);
         paramMap.put("campusName", campusName);
         paramMap.put("cityId", campusService.getCityByName(cityName).getCityId());
+        paramMap.put("address", address);
+        paramMap.put("notice", notice);
+        paramMap.put("deliver", deliver);
         paramMap.put("openTime", openTime);
         paramMap.put("closeTime", closeTime);
         paramMap.put("status", status);
@@ -505,6 +539,13 @@ public class CampusController {
 		node.put("overall", "5");//综合评分
 		node.put("quality", "4");//商家评分
 		node.put("service", "5");//配送评分
+		
+		//商家基本信息
+		node.put("phone", campus.getCustomService());
+		node.put("notice", campus.getNotice());//商家公告
+		node.put("address", campus.getAddress());
+		node.put("sell_time", campus.getOpenTime()+ "~" + campus.getCloseTime());
+		node.put("deliver", campus.getDeliver());
 					
 		//获取店铺的商品分类和商品信息
 		List<FoodCategory> categoryList = foodService.getFirstCategory(paramMap);

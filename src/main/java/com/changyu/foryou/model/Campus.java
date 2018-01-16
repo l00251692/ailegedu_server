@@ -25,12 +25,35 @@ public class Campus {
 
     private Double locationY;*/
 	
+	private String address;
+	private String notice;
+	private String deliver;
+	
 	private int sales;
 	private int min_price;
 	private int reach_time;
 	private String pic_url;
 	
 
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getNotice() {
+		return notice;
+	}
+	public void setNotice(String notice) {
+		this.notice = notice;
+	}
+	public String getDeliver() {
+		return deliver;
+	}
+	public void setDeliver(String delivier) {
+		this.deliver = delivier;
+	}
+	
 	public String getPic_url() {
 		return pic_url;
 	}

@@ -2,8 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>校区管理</title>
-<title>校区管理</title>
+<title>店铺管理</title>
 <link rel="stylesheet"
 	href="../assets/bootstrap-table/bootstrap.min.css">
 <link rel="stylesheet"
@@ -29,7 +28,7 @@
 	<div class="container">
 		<div class="row-fluid">
 			<div class="page-header span2">
-				<h1>校区管理</h1>
+				<h1>店铺管理</h1>
 			</div>
 			<div class="span10">
 				<div id="toolbar" class="btn-group">
@@ -42,12 +41,12 @@
 					<button id="delete" type="button" class="btn btn-default">
 						<i class="glyphicon glyphicon-minus"></i>
 					</button>
-					<button id="add_city" type="button" class="btn btn-primary">
+					<!-- <button id="add_city" type="button" class="btn btn-primary">
 						添加城市
-					</button>
+					</button> -->
 				</div>
-				<table id="table" data-toggle="table"
-					data-url="../campus/getAllCampus?server=56846a8a2fee49d14901d39cc48b8b2a"data-toolbar="#toolbar"
+				<table id="table"  data-id-field="campusId" data-toggle="table"
+					data-toolbar="#toolbar"
 					data-pagination="true" data-striped="true" data-search="true"
 					data-show-refresh="true" data-show-toggle="true"
 					data-show-columns="true" data-height="80%"
@@ -55,12 +54,15 @@
 					<thead>
 						<tr>
 							<th data-field="state" data-checkbox="true"></th>
-							<th data-field="campusId" data-visible="false">校区ID</th>
-							<th data-field="campusName">校区名称</th>
-							<th data-field="cityId" data-visible="false">城市ID</th>
+							<th data-field="campusId" data-visible="false">店铺ID</th>
+							<th data-field="campusName">店铺名称</th>
+							<!-- <th data-field="cityId" data-visible="false">城市ID</th> -->
 							<th data-field="cityName">所在城市</th>
 							<th data-field="openTime">开店时间</th>
 							<th data-field="closeTime">关店时间</th>
+							<th data-field="address">商家地址</th>
+							<th data-field="notice">商家公告</th>
+							<th data-field="deliver">配送服务</th>
 							<th data-field="status" data-formatter="statusFormatter">状态</th>
 							<th data-field="customService">客服电话</th>
 						</tr>
@@ -68,7 +70,7 @@
 				</table>
 			</div>
 		</div>
-		
+
 		<!-- 添加校区Modal Start -->
 		<div class="modal fade" id="plusModal" tabindex="-1" role="dialog" aria-labelledby="myPlusModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -77,16 +79,23 @@
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 							&times;
 						</button>
-						<h4 class="modal-title" id="myPlusModalLabel">添加校区</h4>
+						<h4 class="modal-title" id="myPlusModalLabel">创建店铺</h4>
 					</div>
 					<div class="modal-body">
 						<form id="plus_campus_form"class="form-horizontal" role="form">
 							<div class="form-group">
-								<label for="plus_campus_name" class="col-sm-2 control-label">校区名称</label>
+								<label for="plus_campus_name" class="col-sm-2 control-label">店铺名称</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="plus_campus_name" name="campusName" placeholder="校区名称">
+									<input type="text" class="form-control" id="plus_campus_name" name="campusName" placeholder="店铺名称">
 								</div>
 							</div>
+							<!-- <div class="form-group">
+								<label class="control-label col-md-4" for="imgUrl">店铺主图片</label>
+									<div class="col-md-8">
+									<input type="file" id="imgUrl" name="myfile"
+									placeholder="Choose Picture">
+									</div>
+							</div> -->
 							<div class="form-group">
 								<label for="plus_city_name" class="col-sm-2 control-label">城市名称</label>
 								<div class="col-sm-10">
@@ -96,9 +105,27 @@
 											<b class="caret" style="float:right;margin-top:8px"></b>
 										</button>
 										<ul class="dropdown-menu"  style="width:100%">
-											
+
 										</ul>
 									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="plus_campus_address" class="col-sm-2 control-label">商家地址</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="plus_campus_address" name="campusName" placeholder="商家地址">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="plus_campus_notice" class="col-sm-2 control-label">商家公告</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="plus_campus_notice" name="campusName" placeholder="商家公告">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="plus_campus_deliver" class="col-sm-2 control-label">配送服务</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="plus_campus_deliver" name="campusName" placeholder="配送服务">
 								</div>
 							</div>
 							<div class="form-group">
@@ -145,12 +172,12 @@
 							</div>
 						</form>
 					</div>
-					
+
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal -->
 		</div>
 		<!-- 添加校区Modal End -->
-		
+
 		<!-- 删除校区Modal Start -->
 		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myDeleteModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -159,14 +186,14 @@
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 							&times;
 						</button>
-						<h4 class="modal-title" id="myDeleteModalLabel">关闭校区</h4>
+						<h4 class="modal-title" id="myDeleteModalLabel">关闭店铺</h4>
 					</div>
 					<div class="modal-body">
 						<form class="form-horizontal" role="form">
 							<div class="form-group">
-								<label for="delete_campus_name" class="col-sm-2 control-label">校区名称</label>
+								<label for="delete_campus_name" class="col-sm-2 control-label">店铺名称</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="delete_campus_name" placeholder="校区名称" readonly>
+									<input type="text" class="form-control" id="delete_campus_name" placeholder="店铺名称" readonly>
 								</div>
 							</div>
 						</form>
@@ -179,7 +206,7 @@
 			</div><!-- /.modal -->
 		</div>
 		<!-- 删除校区Modal End -->
-		
+
 		<!-- 修改校区Modal Start -->
 		<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myEditModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -188,20 +215,20 @@
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 							&times;
 						</button>
-						<h4 class="modal-title" id="myEditModalLabel">修改校区</h4>
+						<h4 class="modal-title" id="myEditModalLabel">修改店铺</h4>
 					</div>
 					<div class="modal-body">
 						<form id="edit-campus-form" class="form-horizontal" role="form">
 							<div class="form-group none">
-								<label for="edit_campus_id" class="col-sm-2 control-label">校区ID</label>
+								<label for="edit_campus_id" class="col-sm-2 control-label">店铺ID</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_campus_id" placeholder="校区ID" readonly>
+									<input type="text" class="form-control" id="edit_campus_id" placeholder="店铺ID" readonly>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="edit_campus_name" class="col-sm-2 control-label">校区名称</label>
+								<label for="edit_campus_name" class="col-sm-2 control-label">店铺名称</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_campus_name" placeholder="校区名称">
+									<input type="text" class="form-control" id="edit_campus_name" placeholder="店铺名称">
 								</div>
 							</div>
 							<div class="form-group">
@@ -213,9 +240,27 @@
 											<b class="caret" style="float:right;margin-top:8px"></b>
 										</button>
 										<ul class="dropdown-menu"  style="width:100%">
-											
+
 										</ul>
 									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="edit_campus_address" class="col-sm-2 control-label">商家地址</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="edit_campus_address" name="campusName" placeholder="商家地址">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="edit_campus_notice" class="col-sm-2 control-label">商家公告</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="edit_campus_notice" name="campusName" placeholder="商家公告">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="edit_campus_deliver" class="col-sm-2 control-label">配送服务</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="edit_campus_deliver" name="campusName" placeholder="配送服务">
 								</div>
 							</div>
 							<div class="form-group">
@@ -262,12 +307,12 @@
 							</div>
 						</form>
 					</div>
-					
+
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal -->
 		</div>
 		<!-- 修改校区Modal End -->
-		
+
 		<!-- 添加城市Modal Start -->
 		<div class="modal fade" id="addCityModal" tabindex="-1" role="dialog" aria-labelledby="myAddCityModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -297,7 +342,7 @@
 		</div>
 		<!-- 添加城市Modal End -->
 	</div>
-	
+
 	<script>
 		var $table = $("#table");
 		//全局变量
@@ -328,10 +373,10 @@
 			},
 			messages:{
 				campusName:{
-					required: "校区名称必须",
+					required: "店铺名称必须",
 				},
 				openTime:{
-					required: "开店时间必须",			   
+					required: "开店时间必须",
 				},
 				closeTime:{
 					required: "关店时间必须",
@@ -343,8 +388,8 @@
 			var html = [];
 			switch(value){
 			case 0:
-				html=[			
-					'休息中',	
+				html=[
+					'休息中',
 				];
 				break;
 			case 1:
@@ -355,13 +400,17 @@
 			}
 			return html.join('');
 		}
-		
+
+		$table.bootstrapTable({
+			url : "../campus/getCampusById2?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+getCookie("campusId")
+		});
+
 		//表格上方的3个按钮监听
 		//显示Modal并初始化Modal的input标签中的值
 		$plusButton.click(function(){
 			//城市列表
 			//先清空城市下拉菜单
-			$("#plus_city_name").next().empty();			
+			$("#plus_city_name").next().empty();
 			$.get("../campus/getAllCity?server=56846a8a2fee49d14901d39cc48b8b2a",function(data){
 				for(var i=0; i<data.length; i++){
 					$("#plus_city_name").next().append('<li style="text-align:center">'+data[i].cityName+'</li>');
@@ -375,12 +424,12 @@
 				$("#plus_status").next().children().click(function(){
 					$("#span_plus_status").text($(this).text());
 				});
-				
+
 				$("#plusModal").modal('show');
 			},"json");
-			
+
 		});
-		
+
 		//显示Modal并初始化Modal的input标签中的值
 		$editButton.click(function(){
 			var array = $table.bootstrapTable('getSelections');
@@ -404,61 +453,68 @@
 					$("#edit_status").next().children().click(function(){
 						$("#span_edit_status").text($(this).text());
 					});
-					
+
 					$("#editModal").modal('show');
 				},"json");
 				//初始化
 				$("#edit_campus_id").val(array[0].campusId);
 				$("#edit_campus_name").val(array[0].campusName);
 				$("#edit_city_id").val(array[0].cityId);
+				$("#edit_campus_address").val(array[0].address);
+				$("#edit_campus_notice").val(array[0].notice);
+				$("#edit_campus_deliver").val(array[0].deliver);
 				$("#span_edit_city_name").text(array[0].cityName);
 				$("#edit_open_time").val(array[0].openTime);
 				$("#edit_close_time").val(array[0].closeTime);
+				//$("#imgUrl").val("array[0].imgUrl");
 				if(array[0].status==0){
 					$("#span_edit_status").text("休息");
 				}else if(array[0].status==1){
 					$("#span_edit_status").text("营业");
 				}
 				$("#edit_custom_service").val(array[0].customService);
-				
+
 			}
 		});
-		
+
 		//显示Modal并初始化Modal的input标签中的值
 		$deleteButton.click(function(){
 			var array = $table.bootstrapTable('getSelections');
 			if(array.length>1){
 				alert("不能选中多条记录");
 			}else if(array.length==0){
-				alert("请先选中某条记录");	
+				alert("请先选中某条记录");
 			}else{
 				$("#delete_campus_name").val(array[0].campusName);
 				$("#deleteModal").modal('show');
 			}
-			
+
 		});
-		
+
 		//显示Modal并初始化Modal的input标签中的值
 		$addCityButton.click(function(){
 			$("#addCityModal").modal('show');
 		});
-		
+
 		//Modal“提交更改”按钮监听
 		//Post请求并静态刷新表格数据
 		function plusSubmit(){
 			var campusName = $("#plus_campus_name").val().trim();
-			var cityName = $("#span_plus_city_name").text().trim();              
+			var cityName = $("#span_plus_city_name").text().trim();
+			var address = $("#plus_campus_address").val().trim();
+			var notice = $("#plus_campus_notice").val().trim();
+			var deliver = $("#plus_campus_deliver").val().trim();
 			var openTime = $("#plus_open_time").val().trim();
 			var closeTime = $("#plus_close_time").val().trim();
 			var status = $("#span_plus_status").text().trim();
 			var customService = $("#plus_custom_service").val().trim();
-			
+
 			//判空
 			if(!campusName||!cityName||!openTime||!closeTime||!status||!customService){
 				alert("对不起，请补填未填写的地方！");
 				return;
 			}
-			
+
 			//alert(cityName);
 			//status值是“休息”或“营业”，要转换成0或1
 			if(status=="休息"){
@@ -466,10 +522,13 @@
 			}else if(status == "营业"){
 				status=1;
 			}
-			
+
 			$.post("../campus/addCampus",{
 				campusName : campusName,
 				cityName : cityName,
+				address : address,
+				notice : notice,
+				deliver : deliver,
 				openTime : openTime,
 				closeTime : closeTime,
 				status : status,
@@ -480,22 +539,25 @@
 				$table.bootstrapTable('refresh',{client:true});
 			},"json");
 		}
-		
+
 		function editSubmit(){
 			var campusId = $("#edit_campus_id").val().trim();
 			var campusName = $("#edit_campus_name").val().trim();
 			var cityName = $("#span_edit_city_name").text().trim();
+			var address = $("#edit_campus_address").val().trim();
+			var notice = $("#edit_campus_notice").val().trim();
+			var deliver = $("#edit_campus_deliver").val().trim();
 			var openTime = $("#edit_open_time").val().trim();
 			var closeTime = $("#edit_close_time").val().trim();
 			var status = $("#span_edit_status").text().trim();
 			var customService = $("#edit_custom_service").val().trim();
-			
+
 			//判空
 			if(!campusId||!campusName||!cityName||!openTime||!closeTime||!status||!customService){
 				alert("对不起，请补填未填写的地方！");
 				return;
 			}
-			
+
 			if(status=="休息"){
 				status = 0;
 			}else if(status == "营业"){
@@ -505,6 +567,9 @@
 				campusId : campusId,
 				campusName : campusName,
 				cityName : cityName,
+				address : address,
+				notice : notice,
+				deliver : deliver,
 				openTime : openTime,
 				closeTime : closeTime,
 				status : status,
@@ -515,13 +580,13 @@
 				$table.bootstrapTable('refresh',{client:true});
 			},"json");
 		}
-		
+
 		function deleteSubmit(){
 			//alert("建议使用关闭校区功能而非删除校区！");
 			var array = $table.bootstrapTable('getSelections');
             console.log(array);
 			$.post("../campus/closeCampus",
-				{campusId:array[0].campusId,closeReason:"该校区已暂停营业,对您造成不便深感抱歉",status:0,server:"56846a8a2fee49d14901d39cc48b8b2a"},
+				{campusId:array[0].campusId,closeReason:"该店铺已暂停营业,对您造成不便深感抱歉",status:0,server:"56846a8a2fee49d14901d39cc48b8b2a"},
 				function(data){
 					if(data.status=="success"){
 						alert(data.message);
@@ -531,15 +596,15 @@
 					}
 			},'json');
 		}
-		
+
 		function addCitySubmit(){
 			var cityName = $("#addcity_city_name").val();
-			
+
 			if(!cityName){
 				alert("对不起，请补填未填写的地方！");
 				return;
 			}
-			
+
 			$.post("../campus/addCity",{
 				cityName : cityName,server:"56846a8a2fee49d14901d39cc48b8b2a"
 			},function(data){
@@ -549,14 +614,14 @@
 				}else{
 					alert(data.message);
 				}
-				
-				
+
+
 			},"json");
 		}
 	</script>
 	<script>
 		//执行方法
-		
+
 	</script>
 </body>
 </html>
