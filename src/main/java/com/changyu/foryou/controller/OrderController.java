@@ -125,12 +125,12 @@ public class OrderController {
 			Long orderId=order.getOrderId();
 			List<Order> oldOrders = orderService.selectOrder(order);
 
-			// 待优化。。。。。。。将delete和insert改为一次操作
+			/*// 待优化。。。。。。。将delete和insert改为一次操作 delete by ljt相互订单不影响
 			if (oldOrders.size() != 0) {
 				order.setOrderCount(foodCount
 						+ oldOrders.get(0).getOrderCount());
 				orderService.deleteCartGood(order);
-			}
+			}*/
 
 			int flag = orderService.insertSelectiveOrder(order);
 
@@ -151,6 +151,55 @@ public class OrderController {
 		return map;
 	}
 
+	/**
+	 * 生成购物车订单
+	 * 
+	 * @param phoneId
+	 * @param foodId
+	 * @param foodCount
+	 * @param foodSpecial
+	 * @return
+	 */
+	@RequestMapping("/createOrderWx")
+	public @ResponseBody Map<String, Object> createOrderWx(
+			@RequestParam String userId, @RequestParam String userToken, 
+			@RequestParam String address, @RequestParam String sellerId, 
+			@RequestParam String goodsJson){
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		try {
+			//Order order = new Order(campusId, phoneId, foodId, foodCount);
+			//Long orderId=order.getOrderId();
+			//List<Order> oldOrders = orderService.selectOrder(order);
+
+			/*// 待优化。。。。。。。将delete和insert改为一次操作 delete by ljt相互订单不影响
+			if (oldOrders.size() != 0) {
+				order.setOrderCount(foodCount
+						+ oldOrders.get(0).getOrderCount());
+				orderService.deleteCartGood(order);
+			}*/
+
+			//int flag = orderService.insertSelectiveOrder(order);
+			int flag = 2;
+
+			if (flag != -1 && flag != 0) {
+				//map.put("orderId", orderId);
+				map.put(Constants.STATUS, Constants.SUCCESS);
+				map.put(Constants.MESSAGE, "生成订单成功");
+			} else {
+				map.put(Constants.STATUS, Constants.FAILURE);
+				map.put(Constants.MESSAGE, "生成订单失败");
+			}
+		} catch (Exception e) {
+			e.getStackTrace();
+			map.put(Constants.STATUS, Constants.FAILURE);
+			map.put(Constants.MESSAGE, "生成订单失败");
+		}
+
+		return map;
+	}
+	
 	/**
 	 * 获取下达的所有订单
 	 * 

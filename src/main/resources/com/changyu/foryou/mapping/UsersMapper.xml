@@ -75,6 +75,9 @@
 			<if test="type != null">
 				type,
 			</if>
+			<if test="sex != null">
+				sex,
+			</if>
 			<if test="nickname != null">
 				nickname,
 			</if>
@@ -97,6 +100,9 @@
 			</if>
 			<if test="type != null">
 				#{type,jdbcType=SMALLINT},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=SMALLINT},
 			</if>
 			<if test="nickname != null">
 				#{nickname,jdbcType=VARCHAR},

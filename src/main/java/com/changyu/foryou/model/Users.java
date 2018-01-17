@@ -30,7 +30,7 @@ public class Users {
     private String weiXin;
     
     private Integer campusId;
-    
+     
     public Users(String phone2, String password2, String nickname2) {
 		phone=phone2;
 		password=password2;
@@ -39,8 +39,19 @@ public class Users {
 		createTime=new Date();
 		lastLoginDate=new Date();
 	}
+    
 
 	public Users() {
+	}
+	
+	public Users(String phone2,String nickname2,String imgUrl2,String sex2) {
+		phone = phone2;
+		nickname = nickname2;
+		imgUrl = imgUrl2;
+		sex = new Short(sex2);
+		type=2;
+		createTime=new Date();
+		lastLoginDate=new Date();
 	}
 
 	public String getPhone() {
