@@ -133,8 +133,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Users checkLogin(String phone) {
-		return usersMapper.checkLogin(phone);
+	public Users checkLogin(String user_id) {
+		return usersMapper.checkLogin(user_id);
 	}
 
 	@Override

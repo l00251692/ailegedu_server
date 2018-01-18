@@ -3,6 +3,9 @@ package com.changyu.foryou.model;
 import java.util.Date;
 
 public class Users {
+	
+	private String userId;
+	
     private String phone;
 
     private String password;
@@ -44,8 +47,8 @@ public class Users {
 	public Users() {
 	}
 	
-	public Users(String phone2,String nickname2,String imgUrl2,String sex2) {
-		phone = phone2;
+	public Users(String userId2,String nickname2,String imgUrl2,String sex2) {
+		userId = userId2;
 		nickname = nickname2;
 		imgUrl = imgUrl2;
 		sex = new Short(sex2);
@@ -166,4 +169,15 @@ public class Users {
 	public void setCampusId(Integer campusId) {
 		this.campusId = campusId;
 	}
+
+
+	public String getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 }

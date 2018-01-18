@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.model.BigOrder;
 import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.CartGood;
@@ -161,43 +162,88 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping("/createOrderWx")
-	public @ResponseBody Map<String, Object> createOrderWx(
-			@RequestParam String userId, @RequestParam String userToken, 
-			@RequestParam String address, @RequestParam String sellerId, 
-			@RequestParam String goodsJson){
+	public @ResponseBody Map<String, String> createOrderWx(
+			@RequestParam String user_id,  @RequestParam String seller_id, 
+			@RequestParam String addr_id, @RequestParam String goods){
+		Map<String,String> map = new HashMap<String, String>();
+		JSONObject node = new JSONObject();
 		
-		Map<String, Object> map = new HashMap<String, Object>();
 
 		try {
-			//Order order = new Order(campusId, phoneId, foodId, foodCount);
-			//Long orderId=order.getOrderId();
+			Order order = new Order(1, user_id, 1l, 1);
+			Long orderId=order.getOrderId();
 			//List<Order> oldOrders = orderService.selectOrder(order);
 
-			/*// 待优化。。。。。。。将delete和insert改为一次操作 delete by ljt相互订单不影响
-			if (oldOrders.size() != 0) {
-				order.setOrderCount(foodCount
-						+ oldOrders.get(0).getOrderCount());
-				orderService.deleteCartGood(order);
-			}*/
-
-			//int flag = orderService.insertSelectiveOrder(order);
-			int flag = 2;
-
-			if (flag != -1 && flag != 0) {
-				//map.put("orderId", orderId);
-				map.put(Constants.STATUS, Constants.SUCCESS);
-				map.put(Constants.MESSAGE, "生成订单成功");
-			} else {
-				map.put(Constants.STATUS, Constants.FAILURE);
-				map.put(Constants.MESSAGE, "生成订单失败");
+			int flag = orderService.insertSelectiveOrder(order);
+			if (flag != -1 && flag != 0)
+			{
+				node.put("quasi_order_id", orderId.toString());
+				map.put("State", "Success");
+				map.put("data", node.toString());	
+				System.out.println("return3:" + node.toString());
+				return map;
+			} else 
+			{
+				map.put("State", "False");
+				map.put("data", node.toString());	
+				return map;
 			}
+			
 		} catch (Exception e) {
-			e.getStackTrace();
-			map.put(Constants.STATUS, Constants.FAILURE);
-			map.put(Constants.MESSAGE, "生成订单失败");
+			System.out.println(e);
 		}
+		
+		map.put("State", "False");
+		map.put("data", null);	
 
 		return map;
+	}
+	
+	/**
+	 * 生成购物车订单
+	 * 
+	 * @param phoneId
+	 * @param foodId
+	 * @param foodCount
+	 * @param foodSpecial
+	 * @return
+	 */
+	@RequestMapping("/getQuasiOrderInfoWx")
+	public @ResponseBody Map<String, String> getQuasiOrderInfoWx(@RequestParam String quasi_order_id){
+		Map<String,String> data = new HashMap<String, String>();
+		JSONObject node = new JSONObject();
+		
+		System.out.println("get:" + quasi_order_id);
+		
+		node.put("receiver_addr_id", String.valueOf(1));
+		node.put("receiver", "积木盒子");
+		node.put("receiver_phone", "16666666666");
+		node.put("receiver_addr", "江苏省南京市林业大学");
+		node.put("seller_name", "爱都饮品");
+		
+		JSONArray goods = new JSONArray();
+		JSONObject good1 = new JSONObject();
+		good1.put("goods_name","红豆牛奶");
+		good1.put("num",String.valueOf(1));
+		good1.put("price_sum",String.valueOf(12));
+		goods.add(good1);
+		
+		
+		node.put("goods", goods);
+		node.put("packing_fee", String.valueOf(1));
+		node.put("delivery_fee", String.valueOf(1));
+		
+		node.put("cut_money", String.valueOf(2)); //优惠多少
+		node.put("coupon_money", String.valueOf(3)); //优惠多少
+		node.put("cut_money_total", String.valueOf(5));
+		node.put("pay_price", String.valueOf(10)); //优惠多少
+		node.put("order_price", String.valueOf(20));
+		System.out.println("return2:" + node.toString());
+		
+		data.put("State", "Success");
+		data.put("data", node.toString());	
+
+		return data;
 	}
 	
 	/**

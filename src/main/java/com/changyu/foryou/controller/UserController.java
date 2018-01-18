@@ -231,10 +231,22 @@ public class UserController {
 				//SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 				// = df.format(new Date());// new Date()为获取当前系统时间
 				
-				Users users = new Users(userInfoJSON.get("openId").toString(), userInfoJSON.get("nickName").toString(),
-						userInfoJSON.get("avatarUrl").toString(),userInfoJSON.get("gender").toString());
-				userService.addUsers(users);
-
+				Users users = userService.checkLogin(userInfoJSON.get("openId").toString());
+				if (users != null)
+				{
+					System.out.println("用户已存在，更新用户信息");
+					users.setImgUrl(userInfoJSON.get("avatarUrl").toString());
+					users.setNickname(userInfoJSON.get("nickName").toString());
+					users.setLastLoginDate(new Date());
+					users.setSex(new Short(userInfoJSON.get("gender").toString()));
+					userService.updateUserInfo(users);
+				}
+				else
+				{
+					Users users2 = new Users(userInfoJSON.get("openId").toString(), userInfoJSON.get("nickName").toString(),
+							userInfoJSON.get("avatarUrl").toString(),userInfoJSON.get("gender").toString());
+					userService.addUsers(users2);
+				}				
 			} catch (Exception e) {
 				System.out.println(e);
 			}

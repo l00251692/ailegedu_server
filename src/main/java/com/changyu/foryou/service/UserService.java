@@ -54,7 +54,7 @@ public interface UserService {
 
 	List<Users> selectByPhoneAndPassword(Map<String, Object> paramMap);
 	
-	Users checkLogin(String phone);
+	Users checkLogin(String user_id);
 
 	List<String> getUserByType(Map<String, Object> paramMap);
 }
