@@ -7,135 +7,33 @@ public class Order {
     
     private Integer campusId;
     
-    private String phone;
+    private String userId;
 
     private Date createTime;
 
+    //0:无效，1:准订单  ，2：待支付 ，3：已支付， 4：配送中， 5：配送完成
     private Short status;
 
-    private Float price;
-
-    private Integer orderCount;
-
-    private Short isRemarked;
-
-    private Short tag;
-
-   // private Integer foodSpecial;
-
-    private Long foodId;
-
-    private String togetherId;
+    private String goods;
     
-    private String rank;
+    private String message;
+    
+    private String addrId;
+    
+    private Float cutMoney;
+    private Float couponMoney;
     
     private Short payWay;
+    private Float orderPrice;
+    private Float payPrice;
     
-    private Float totalPrice;
-   
-
-	public Order(){
-    	
-    }
     
-    public Order(Integer campusId,String phoneId, Long foodId2, Integer foodCount) {
-    	this.setCampusId(campusId);
-    	this.phone=phoneId;
-    	foodId=foodId2;
-    	orderCount=foodCount;
-    	tag=1;
-    	createTime=new Date();
-    	status=0;
-    	isRemarked=0;
-    	orderId=createTime.getTime();
+    public Long getOrderId() {
+		return orderId;
 	}
 
-	public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Short getStatus() {
-        return status;
-    }
-
-    public void setStatus(Short status) {
-        this.status = status;
-    }
-
-    public Float getPrice() {
-        return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
-    }
-
-    public Integer getOrderCount() {
-        return orderCount;
-    }
-
-    public void setOrderCount(Integer orderCount) {
-        this.orderCount = orderCount;
-    }
-
-    public Short getIsRemarked() {
-        return isRemarked;
-    }
-
-    public void setIsRemarked(Short isRemarked) {
-        this.isRemarked = isRemarked;
-    }
-
-    public Short getTag() {
-        return tag;
-    }
-
-    public void setTag(Short tag) {
-        this.tag = tag;
-    }
-
-    public Long getFoodId() {
-        return foodId;
-    }
-
-    public void setFoodId(Long foodId) {
-        this.foodId = foodId;
-    }
-
-	public String getTogetherId() {
-		return togetherId;
-	}
-
-	public void setTogetherId(String togetherId) {
-		this.togetherId = togetherId;
-	}
-
-	public String getRank() {
-		return rank;
-	}
-
-	public void setRank(String rank) {
-		this.rank = rank;
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
 
 	public Integer getCampusId() {
@@ -146,6 +44,86 @@ public class Order {
 		this.campusId = campusId;
 	}
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Short getStatus() {
+		return status;
+	}
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+	public String getGoods() {
+		return goods;
+	}
+
+	public void setGoods(String goods) {
+		this.goods = goods;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getAddrId() {
+		return addrId;
+	}
+
+	public void setAddrId(String addrId) {
+		this.addrId = addrId;
+	}
+
+	public Float getCutMoney() {
+		return cutMoney;
+	}
+
+	public void setCutMoney(Float cutMoney) {
+		this.cutMoney = cutMoney;
+	}
+
+	public Float getCouponMoney() {
+		return couponMoney;
+	}
+
+	public void setCouponMoney(Float couponMoney) {
+		this.couponMoney = couponMoney;
+	}
+
+	public Float getOrderPrice() {
+		return orderPrice;
+	}
+
+	public void setOrderPrice(Float orderPrice) {
+		this.orderPrice = orderPrice;
+	}
+
+	public Float getPayPrice() {
+		return payPrice;
+	}
+
+	public void setPayPrice(Float payPrice) {
+		this.payPrice = payPrice;
+	}
+
 	public Short getPayWay() {
 		return payWay;
 	}
@@ -154,11 +132,20 @@ public class Order {
 		this.payWay = payWay;
 	}
 
-	public Float getTotalPrice() {
-		return totalPrice;
+
+	public Order(){
+    	
+    }
+    
+    public Order(Integer campusId2,String userId2, String addrId2, String goods2) {
+    	campusId = campusId2;
+    	userId=userId2;
+    	addrId=addrId2;
+    	goods = goods2;
+    	createTime=new Date();
+    	status=1; //准订单
+    	orderId=createTime.getTime();
 	}
 
-	public void setTotalPrice(Float totalPrice) {
-		this.totalPrice = totalPrice;
-	}
+	
 }

@@ -115,7 +115,7 @@ public class OrderController {
 	 * @param foodSpecial
 	 * @return
 	 */
-	@RequestMapping("/createOrder")
+	/*@RequestMapping("/createOrder")
 	public @ResponseBody Map<String, Object> createOrder(
 			@RequestParam Integer campusId, @RequestParam String phoneId,
 			@RequestParam Long foodId, @RequestParam Integer foodCount){
@@ -126,12 +126,12 @@ public class OrderController {
 			Long orderId=order.getOrderId();
 			List<Order> oldOrders = orderService.selectOrder(order);
 
-			/*// 待优化。。。。。。。将delete和insert改为一次操作 delete by ljt相互订单不影响
+			// 待优化。。。。。。。将delete和insert改为一次操作 delete by ljt相互订单不影响
 			if (oldOrders.size() != 0) {
 				order.setOrderCount(foodCount
 						+ oldOrders.get(0).getOrderCount());
 				orderService.deleteCartGood(order);
-			}*/
+			}
 
 			int flag = orderService.insertSelectiveOrder(order);
 
@@ -150,7 +150,7 @@ public class OrderController {
 		}
 
 		return map;
-	}
+	}*/
 
 	/**
 	 * 生成购物车订单
@@ -168,16 +168,16 @@ public class OrderController {
 		Map<String,String> map = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
 		
+		System.out.println("createOrderWx:" + user_id + "," + seller_id + "," + goods);
 
 		try {
-			Order order = new Order(1, user_id, 1l, 1);
+			Order order = new Order(Integer.valueOf(seller_id), user_id, addr_id, goods);
 			Long orderId=order.getOrderId();
-			//List<Order> oldOrders = orderService.selectOrder(order);
 
 			int flag = orderService.insertSelectiveOrder(order);
 			if (flag != -1 && flag != 0)
 			{
-				node.put("quasi_order_id", orderId.toString());
+				node.put("quasi_order_id", String.valueOf(orderId));
 				map.put("State", "Success");
 				map.put("data", node.toString());	
 				System.out.println("return3:" + node.toString());
@@ -200,7 +200,7 @@ public class OrderController {
 	}
 	
 	/**
-	 * 生成购物车订单
+	 * 获得准订单信息
 	 * 
 	 * @param phoneId
 	 * @param foodId
@@ -212,8 +212,18 @@ public class OrderController {
 	public @ResponseBody Map<String, String> getQuasiOrderInfoWx(@RequestParam String quasi_order_id){
 		Map<String,String> data = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
+		float packingFee = 0.0f;
+		float deliveryFee = 0.0f;
+		float orderPrice = 0.0f;
+		float cutMoneyTotal = 2.0f;
 		
-		System.out.println("get:" + quasi_order_id);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		System.out.println("getQuasiOrderInfoWx enter:" + quasi_order_id);
+		
+		paramMap.put("orderId",Long.parseLong(quasi_order_id));
+		Order order = orderService.getOrderByIdWx(paramMap);
+		
+		System.out.println("getQuasiOrderInfoWx:" + order.getGoods());
 		
 		node.put("receiver_addr_id", String.valueOf(1));
 		node.put("receiver", "积木盒子");
@@ -222,28 +232,106 @@ public class OrderController {
 		node.put("seller_name", "爱都饮品");
 		
 		JSONArray goods = new JSONArray();
-		JSONObject good1 = new JSONObject();
-		good1.put("goods_name","红豆牛奶");
-		good1.put("num",String.valueOf(1));
-		good1.put("price_sum",String.valueOf(12));
-		goods.add(good1);
+		JSONArray goodsTmp = JSON.parseArray(order.getGoods());
 		
+		for (int i = 0; i < goodsTmp.size(); i ++)
+		{
+			JSONObject good = new JSONObject();
+			good.put("goods_name",goodsTmp.getJSONObject(i).getString("goods_name"));
+			good.put("num",goodsTmp.getJSONObject(i).getString("num"));
+			good.put("price_sum",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
+			goods.add(good);
+			packingFee = packingFee + goodsTmp.getJSONObject(i).getFloatValue("packing_fee");
+			orderPrice = orderPrice + goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num");
+		}
 		
 		node.put("goods", goods);
-		node.put("packing_fee", String.valueOf(1));
-		node.put("delivery_fee", String.valueOf(1));
+		node.put("packing_fee", String.valueOf(packingFee));
+		node.put("delivery_fee", String.valueOf(deliveryFee));
 		
 		node.put("cut_money", String.valueOf(2)); //优惠多少
-		node.put("coupon_money", String.valueOf(3)); //优惠多少
-		node.put("cut_money_total", String.valueOf(5));
-		node.put("pay_price", String.valueOf(10)); //优惠多少
-		node.put("order_price", String.valueOf(20));
+		node.put("coupon_money", String.valueOf(0)); //优惠多少
+		node.put("cut_money_total", String.valueOf(cutMoneyTotal)); //总优惠
+		node.put("pay_price", String.valueOf(orderPrice - cutMoneyTotal)); 
+		node.put("order_price", String.valueOf(orderPrice));
 		System.out.println("return2:" + node.toString());
 		
 		data.put("State", "Success");
 		data.put("data", node.toString());	
 
 		return data;
+	}
+	
+	/**
+	 * 生成购物车订单
+	 * 
+	 * @param phoneId
+	 * @param foodId
+	 * @param foodCount
+	 * @param foodSpecial
+	 * @return
+	 */
+	@RequestMapping("/submitOrder")
+	public @ResponseBody Map<String, String> SubmitOrderWx(
+			@RequestParam String user_id,  @RequestParam String quasi_order_id, 
+			@RequestParam String remark){
+		Map<String,String> map = new HashMap<String, String>();
+		JSONObject node = new JSONObject();
+		
+		float packingFee = 0.0f;
+		float orderPrice = 0.0f;
+		float payPrice = 0.0f;
+		
+		System.out.println("createOrderWx:" + user_id + "," + quasi_order_id + "," + remark);
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("orderId",Long.parseLong(quasi_order_id));
+			Order order = orderService.getOrderByIdWx(paramMap);
+			
+			order.setMessage(remark);
+			order.setStatus((short)2);
+			
+			JSONArray goods = new JSONArray();
+			JSONArray goodsTmp = JSON.parseArray(order.getGoods());
+			
+			for (int i = 0; i < goodsTmp.size(); i ++)
+			{
+				JSONObject good = new JSONObject();
+				good.put("goods_name",goodsTmp.getJSONObject(i).getString("goods_name"));
+				good.put("num",goodsTmp.getJSONObject(i).getString("num"));
+				good.put("price_sum",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
+				goods.add(good);
+				packingFee = packingFee + goodsTmp.getJSONObject(i).getFloatValue("packing_fee");
+				orderPrice = orderPrice + goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num");
+			}
+			
+			order.setAddrId("1");
+			order.setOrderPrice(orderPrice);
+			order.setPayPrice(orderPrice-2.0f);
+
+			int flag = orderService.updateOrder(order);
+			if (flag != -1 && flag != 0)
+			{
+				node.put("order_id", quasi_order_id);
+				map.put("State", "Success");
+				map.put("data", node.toString());	
+				return map;
+			} else 
+			{
+				map.put("State", "False");
+				map.put("data", null);	
+				return map;
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		map.put("State", "False");
+		map.put("data", null);	
+
+		return map;
 	}
 	
 	/**
@@ -642,6 +730,7 @@ public class OrderController {
 	 * 预约送达时间
 	 * @return
 	 */
+	/*
 	@RequestMapping("/orderToBuy")
 	public @ResponseBody Map<String, Object> changeOrderStatus2Buy(
 			@RequestParam String phoneId, @RequestParam String orderId,
@@ -764,6 +853,7 @@ public class OrderController {
 
 		return map;
 	}
+	*/
 
 	/**
 	 * 改变订单至配送状态
@@ -1327,7 +1417,7 @@ public class OrderController {
 	 * @param foodCount
 	 * @return
 	 */
-
+	/*
 	@RequestMapping("/purchaseImmediately")
 	public @ResponseBody Map<String, Object> purchaseImmediately(
 			@RequestParam Integer campusId, @RequestParam String phoneId,
@@ -1359,7 +1449,7 @@ public class OrderController {
 		return resultMap;
 
 			}
-	
+	*/
 	/**
 	 * 根据id获取满减信息
 	 * @param preferentialId

@@ -62,7 +62,7 @@ public interface OrderMapper {
 
 	int setDeliverAdmin(@Param(value="togetherId")String togetherId, @Param(value="adminPhone")String adminPhone);
 
-	Order selectByPrimaryKey(@Param(value="orderId")Long orderId, @Param(value="phoneId")String phoneId);
+	Order selectByPrimaryKey(Map<String,Object> paramMap);
 
 	List<DeliverOrder> deliverGetOrder(Map<String,Object> paramMap);
 
@@ -93,6 +93,7 @@ public interface OrderMapper {
 	void deleteOrder(Map<String, Object> paramMap);
 
 	SmallOrder getOrderById(Map<String, Object> paramMap);
+	Order getOrderByIdWx(Map<String, Object> paramMap);
  
 	String getUserPhone(Map<String, Object> requestMap);              //获取用户手机号
 

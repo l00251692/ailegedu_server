@@ -143,7 +143,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	public Order selectOneOrder(String phoneId, String orderId) {
-		return orderMapper.selectByPrimaryKey(Long.valueOf(orderId),phoneId);
+		//return orderMapper.selectByPrimaryKey(Long.valueOf(orderId),phoneId);
+		return null;
 	}
 
 
@@ -214,6 +215,10 @@ public class OrderServiceImpl implements OrderService {
 
 	public SmallOrder getOrderById(Map<String, Object> paramMap) {
 		return orderMapper.getOrderById(paramMap);
+	}
+	
+	public Order getOrderByIdWx(Map<String, Object> paramMap) {
+		return orderMapper.selectByPrimaryKey(paramMap);
 	}
 
 	public String getUserPhone(Map<String, Object> requestMap) {

@@ -76,6 +76,7 @@ public interface OrderService {
 	void deleteOrder(Map<String, Object> paramMap);
 
 	SmallOrder getOrderById(Map<String, Object> paramMap);
+	Order getOrderByIdWx(Map<String, Object> paramMap);
 
 	String getUserPhone(Map<String, Object> requestMap);
 
