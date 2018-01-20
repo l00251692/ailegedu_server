@@ -34,8 +34,8 @@ public class ReceiverServiceImpl implements ReceiverService {
 		return receiverMapper.insertSelective(record);
 	}
 
-	public Receiver selectByPrimaryKey(String phoneId, String order) {
-		return receiverMapper.selectByPrimaryKey(new ReceiverKey(phoneId,order));
+	public Receiver selectByPrimaryKey(Map<String, Object> paramMap) {
+		return receiverMapper.selectByPrimaryKey(paramMap);
 	}
 
 	public int updateByPrimaryKeySelective(Receiver record) {

@@ -15,7 +15,7 @@ public interface ReceiverMapper {
 
     int insertSelective(Receiver record);
 
-    Receiver selectByPrimaryKey(ReceiverKey key);
+    Receiver selectByPrimaryKey(Map<String, Object> paramMap);
 
     int updateByPrimaryKeySelective(Receiver record);
 

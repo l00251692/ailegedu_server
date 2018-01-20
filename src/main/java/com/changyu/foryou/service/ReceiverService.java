@@ -11,7 +11,7 @@ public interface ReceiverService {
 
 	int insertSelective(Receiver record);
 
-	Receiver selectByPrimaryKey(String phoneId,String rank);
+	Receiver selectByPrimaryKey(Map<String, Object> paramMap);
 
 	int updateByPrimaryKeySelective(Receiver record);
 

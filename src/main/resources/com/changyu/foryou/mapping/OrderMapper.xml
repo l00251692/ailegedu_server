@@ -10,6 +10,8 @@
 		<result column="goods" property="goods" jdbcType="LONGVARCHAR" />
 		<result column="message" property="message" jdbcType="VARCHAR" />
 		<result column="addr_id" property="addrId" jdbcType="VARCHAR" />
+		<result column="packing_fee" property="packingFee" jdbcType="FLOAT" />
+		<result column="delivery_fee" property="deliveryFee" jdbcType="FLOAT" />
 		<result column="cut_money" property="cutMoney" jdbcType="FLOAT" />
 		<result column="coupon_money" property="couponMoney" jdbcType="FLOAT" />
 		<result column="pay_way" property="payWay" jdbcType="SMALLINT" />
@@ -128,8 +130,8 @@
 
 
 	<sql id="Base_Column_List">
-		order_id, user_id, create_time, status, goods,
-		message,addr_id
+		order_id, user_id, campus_id,create_time, status, goods,
+		message,addr_id,cut_money,coupon_money,packing_fee,delivery_fee,order_price,pay_price
 	</sql>
 
 
@@ -272,6 +274,12 @@
 			<if test="couponMoney != null">
 				coupon_money = #{couponMoney,jdbcType=FLOAT},
 			</if>
+			<if test="packingFee != null">
+				packing_fee = #{packingFee,jdbcType=FLOAT},
+			</if>
+			<if test="deliveryFee != null">
+				delivery_fee = #{deliveryFee,jdbcType=FLOAT},
+			</if>
 			<if test="payWay != null">
 				pay_way = #{payWay,jdbcType=SMALLINT},
 			</if>
@@ -332,6 +340,19 @@
 			LIMIT #{limit,jdbcType=INTEGER} OFFSET
 			#{offset,jdbcType=INTEGER}
 		</if> -->
+	</select>
+	
+	<select id="getOrderListByUserId" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List" />
+		from orders
+		where user_id = #{userId,jdbcType=BIGINT} 
+		order by
+		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
 	</select>
 
 	<select id="getSuccessOrder" resultMap="BaseResultMap"

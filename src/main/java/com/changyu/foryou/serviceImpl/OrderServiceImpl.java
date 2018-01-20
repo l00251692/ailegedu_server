@@ -49,6 +49,10 @@ public class OrderServiceImpl implements OrderService {
 	public List<CartGood> getOrderList(Map<String,Object> paramMap) {
 		return orderMapper.getOrderListByPhone(paramMap);
 	}
+	
+	public List<Order> getOrdersMine(Map<String,Object> paramMap) {
+		return orderMapper.getOrderListByUserId(paramMap);
+	}
 
 	public List<Order> getOrderSuccessList(String phoneId) {
 		return orderMapper.getSuccessOrder(phoneId);

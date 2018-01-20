@@ -66,6 +66,8 @@ public interface OrderService {
 	List<String> getTogetherId(Map<String, Object> paramMap);
 
 	List<SmallOrder> getOrderListInMine(Map<String, Object> paramMap);
+	
+	List<Order> getOrdersMine(Map<String,Object> paramMap);
 
 	Date getTogetherDate(Map<String, Object> paramMap);
 

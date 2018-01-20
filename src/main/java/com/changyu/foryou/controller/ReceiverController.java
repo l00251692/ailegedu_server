@@ -39,23 +39,16 @@ public class ReceiverController {
 	 * @return
 	 */
 	@RequestMapping("/addReceiver")
-	public @ResponseBody Map<String, Object>addReceiver(@RequestParam String phoneId,@RequestParam String phone,
+	public @ResponseBody Map<String, Object>addReceiver(@RequestParam String userId,@RequestParam String phone,
 			@RequestParam String name,@RequestParam String address,@RequestParam Integer campusId){
 		Map<String, Object> map=new HashMap<String ,Object>();
-		Receiver receiver=new Receiver(phoneId,phone,name,address,campusId);
+		Receiver receiver=new Receiver(userId,phone,name,address,campusId);
 
 		try {
 
-			//通过时间生成该记录的序列号，和phoneId一起唯一表志收货人信息
+			//通过时间生成该记录的序列号，和userId一起唯一表志收货人信息
 			Calendar calendar=Calendar.getInstance();
-			receiver.setRank(String.valueOf(calendar.getTimeInMillis()));
-
-
-			if(receiverService.getReceiverCounts(phoneId)!=0){
-				receiver.setTag((short)1);
-			}else{
-				receiver.setTag((short)0);
-			}
+			receiver.setAddressId(String.valueOf(calendar.getTimeInMillis()));
 
 			System.out.println(JSON.toJSONString(receiver));
 

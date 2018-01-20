@@ -28,6 +28,8 @@ public interface OrderMapper {
     int updateByPrimaryKey(Order record);
 
 	List<CartGood> getOrderListByPhone(Map<String, Object> paramMap);
+	
+	List<Order> getOrderListByUserId(Map<String, Object> paramMap);
 
 	List<Order> getSuccessOrder(String phoneId);
 

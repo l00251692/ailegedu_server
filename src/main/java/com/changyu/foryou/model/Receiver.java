@@ -1,28 +1,27 @@
 package com.changyu.foryou.model;
 
 public class Receiver extends ReceiverKey {
+	
+	private String userId;
+	private String addressId;
     private String phone;
 
     private String name;
 
     private String address;
 
-    private Short tag;
+    private Short isDefault;
     
-    private Integer campusId;
-    
-    private String campusName;
 
     public Receiver(){
     	
     }
     
-    public Receiver(String phoneId,String phone, String name, String address,Integer campusId) {
-		super.setPhoneId(phoneId);
+    public Receiver(String userId,String phone, String name, String address,Integer campusId) {
+		this.userId= userId;
 		this.phone = phone;
 		this.name = name;
 		this.address = address;
-		this.campusId=campusId;
 	}
 
 
@@ -50,27 +49,27 @@ public class Receiver extends ReceiverKey {
         this.address = address == null ? null : address.trim();
     }
 
-    public Short getTag() {
-        return tag;
-    }
-
-    public void setTag(Short tag) {
-        this.tag = tag;
-    }
-
-	public Integer getCampusId() {
-		return campusId;
+	public Short getIsDefault() {
+		return isDefault;
 	}
 
-	public void setCampusId(Integer campusId) {
-		this.campusId = campusId;
+	public void setIsDefault(Short isDefault) {
+		this.isDefault = isDefault;
 	}
 
-	public String getCampusName() {
-		return campusName;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setCampusName(String campusName) {
-		this.campusName = campusName;
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getAddressId() {
+		return addressId;
+	}
+
+	public void setAddressId(String addressId) {
+		this.addressId = addressId;
 	}
 }

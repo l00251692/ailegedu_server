@@ -279,6 +279,7 @@ public class OrderController {
 		JSONObject node = new JSONObject();
 		
 		float packingFee = 0.0f;
+		float deliveryFee = 0.0f;
 		float orderPrice = 0.0f;
 		float payPrice = 0.0f;
 		
@@ -309,6 +310,10 @@ public class OrderController {
 			order.setAddrId("1");
 			order.setOrderPrice(orderPrice);
 			order.setPayPrice(orderPrice-2.0f);
+			order.setCutMoney(2.0f);
+			order.setCouponMoney(0.0f);
+			order.setPackingFee(packingFee);
+			order.setDeliveryFee(deliveryFee);
 
 			int flag = orderService.updateOrder(order);
 			if (flag != -1 && flag != 0)
@@ -331,6 +336,146 @@ public class OrderController {
 		map.put("State", "False");
 		map.put("data", null);	
 
+		return map;
+	}
+	
+	/**
+	 * 获取下达的所有订单
+	 * 
+	 * @param phoneId
+	 *            ,status
+	 * @return
+	 */
+	@RequestMapping("/getOrdersMineWx")
+	public @ResponseBody Map<String, Object> getOrdersMineWx(
+			@RequestParam String user_id, @RequestParam Integer page) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("userId", user_id);
+			
+			System.out.println("page:" + String.valueOf(page) + "user_id:" + user_id);
+			
+			paramMap.put("limit", 5);
+			paramMap.put("offset", page * 5);//默认一次5条
+	
+			List<Order> myOrdersList =orderService.getOrdersMine(paramMap);
+			
+			
+			JSONArray orderArray = new JSONArray();
+			
+			
+			for(Order order1:myOrdersList)
+			{
+				JSONObject order = new JSONObject();
+				
+				Map<String, Object> paramMap2 = new HashMap<String, Object>();
+				paramMap2.put("campusId",  order1.getCampusId());
+				Campus campus = campusService.getCampusById(paramMap2);
+				
+				order.put("add_time", order1.getCreateTime());
+				order.put("seller_id", order1.getCampusId());
+				order.put("seller_name", campus.getCampusName());
+				order.put("pic_url", campus.getPic_url());
+				order.put("order_id", order1.getOrderId());
+				order.put("state", order1.getStatus());
+				order.put("pay_price", order1.getPayPrice());
+				order.put("is_reviews", String.valueOf(0));
+				
+				orderArray.add(order);
+				
+			}
+			JSONObject data = new JSONObject();
+			data.put("list",orderArray);
+			data.put("count",String.valueOf(myOrdersList.size()));
+			data.put("page",String.valueOf(page));
+
+			map.put("State", "Success");
+			map.put("data", data);	
+			return map;
+
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		map.put("State", "False");
+		map.put("data", null);	
+		return map;
+	}
+	
+	/**
+	 * 获取订单具体信息
+	 * 
+	 * @param phoneId
+	 *            ,status
+	 * @return
+	 */
+	@RequestMapping("/getOrdersInfoWx")
+	public @ResponseBody Map<String, Object> getOrderInfoWx(
+			@RequestParam String  user_id, @RequestParam String order_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		try {
+			System.out.println("getOrdersInfoWx enter:" + user_id +"," + order_id);
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("orderId",order_id);
+			Order order = orderService.getOrderByIdWx(paramMap);
+		
+			JSONObject rtnOrder = new JSONObject();
+			
+			Map<String, Object> paramMap2 = new HashMap<String, Object>();
+			paramMap2.put("campusId",  order.getCampusId());
+			Campus campus = campusService.getCampusById(paramMap2);
+			
+			JSONArray flowarray = new JSONArray();
+			JSONObject flow = new JSONObject(); //订单处理流程信息
+			
+			flow.put("time", order.getCreateTime());
+			flow.put("status", "等待商家接单");
+			flow.put("state", 2);
+			flowarray.add(flow);
+			rtnOrder.put("add_time", order.getCreateTime());
+			rtnOrder.put("flow", flowarray);
+			rtnOrder.put("left_time", 0); //当前步骤剩余时间计时器，s为单位，小程序会启动定时器，到时间后重新获得订单状态
+			rtnOrder.put("seller_name", campus.getCampusName());
+			rtnOrder.put("is_reviews", String.valueOf(0));
+			rtnOrder.put("state", order.getStatus());
+			rtnOrder.put("deliver", campus.getDeliver());
+			rtnOrder.put("goods", JSON.parseArray(order.getGoods()));
+			rtnOrder.put("packing_fee", order.getPackingFee());
+			rtnOrder.put("delivery_fee", order.getDeliveryFee());
+			rtnOrder.put("cut_money", order.getCutMoney());
+			rtnOrder.put("coupon_money", order.getCouponMoney());
+			rtnOrder.put("order_price", order.getOrderPrice());
+			rtnOrder.put("pay_price", order.getPayPrice());
+			
+			Map<String, Object> paramMap3 = new HashMap<String, Object>();
+			paramMap3.put("userId",user_id);
+			paramMap3.put("addressId",order.getAddrId());
+			Receiver reveiver = receiverService.selectByPrimaryKey(paramMap3);
+			
+			System.out.println("receiver:" + user_id + "," + order.getAddrId());
+			
+			rtnOrder.put("receiver", reveiver.getName());
+			rtnOrder.put("receiver_phone", reveiver.getPhone());
+			rtnOrder.put("receiver_addr", reveiver.getAddress());
+			
+			rtnOrder.put("remark", order.getMessage());
+			rtnOrder.put("order_no", order.getOrderId());
+			rtnOrder.put("seller_phone", "10086");
+			rtnOrder.put("localphone", "10010");
+
+			map.put("State", "Success");
+			map.put("data", rtnOrder);	
+			return map;
+
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		map.put("State", "False");
+		map.put("data", null);	
 		return map;
 	}
 	

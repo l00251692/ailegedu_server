@@ -11,7 +11,7 @@ public class Order {
 
     private Date createTime;
 
-    //0:无效，1:准订单  ，2：待支付 ，3：已支付， 4：配送中， 5：配送完成
+    //0:无效，1:订单待支付  ，2：等待商家接单 ，3：订单进行中， 4：订单已完成， 5：订单已取消,6 :退款中,7:已退款
     private Short status;
 
     private String goods;
@@ -19,6 +19,9 @@ public class Order {
     private String message;
     
     private String addrId;
+    
+    private Float packingFee;
+    private Float deliveryFee;
     
     private Float cutMoney;
     private Float couponMoney;
@@ -145,6 +148,22 @@ public class Order {
     	createTime=new Date();
     	status=1; //准订单
     	orderId=createTime.getTime();
+	}
+
+	public Float getPackingFee() {
+		return packingFee;
+	}
+
+	public void setPackingFee(Float packingFee) {
+		this.packingFee = packingFee;
+	}
+
+	public Float getDeliveryFee() {
+		return deliveryFee;
+	}
+
+	public void setDeliveryFee(Float deliveryFee) {
+		this.deliveryFee = deliveryFee;
 	}
 
 	
