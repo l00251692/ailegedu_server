@@ -7,13 +7,13 @@ import java.util.Map;
 import com.changyu.foryou.model.Receiver;
 
 public interface ReceiverService {
-	int deleteByPrimaryKey(String phoneId,String rank);
+	int deleteByPrimaryKey(String userId,String addressId);
 
-	int insertSelective(Receiver record);
+	int insertSelective(Map<String, Object> paramMap);
 
 	Receiver selectByPrimaryKey(Map<String, Object> paramMap);
 
-	int updateByPrimaryKeySelective(Receiver record);
+	int updateByPrimaryKeySelective(Map<String, Object> paramMap);
 
 	int setDefaultAddress(String phone,String rank);
 
@@ -26,4 +26,8 @@ public interface ReceiverService {
 	int setReceiverTag(String phoneId);
 
 	Receiver getReceiver(Map<String, Object> paramMap);
+	
+	Receiver getReceiverDefault(Map<String, Object> paramMap);
+	
+	List<Receiver> getReceiverList(Map<String, Object> paramMap);
 }

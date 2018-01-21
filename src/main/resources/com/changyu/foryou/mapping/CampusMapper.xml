@@ -18,6 +18,7 @@
 			jdbcType="VARCHAR" />
 		<result column="sales" property="sales" jdbcType="INTEGER" />
     	<result column="min_price" property="min_price" jdbcType="INTEGER" />
+    	<result column="delivery_fee" property="delivery_fee" jdbcType="INTEGER" />
     	<result column="reach_time" property="reach_time" jdbcType="INTEGER" />
     	<result column="pic_url" property="pic_url" jdbcType="VARCHAR" />
 	</resultMap>

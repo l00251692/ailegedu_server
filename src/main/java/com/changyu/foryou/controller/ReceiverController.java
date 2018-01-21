@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.changyu.foryou.model.Campus;
+import com.changyu.foryou.model.Order;
 import com.changyu.foryou.model.Receiver;
 import com.changyu.foryou.service.ReceiverService;
 import com.changyu.foryou.tools.Constants;
@@ -38,33 +42,51 @@ public class ReceiverController {
 	 * @param campusId 校区号
 	 * @return
 	 */
-	@RequestMapping("/addReceiver")
-	public @ResponseBody Map<String, Object>addReceiver(@RequestParam String userId,@RequestParam String phone,
-			@RequestParam String name,@RequestParam String address,@RequestParam Integer campusId){
+	@RequestMapping("/addUserAddrWx")
+	public @ResponseBody Map<String, Object>addUserAddrWx(@RequestParam String user_id,@RequestParam String receiver,@RequestParam String phone,
+			@RequestParam String detail,@RequestParam String gps,@RequestParam String addr,@RequestParam Integer city_id,
+			@RequestParam String city_name,@RequestParam Integer district_id,@RequestParam String district_name){
 		Map<String, Object> map=new HashMap<String ,Object>();
-		Receiver receiver=new Receiver(userId,phone,name,address,campusId);
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("userId",user_id);
+		paramMap.put("name",receiver);
+		paramMap.put("phone",phone);
+		paramMap.put("address",addr);
+		paramMap.put("detail",detail);
+		
+		System.out.println("addUserAddrWx:" + gps);
+		String gpstmp[] = gps.split(",");
+		paramMap.put("longitude",gpstmp[0]);
+		paramMap.put("latitude",gpstmp[1]);
+		
+		
+		paramMap.put("cityId",city_id);
+		paramMap.put("cityName",city_name);
+		paramMap.put("districtId",district_id);
+		paramMap.put("districtName",district_name);
+		
+		//通过时间生成该记录的序列号，和userId一起唯一表志收货人信息
+		Calendar calendar=Calendar.getInstance();
+		paramMap.put("addressId", String.valueOf(calendar.getTimeInMillis()));
+		
+		System.out.println("addUserAddrW:" + paramMap.toString());
+		
+		try 
+		{
+			if(receiverService.insertSelective(paramMap)!=-1)
+			{
+				map.put("State", "Success");
+				map.put("data", null);	
 
-		try {
-
-			//通过时间生成该记录的序列号，和userId一起唯一表志收货人信息
-			Calendar calendar=Calendar.getInstance();
-			receiver.setAddressId(String.valueOf(calendar.getTimeInMillis()));
-
-			System.out.println(JSON.toJSONString(receiver));
-
-			if(receiverService.insert(receiver)!=-1){
-				map.put(Constants.STATUS, Constants.SUCCESS);
-				map.put(Constants.MESSAGE, "添加成功！");
-			}else{
-				map.put(Constants.STATUS, Constants.FAILURE);
-				map.put(Constants.MESSAGE, "添加失败！");
+				return map;
 			}
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
-			map.put(Constants.STATUS, Constants.FAILURE);
-			map.put(Constants.MESSAGE, "添加失败！");
 		}
-
+		map.put("State", "False");
+		map.put("data", null);	
 		return map;
 	}
 
@@ -100,25 +122,42 @@ public class ReceiverController {
 	 * @param campusId 校区
 	 * @return
 	 */
-	@RequestMapping("/updateReceiver")
-	public @ResponseBody Map<String, Object> updateReceiver(@RequestParam String phoneId,@RequestParam String rank,
-			String address,String name,String phone,Integer campusId){
+	@RequestMapping("/updateUserAddrWx")
+	public @ResponseBody Map<String, Object> updateUserAddrWx(@RequestParam String user_id,@RequestParam String receiver,@RequestParam String phone,
+			@RequestParam String detail,@RequestParam String gps,@RequestParam String addr_id,@RequestParam String addr,@RequestParam Integer city_id,
+			@RequestParam String city_name,@RequestParam Integer district_id,@RequestParam String district_name){
 		Map<String, Object> map=new HashMap<String ,Object>();
 		try {
-			Receiver receiver=new Receiver(phoneId,phone,name,address,campusId);
-			receiver.setRank(rank);
-			if(receiverService.updateByPrimaryKeySelective(receiver)!=-1){
-				map.put(Constants.STATUS, Constants.SUCCESS);
-				map.put(Constants.MESSAGE, "更新收货人信息成功");
-			}else{
-				map.put(Constants.STATUS, Constants.FAILURE);
-				map.put(Constants.MESSAGE, "更新收货人信息失败");
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("userId",user_id);
+			paramMap.put("name",receiver);
+			paramMap.put("phone",phone);
+			paramMap.put("address",addr);
+			paramMap.put("detail",detail);
+			
+			System.out.println("addUserAddrWx:" + gps);
+			String gpstmp[] = gps.split(",");
+			paramMap.put("longitude",gpstmp[0]);
+			paramMap.put("latitude",gpstmp[1]);
+			
+			paramMap.put("cityId",city_id);
+			paramMap.put("cityName",city_name);
+			paramMap.put("districtId",district_id);
+			paramMap.put("districtName",district_name);
+			paramMap.put("addressId", addr_id);
+			
+			if(receiverService.updateByPrimaryKeySelective(paramMap)!=-1)
+			{
+				map.put("State", "Success");
+				map.put("data", null);	
+
+				return map;
 			}
 		} catch (Exception e) {
 			e.getStackTrace();
-			map.put(Constants.STATUS, Constants.FAILURE);
-			map.put(Constants.MESSAGE, "更新收货人信息失败！");
 		}
+		map.put("State", "False");
+		map.put("data", null);	
 		return map;
 	}
 
@@ -146,6 +185,8 @@ public class ReceiverController {
 			map.put(Constants.MESSAGE, "设置默认收货地址失败！");
 		}
 
+		map.put("State", "False");
+		map.put("data", null);	
 		return map;
 	}
 
@@ -156,24 +197,58 @@ public class ReceiverController {
 	 * @param rank
 	 * @return
 	 */	
-	@RequestMapping("/deleteReceiver")
-	public @ResponseBody Map<String,Object> deleteReceiver(@RequestParam String phoneId,@RequestParam String rank){
+	@RequestMapping("/deleteUserAddrWx")
+	public @ResponseBody Map<String,Object> deleteUserAddrWx(@RequestParam String user_id,@RequestParam String addr_id){
 		Map<String, Object> map=new HashMap<String ,Object>();
 		try {
       
-			int flag=receiverService.deleteByPrimaryKey(phoneId, rank);
+			int flag=receiverService.deleteByPrimaryKey(user_id, addr_id);
 			if(flag!=-1&&flag!=0){
-				map.put(Constants.STATUS, Constants.SUCCESS);
-				map.put(Constants.MESSAGE, "删除地址成功!");
-			}else{
-				map.put(Constants.STATUS, Constants.FAILURE);
-				map.put(Constants.MESSAGE, "删除地址失败！");
+				map.put("State", "Success");
+				map.put("data", "删除成功");
 			}
 		} catch (Exception e) {
 			e.getStackTrace();
-			map.put(Constants.STATUS, Constants.FAILURE);
-			map.put(Constants.MESSAGE, "删除地址失败！");
 		}
+		
+		map.put("State", "False");
+		map.put("data", null);
 		return map;
+	}
+	
+	/**
+	 * 获得用户的所有地址信息
+	 * 
+	 * @param phoneId
+	 * @param foodId
+	 * @param foodCount
+	 * @param foodSpecial
+	 * @return
+	 */
+	@RequestMapping("/getUserAddressWx")
+	public @ResponseBody Map<String, String> getUserAddressWx(@RequestParam String user_id){
+		Map<String,String> data = new HashMap<String, String>();
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("userId",user_id);
+		List<Receiver> reveiverList = receiverService.getReceiverList(paramMap);
+		
+		JSONArray jsonarr = new JSONArray();
+		for(Receiver revceiver : reveiverList)
+		{
+			JSONObject tmp = new JSONObject();
+			tmp.put("addr_id", revceiver.getAddressId());
+			tmp.put("receiver", revceiver.getName());
+			tmp.put("phone", revceiver.getPhone());
+			tmp.put("addr", revceiver.getAddress());
+			tmp.put("detail", revceiver.getDetail());
+			jsonarr.add(tmp);
+			
+		}
+		
+		data.put("State", "Success");
+		data.put("data", jsonarr.toString());	
+
+		return data;
 	}
 }

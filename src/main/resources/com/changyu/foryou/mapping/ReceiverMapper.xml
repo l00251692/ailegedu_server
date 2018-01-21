@@ -7,10 +7,18 @@
 		<result column="phone" property="phone" jdbcType="VARCHAR" />
 		<result column="name" property="name" jdbcType="VARCHAR" />
 		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="detail" property="detail" jdbcType="VARCHAR" />
 		<result column="is_default" property="isDefault" jdbcType="SMALLINT" />
+		<result column="city_name" property="cityName" jdbcType="VARCHAR" />
+		<result column="district_name" property="districtName" jdbcType="VARCHAR" />
+		<result column="city_id" property="cityId" jdbcType="INTEGER" />
+		<result column="district_id" property="districtId" jdbcType="INTEGER" />
+		<result column="longitude" property="longitude" jdbcType="VARCHAR" />
+		<result column="latitude" property="latitude" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		user_id, address_id, phone, name, address, is_default
+		user_id, address_id, phone, name, address, detail,is_default,city_name,district_name,city_id,district_id
+		,longitude,latitude 
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap">
 		select
@@ -19,7 +27,20 @@
 		where user_id = #{userId,jdbcType=VARCHAR}
 		and address_id = #{addressId,jdbcType=VARCHAR}
 	</select>
-	<update id="deleteByPrimaryKey" parameterType="com.changyu.foryou.model.ReceiverKey">
+	<select id="getReceiverDefault" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from receiver
+		where user_id = #{userId,jdbcType=VARCHAR}
+		and is_default = 1
+	</select>
+	<select id="getReceiverList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from receiver
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</select>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from receiver
 		where user_id = #{userId,jdbcType=VARCHAR}
 		and address_id = #{addressId,jdbcType=VARCHAR}
@@ -52,8 +73,29 @@
 			<if test="address != null">
 				address,
 			</if>
+			<if test="detail != null">
+				detail,
+			</if> 
 			<if test="isDefault != null">
 				is_default,
+			</if> 
+			<if test="cityName != null">
+				city_name,	
+			</if> 
+			<if test="districtName != null">
+				district_name,
+			</if> 
+			<if test="cityId != null">
+				city_id,
+			</if> 
+			<if test="districtId != null">
+				district_id,
+			</if> 
+			<if test="longitude != null">
+				longitude,
+			</if> 
+			<if test="latitude != null">
+				latitude,
 			</if> 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -72,8 +114,29 @@
 			<if test="address != null">
 				#{address,jdbcType=VARCHAR},
 			</if>
+			<if test="detail != null">
+				#{detail,jdbcType=VARCHAR},
+			</if>
 			<if test="isDefault != null">
 				#{isDefault,jdbcType=SMALLINT},
+			</if>
+			<if test="cityName != null">
+				#{cityName,jdbcType=VARCHAR},
+			</if>
+			<if test="districtName != null">
+				#{districtName,jdbcType=VARCHAR},
+			</if>
+			<if test="cityId != null">
+				#{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="districtId != null">
+				#{districtId,jdbcType=INTEGER},
+			</if>
+			<if test="longitude != null">
+				#{longitude,jdbcType=VARCHAR},
+			</if>
+			<if test="latitude != null">
+				#{latitude,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -89,8 +152,29 @@
 			<if test="address != null">
 				address = #{address,jdbcType=VARCHAR},
 			</if>
+			<if test="detail != null">
+				detail = #{detail,jdbcType=VARCHAR},
+			</if>
 			<if test="isDefault != null">
 				is_default = #{isDefault,jdbcType=SMALLINT},
+			</if>
+			<if test="cityName != null">
+				city_name = #{cityName,jdbcType=VARCHAR},
+			</if>
+			<if test="districtName != null">
+				district_name = #{districtName,jdbcType=VARCHAR},
+			</if>
+			<if test="city_id != null">
+				cityId = #{cityId,jdbcType=INTEGER},
+			</if>
+			<if test="districtId != null">
+				district_id = #{districtId,jdbcType=INTEGER},
+			</if>
+			<if test="longitude != null">
+				longitude = #{longitude,jdbcType=VARCHAR},
+			</if>
+			<if test="latitude != null">
+				latitude = #{latitude,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where user_id = #{userId,jdbcType=VARCHAR}

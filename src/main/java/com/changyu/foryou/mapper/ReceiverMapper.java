@@ -9,15 +9,15 @@ import com.changyu.foryou.model.Receiver;
 import com.changyu.foryou.model.ReceiverKey;
 
 public interface ReceiverMapper {
-    int deleteByPrimaryKey(ReceiverKey key);
+    int deleteByPrimaryKey(String userId,String addressId);
 
     int insert(Receiver record);
 
-    int insertSelective(Receiver record);
+    int insertSelective(Map<String, Object> paramMap);
 
     Receiver selectByPrimaryKey(Map<String, Object> paramMap);
 
-    int updateByPrimaryKeySelective(Receiver record);
+    int updateByPrimaryKeySelective(Map<String, Object> paramMap);
 
     int updateByPrimaryKey(Receiver record);
 
@@ -33,4 +33,8 @@ public interface ReceiverMapper {
 	int setReceiverTag(@Param(value="phoneId")String phoneId);
 
 	Receiver getReceiver(Map<String, Object> paramMap);
+	
+	Receiver getReceiverDefault(Map<String, Object> paramMap);
+	
+	List<Receiver> getReceiverList(Map<String, Object> paramMap);
 }

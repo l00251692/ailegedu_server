@@ -31,6 +31,7 @@ public class Campus {
 	
 	private int sales;
 	private int min_price;
+	private int delivery_fee;
 	private int reach_time;
 	private String pic_url;
 	
@@ -150,6 +151,12 @@ public class Campus {
 
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
+	}
+	public int getDelivery_fee() {
+		return delivery_fee;
+	}
+	public void setDelivery_fee(int delivery_fee) {
+		this.delivery_fee = delivery_fee;
 	}
 
 	/* public void setCityId(Integer cityId) {

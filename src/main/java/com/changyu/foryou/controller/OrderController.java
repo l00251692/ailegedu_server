@@ -163,15 +163,14 @@ public class OrderController {
 	 */
 	@RequestMapping("/createOrderWx")
 	public @ResponseBody Map<String, String> createOrderWx(
-			@RequestParam String user_id,  @RequestParam String seller_id, 
-			@RequestParam String addr_id, @RequestParam String goods){
+			@RequestParam String user_id,  @RequestParam String seller_id, @RequestParam String goods,@RequestParam String totalPackingFee){
 		Map<String,String> map = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
 		
 		System.out.println("createOrderWx:" + user_id + "," + seller_id + "," + goods);
 
 		try {
-			Order order = new Order(Integer.valueOf(seller_id), user_id, addr_id, goods);
+			Order order = new Order(Integer.valueOf(seller_id), user_id, goods,Float.valueOf(totalPackingFee));
 			Long orderId=order.getOrderId();
 
 			int flag = orderService.insertSelectiveOrder(order);
@@ -209,11 +208,10 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping("/getQuasiOrderInfoWx")
-	public @ResponseBody Map<String, String> getQuasiOrderInfoWx(@RequestParam String quasi_order_id){
+	public @ResponseBody Map<String, String> getQuasiOrderInfoWx(@RequestParam String quasi_order_id, @RequestParam String user_id){
 		Map<String,String> data = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
 		float packingFee = 0.0f;
-		float deliveryFee = 0.0f;
 		float orderPrice = 0.0f;
 		float cutMoneyTotal = 2.0f;
 		
@@ -222,14 +220,26 @@ public class OrderController {
 		
 		paramMap.put("orderId",Long.parseLong(quasi_order_id));
 		Order order = orderService.getOrderByIdWx(paramMap);
+		if (order == null)
+		{
+			data.put("State", "False");
+			data.put("data", "未查询到订单信息");	
+
+			return data;
+		}
 		
-		System.out.println("getQuasiOrderInfoWx:" + order.getGoods());
+		Map<String, Object> paramMap2 = new HashMap<String, Object>();
+		paramMap2.put("userId",user_id);
 		
-		node.put("receiver_addr_id", String.valueOf(1));
-		node.put("receiver", "积木盒子");
-		node.put("receiver_phone", "16666666666");
-		node.put("receiver_addr", "江苏省南京市林业大学");
-		node.put("seller_name", "爱都饮品");
+		Receiver receiver = receiverService.getReceiverDefault(paramMap);
+		
+		if (receiver != null)
+		{
+			node.put("receiver_addr_id", receiver.getAddressId());
+			node.put("receiver", receiver.getName());
+			node.put("receiver_phone", receiver.getPhone());
+			node.put("receiver_addr", receiver.getAddress());
+		}
 		
 		JSONArray goods = new JSONArray();
 		JSONArray goodsTmp = JSON.parseArray(order.getGoods());
@@ -245,16 +255,21 @@ public class OrderController {
 			orderPrice = orderPrice + goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num");
 		}
 		
+		Map<String, Object> paramMap3 = new HashMap<String, Object>();
+		paramMap3.put("campusId",  order.getCampusId());
+		Campus campus = campusService.getCampusById(paramMap3);
+		
+		node.put("seller_name", campus.getCampusName());
+		
 		node.put("goods", goods);
 		node.put("packing_fee", String.valueOf(packingFee));
-		node.put("delivery_fee", String.valueOf(deliveryFee));
+		node.put("delivery_fee", order.getDeliveryFee());
 		
 		node.put("cut_money", String.valueOf(2)); //优惠多少
 		node.put("coupon_money", String.valueOf(0)); //优惠多少
 		node.put("cut_money_total", String.valueOf(cutMoneyTotal)); //总优惠
 		node.put("pay_price", String.valueOf(orderPrice - cutMoneyTotal)); 
 		node.put("order_price", String.valueOf(orderPrice));
-		System.out.println("return2:" + node.toString());
 		
 		data.put("State", "Success");
 		data.put("data", node.toString());	
@@ -279,7 +294,6 @@ public class OrderController {
 		JSONObject node = new JSONObject();
 		
 		float packingFee = 0.0f;
-		float deliveryFee = 0.0f;
 		float orderPrice = 0.0f;
 		float payPrice = 0.0f;
 		
@@ -289,6 +303,13 @@ public class OrderController {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("orderId",Long.parseLong(quasi_order_id));
 			Order order = orderService.getOrderByIdWx(paramMap);
+			if(order == null)
+			{
+				map.put("State", "False");
+				map.put("data", "生成订单失败");	
+
+				return map;
+			}
 			
 			order.setMessage(remark);
 			order.setStatus((short)2);
@@ -313,7 +334,7 @@ public class OrderController {
 			order.setCutMoney(2.0f);
 			order.setCouponMoney(0.0f);
 			order.setPackingFee(packingFee);
-			order.setDeliveryFee(deliveryFee);
+
 
 			int flag = orderService.updateOrder(order);
 			if (flag != -1 && flag != 0)
@@ -421,6 +442,13 @@ public class OrderController {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("orderId",order_id);
 			Order order = orderService.getOrderByIdWx(paramMap);
+			
+			if (order == null)
+			{
+				map.put("State", "False");
+				map.put("data", "查询订单详细信息失败");	
+				return map;
+			}
 		
 			JSONObject rtnOrder = new JSONObject();
 			

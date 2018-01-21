@@ -25,21 +25,21 @@ public class ReceiverServiceImpl implements ReceiverService {
 		this.receiverMapper = receiverMapper;
 	}
 
-	public int deleteByPrimaryKey(String phoneId, String rank) {
-		return receiverMapper.deleteByPrimaryKey(new ReceiverKey(phoneId,rank));
+	public int deleteByPrimaryKey(String userId, String addressId) {
+		return receiverMapper.deleteByPrimaryKey(userId,addressId);
 		
 	}
 
-	public int insertSelective(Receiver record) {
-		return receiverMapper.insertSelective(record);
+	public int insertSelective(Map<String, Object> paramMap) {
+		return receiverMapper.insertSelective(paramMap);
 	}
 
 	public Receiver selectByPrimaryKey(Map<String, Object> paramMap) {
 		return receiverMapper.selectByPrimaryKey(paramMap);
 	}
 
-	public int updateByPrimaryKeySelective(Receiver record) {
-		return receiverMapper.updateByPrimaryKeySelective(record);
+	public int updateByPrimaryKeySelective(Map<String, Object> paramMap) {
+		return receiverMapper.updateByPrimaryKeySelective(paramMap);
 	}
 
 	public int setDefaultAddress(String phone,String rank) {
@@ -67,6 +67,17 @@ public class ReceiverServiceImpl implements ReceiverService {
 	public Receiver getReceiver(Map<String, Object> paramMap) {
 		// TODO Auto-generated method stub
 		return receiverMapper.getReceiver(paramMap);
+	}
+	
+
+	public Receiver getReceiverDefault(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return receiverMapper.getReceiverDefault(paramMap);
+	}
+	
+	public List<Receiver> getReceiverList(Map<String, Object> paramMap) {
+		// TODO Auto-generated method stub
+		return receiverMapper.getReceiverList(paramMap);
 	}
 
 

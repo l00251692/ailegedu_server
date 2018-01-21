@@ -140,11 +140,11 @@ public class Order {
     	
     }
     
-    public Order(Integer campusId2,String userId2, String addrId2, String goods2) {
+    public Order(Integer campusId2,String userId2, String goods2,Float deliveryFee2 ) {
     	campusId = campusId2;
     	userId=userId2;
-    	addrId=addrId2;
     	goods = goods2;
+    	deliveryFee = deliveryFee2;
     	createTime=new Date();
     	status=1; //准订单
     	orderId=createTime.getTime();
