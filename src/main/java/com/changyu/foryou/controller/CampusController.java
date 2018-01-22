@@ -536,7 +536,7 @@ public class CampusController {
 		node.put("distanceFormat", "10000");//设置店铺与买家地址的距离，先写死
 		node.put("pic_url", campus.getPic_url());
 		node.put("promotion", "");//优惠活动数组
-		node.put("delivery_fee", "2");//配送费2元
+		node.put("delivery_fee", campus.getDelivery_fee());//配送费
 		node.put("overall", "5");//综合评分
 		node.put("quality", "4");//商家评分
 		node.put("service", "5");//配送评分

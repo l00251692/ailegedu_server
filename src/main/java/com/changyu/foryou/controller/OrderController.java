@@ -231,7 +231,7 @@ public class OrderController {
 		Map<String, Object> paramMap2 = new HashMap<String, Object>();
 		paramMap2.put("userId",user_id);
 		
-		Receiver receiver = receiverService.getReceiverDefault(paramMap);
+		Receiver receiver = receiverService.getReceiverDefault(paramMap2);
 		
 		if (receiver != null)
 		{
@@ -249,6 +249,7 @@ public class OrderController {
 			JSONObject good = new JSONObject();
 			good.put("goods_name",goodsTmp.getJSONObject(i).getString("goods_name"));
 			good.put("num",goodsTmp.getJSONObject(i).getString("num"));
+			good.put("select_property",goodsTmp.getJSONObject(i).getString("select_property"));
 			good.put("price_sum",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
 			goods.add(good);
 			packingFee = packingFee + goodsTmp.getJSONObject(i).getFloatValue("packing_fee");
@@ -260,10 +261,10 @@ public class OrderController {
 		Campus campus = campusService.getCampusById(paramMap3);
 		
 		node.put("seller_name", campus.getCampusName());
-		
+			
 		node.put("goods", goods);
 		node.put("packing_fee", String.valueOf(packingFee));
-		node.put("delivery_fee", order.getDeliveryFee());
+		node.put("delivery_fee", campus.getDelivery_fee().toString());
 		
 		node.put("cut_money", String.valueOf(2)); //优惠多少
 		node.put("coupon_money", String.valueOf(0)); //优惠多少
@@ -273,8 +274,114 @@ public class OrderController {
 		
 		data.put("State", "Success");
 		data.put("data", node.toString());	
+		
+		System.out.println("getQuasiOrderInfoWx rtn:" + node.toString());
 
 		return data;
+	}
+	
+	/**
+	 * 订单更新收货地址
+	 * 
+	 * @param phoneId
+	 * @param foodId
+	 * @param foodCount
+	 * @param foodSpecial
+	 * @return
+	 */
+	@RequestMapping("/updateOrderAddrWx")
+	public @ResponseBody Map<String, String> updateOrderAddrWx(
+			@RequestParam String user_id,  @RequestParam String quasi_order_id, @RequestParam String addr_id){
+		Map<String,String> map = new HashMap<String, String>();
+		JSONObject node = new JSONObject();
+		float packingFee = 0.0f;
+		float orderPrice = 0.0f;
+		float cutMoneyTotal = 2.0f;
+		
+		
+		System.out.println("updateOrderAddrWx:" + user_id + "," + quasi_order_id + "," + addr_id);
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("orderId",Long.parseLong(quasi_order_id));
+			Order order = orderService.getOrderByIdWx(paramMap);
+			if(order == null)
+			{
+				map.put("State", "False");
+				map.put("data", "生成订单失败");	
+
+				return map;
+			}
+			
+			order.setAddrId(addr_id);
+			int flag = orderService.updateOrder(order);
+			if (flag != -1 && flag != 0)
+			{
+				Map<String, Object> paramMap2 = new HashMap<String, Object>();
+				paramMap2.put("userId",user_id);
+				paramMap2.put("addressId",addr_id);
+				
+				Receiver receiver = receiverService.selectByPrimaryKey(paramMap2);
+				
+				if (receiver != null)
+				{
+					node.put("receiver_addr_id", addr_id);
+					node.put("receiver", receiver.getName());
+					node.put("receiver_phone", receiver.getPhone());
+					node.put("receiver_addr", receiver.getAddress());
+				}
+				
+				JSONArray goods = new JSONArray();
+				JSONArray goodsTmp = JSON.parseArray(order.getGoods());
+				
+				for (int i = 0; i < goodsTmp.size(); i ++)
+				{
+					JSONObject good = new JSONObject();
+					good.put("goods_name",goodsTmp.getJSONObject(i).getString("goods_name"));
+					good.put("num",goodsTmp.getJSONObject(i).getString("num"));
+					good.put("select_property",goodsTmp.getJSONObject(i).getString("select_property"));
+					good.put("price_sum",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
+					goods.add(good);
+					packingFee = packingFee + goodsTmp.getJSONObject(i).getFloatValue("packing_fee");
+					orderPrice = orderPrice + goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num");
+				}
+				
+				Map<String, Object> paramMap3 = new HashMap<String, Object>();
+				paramMap3.put("campusId",  order.getCampusId());
+				Campus campus = campusService.getCampusById(paramMap3);
+				
+				node.put("seller_name", campus.getCampusName());
+				
+				node.put("goods", goods);
+				node.put("packing_fee", String.valueOf(packingFee));
+				node.put("delivery_fee", campus.getDelivery_fee().toString());
+				
+				node.put("cut_money", String.valueOf(2)); //优惠多少
+				node.put("coupon_money", String.valueOf(0)); //优惠多少
+				node.put("cut_money_total", String.valueOf(cutMoneyTotal)); //总优惠
+				node.put("pay_price", String.valueOf(orderPrice - cutMoneyTotal)); 
+				node.put("order_price", String.valueOf(orderPrice));
+				
+				map.put("State", "Success");
+				map.put("data", node.toString());	
+
+				return map;
+			} else 
+			{
+				map.put("State", "False");
+				map.put("data", null);	
+				return map;
+			}
+			
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		map.put("State", "False");
+		map.put("data", null);	
+
+		return map;
 	}
 	
 	/**
@@ -288,7 +395,7 @@ public class OrderController {
 	 */
 	@RequestMapping("/submitOrder")
 	public @ResponseBody Map<String, String> SubmitOrderWx(
-			@RequestParam String user_id,  @RequestParam String quasi_order_id, 
+			@RequestParam String user_id,  @RequestParam String quasi_order_id, @RequestParam String addr_id,
 			@RequestParam String remark){
 		Map<String,String> map = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
@@ -313,6 +420,7 @@ public class OrderController {
 			
 			order.setMessage(remark);
 			order.setStatus((short)2);
+			order.setAddrId(addr_id);
 			
 			JSONArray goods = new JSONArray();
 			JSONArray goodsTmp = JSON.parseArray(order.getGoods());
@@ -322,13 +430,19 @@ public class OrderController {
 				JSONObject good = new JSONObject();
 				good.put("goods_name",goodsTmp.getJSONObject(i).getString("goods_name"));
 				good.put("num",goodsTmp.getJSONObject(i).getString("num"));
+				good.put("select_property",goodsTmp.getJSONObject(i).getString("select_property"));
 				good.put("price_sum",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
 				goods.add(good);
 				packingFee = packingFee + goodsTmp.getJSONObject(i).getFloatValue("packing_fee");
 				orderPrice = orderPrice + goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num");
 			}
 			
-			order.setAddrId("1");
+			Map<String, Object> paramMap3 = new HashMap<String, Object>();
+			paramMap3.put("campusId",  order.getCampusId());
+			Campus campus = campusService.getCampusById(paramMap3);
+			
+			order.setDeliveryFee(campus.getDelivery_fee());
+			
 			order.setOrderPrice(orderPrice);
 			order.setPayPrice(orderPrice-2.0f);
 			order.setCutMoney(2.0f);
@@ -473,6 +587,7 @@ public class OrderController {
 			rtnOrder.put("goods", JSON.parseArray(order.getGoods()));
 			rtnOrder.put("packing_fee", order.getPackingFee());
 			rtnOrder.put("delivery_fee", order.getDeliveryFee());
+			
 			rtnOrder.put("cut_money", order.getCutMoney());
 			rtnOrder.put("coupon_money", order.getCouponMoney());
 			rtnOrder.put("order_price", order.getOrderPrice());

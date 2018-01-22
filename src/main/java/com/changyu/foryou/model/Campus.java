@@ -30,8 +30,8 @@ public class Campus {
 	private String deliver;
 	
 	private int sales;
-	private int min_price;
-	private int delivery_fee;
+	private Float min_price;
+	private Float delivery_fee;
 	private int reach_time;
 	private String pic_url;
 	
@@ -68,10 +68,10 @@ public class Campus {
 	public void setSales(int sales) {
 		this.sales = sales;
 	}
-	public int getMin_price() {
+	public Float getMin_price() {
 		return min_price;
 	}
-	public void setMin_price(int min_price) {
+	public void setMin_price(Float min_price) {
 		this.min_price = min_price;
 	}
 	public int getReach_time() {
@@ -152,10 +152,10 @@ public class Campus {
 	public void setCityName(String cityName) {
 		this.cityName = cityName;
 	}
-	public int getDelivery_fee() {
+	public Float getDelivery_fee() {
 		return delivery_fee;
 	}
-	public void setDelivery_fee(int delivery_fee) {
+	public void setDelivery_fee(Float delivery_fee) {
 		this.delivery_fee = delivery_fee;
 	}
 

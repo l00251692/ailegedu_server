@@ -17,8 +17,8 @@
 		<result column="custom_service" property="customService"
 			jdbcType="VARCHAR" />
 		<result column="sales" property="sales" jdbcType="INTEGER" />
-    	<result column="min_price" property="min_price" jdbcType="INTEGER" />
-    	<result column="delivery_fee" property="delivery_fee" jdbcType="INTEGER" />
+    	<result column="min_price" property="min_price" jdbcType="REAL" />
+    	<result column="delivery_fee" property="delivery_fee" jdbcType="REAL" />
     	<result column="reach_time" property="reach_time" jdbcType="INTEGER" />
     	<result column="pic_url" property="pic_url" jdbcType="VARCHAR" />
 	</resultMap>
@@ -56,7 +56,8 @@
 	</resultMap>
 
 	<sql id="Base_Column_List">
-		campus_id, campus_name, city_id
+		campus_id, campus_name, city_id,open_time,close_time,location_x,location_y,status,close_reason,custom_service,
+		sales,min_price,reach_time,pic_url,address,notice,deliver,delivery_fee
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -148,7 +149,7 @@
 
 	<select id="selectAllCampus" resultMap="BaseResultMap">
 		select campus_id,campus_name,campus.city_id,city.city_name,
-		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver
+		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver,delivery_fee
 		 from 
 		 campus,city where campus.city_id=city.city_id
 	</select>
@@ -185,7 +186,7 @@
 
 	<select id="selectCampusById" resultMap="BaseResultMap">
 		select campus_id,campus_name,campus.city_id,city.city_name,
-		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver
+		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver,delivery_fee
 		 from 
 		 campus,city where campus.city_id=city.city_id
 		 and campus_id=#{campusId,jdbcType=INTEGER}

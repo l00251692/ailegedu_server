@@ -225,8 +225,8 @@ public class ReceiverController {
 	 * @param foodSpecial
 	 * @return
 	 */
-	@RequestMapping("/getUserAddressWx")
-	public @ResponseBody Map<String, String> getUserAddressWx(@RequestParam String user_id){
+	@RequestMapping("/getUserAddrsWx")
+	public @ResponseBody Map<String, String> getUserAddrsWx(@RequestParam String user_id){
 		Map<String,String> data = new HashMap<String, String>();
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -247,8 +247,54 @@ public class ReceiverController {
 		}
 		
 		data.put("State", "Success");
-		data.put("data", jsonarr.toString());	
+		data.put("data", jsonarr.toString());
+			
+		return data;
+}
 
+/**
+ * 获得用户的一条地址信息
+ * 
+ * @param phoneId
+ * @param foodId
+ * @param foodCount
+ * @param foodSpecial
+ * @return
+ */
+@RequestMapping("/getUserAddrWx")
+public @ResponseBody Map<String, String> getUserAddrWx(@RequestParam String user_id,@RequestParam String addr_id){
+	Map<String,String> data = new HashMap<String, String>();
+	
+	Map<String, Object> paramMap = new HashMap<String, Object>();
+	
+	paramMap.put("userId",user_id);
+	paramMap.put("addressId",addr_id);
+	Receiver revceiver = receiverService.selectByPrimaryKey(paramMap);
+	
+	if(revceiver == null)
+	{
+		data.put("State", "Fail");
+		data.put("data", null);
 		return data;
 	}
+	
+	JSONObject tmp = new JSONObject();
+	tmp.put("addr_id", revceiver.getAddressId());
+	tmp.put("receiver", revceiver.getName());
+	tmp.put("phone", revceiver.getPhone());
+	tmp.put("addr", revceiver.getAddress());
+	tmp.put("detail", revceiver.getDetail());
+	
+	tmp.put("city_name", revceiver.getCityName());
+	tmp.put("district_name", revceiver.getDistrictName());
+	tmp.put("city_id", revceiver.getCityId());
+	tmp.put("district_id", revceiver.getDistrictId());
+	tmp.put("longitude", revceiver.getLongitude());
+	tmp.put("latitude", revceiver.getLatitude());
+	
+	data.put("State", "Success");
+	data.put("data", tmp.toString());
+
+	return data;
+}
 }
