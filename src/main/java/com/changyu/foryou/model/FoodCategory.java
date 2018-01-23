@@ -4,7 +4,7 @@ import java.util.List;
 
 public class FoodCategory {
     private Integer categoryId;
-    private Integer campusId;
+    private String campusId;
     
     private String category;
 
@@ -68,11 +68,11 @@ public class FoodCategory {
 		this.child = child;
 	}
 
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 

@@ -41,6 +41,9 @@ public interface FoodService {
 	List<Food> getAllFoods(Map<String, Object> paramMap);
 
 	Integer getFoodSpecialCount(Map<String, Object> paramMap);
+	
+	Integer getCampusAllFoodCount(String campusId);
+	
 
 	String getSpecialName(Map<String, Object> paramMap);
 
@@ -87,6 +90,8 @@ public interface FoodService {
 	//void deleteFoodByParentCategory(String categoryId);
 	
 	Integer getAllCategoryCount();
+	
+	Integer getAllCategoryCountByCampus(String campusId);
 	
 	Integer uploadHomeFoodByFoodId(Map<String, Object> paramMap);
 	

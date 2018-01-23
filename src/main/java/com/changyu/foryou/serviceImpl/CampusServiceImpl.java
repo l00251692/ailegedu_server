@@ -71,11 +71,11 @@ public class CampusServiceImpl implements CampusService {
 	}
 
 	@Override
-	public Map<String, Object> addCampus(Map<String, Object> paramMap) {
-		Map<String, Object> responseMap = new HashMap<String, Object>();
+	public Integer addCampus(Map<String, Object> paramMap) {
+		//Map<String, Object> responseMap = new HashMap<String, Object>();
 		// 只有在添加完校区且添加了8个默认分类之后才算添加校区成功
-		Integer addCampus = campusMapper.addCampus(paramMap);
-		int count = 0;
+		return  campusMapper.addCampus(paramMap);
+		/*int count = 0;
 		if (addCampus != -1 && addCampus != 0) {
 			// 说明添加校区成功
 			//现在添加分类
@@ -144,7 +144,7 @@ public class CampusServiceImpl implements CampusService {
 			responseMap.put(Constants.STATUS, Constants.FAILURE);
 			responseMap.put(Constants.MESSAGE, "添加校区失败");
 		}
-		return responseMap;
+		return responseMap;*/
 	}
 	public Campus getCampus(Map<String, Object> paramMap) {
 		return campusMapper.getCampusByOrder(paramMap);

@@ -57,12 +57,16 @@
 							<th data-field="campusId" data-visible="false">店铺ID</th>
 							<th data-field="campusName">店铺名称</th>
 							<!-- <th data-field="cityId" data-visible="false">城市ID</th> -->
+							<th data-align="center" data-field="pic_url" data-formatter="homeImageFormatter">店铺头像</th> -->
 							<th data-field="cityName">所在城市</th>
 							<th data-field="openTime">开店时间</th>
 							<th data-field="closeTime">关店时间</th>
 							<th data-field="address">商家地址</th>
 							<th data-field="notice">商家公告</th>
 							<th data-field="deliver">配送服务</th>
+							<th data-field="min_price">起送价</th>
+							<th data-field="delivery_fee">配送费</th>
+							<th data-field="reach_time">送达时间</th>
 							<th data-field="status" data-formatter="statusFormatter">状态</th>
 							<th data-field="customService">客服电话</th>
 						</tr>
@@ -82,26 +86,26 @@
 						<h4 class="modal-title" id="myPlusModalLabel">创建店铺</h4>
 					</div>
 					<div class="modal-body">
-						<form id="plus_campus_form"class="form-horizontal" role="form">
+						<form id="plus_campus_form" enctype="multipart/form-data" class="form-horizontal"
+						method="post" action="../campus/addCampus?server=56846a8a2fee49d14901d39cc48b8b2a">
 							<div class="form-group">
 								<label for="plus_campus_name" class="col-sm-2 control-label">店铺名称</label>
 								<div class="col-sm-10">
 									<input type="text" class="form-control" id="plus_campus_name" name="campusName" placeholder="店铺名称">
 								</div>
 							</div>
-							<!-- <div class="form-group">
-								<label class="control-label col-md-4" for="imgUrl">店铺主图片</label>
-									<div class="col-md-8">
-									<input type="file" id="imgUrl" name="myfile"
-									placeholder="Choose Picture">
-									</div>
-							</div> -->
 							<div class="form-group">
+								<label class="control-label col-sm-2" for="imgUrl2">店铺头像</label>
+									<div class="col-sm-10">
+									    <input type="file" id="imgUrl2" name="myfile" placeholder="Choose Picture">
+									</div>
+							</div>
+							<!-- <div class="form-group">
 								<label for="plus_city_name" class="col-sm-2 control-label">城市名称</label>
 								<div class="col-sm-10">
 									<div class="dropdown">
-										<button type="button" class="dropdown-toggle btn btn-default" style="width:100%;" data-toggle="dropdown" id="plus_city_name">
-											<span id="span_plus_city_name">城市</span>
+										<button type="button" class="dropdown-toggle btn btn-default" style="width:100%;" data-toggle="dropdown" id="plus_city_name" >
+											<span id="span_plus_city_name" name="cityName">城市</span>
 											<b class="caret" style="float:right;margin-top:8px"></b>
 										</button>
 										<ul class="dropdown-menu"  style="width:100%">
@@ -109,44 +113,62 @@
 										</ul>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<div class="form-group">
 								<label for="plus_campus_address" class="col-sm-2 control-label">商家地址</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="plus_campus_address" name="campusName" placeholder="商家地址">
+									<input type="text" class="form-control" id="plus_campus_address" name="address" placeholder="商家地址">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="plus_campus_notice" class="col-sm-2 control-label">商家公告</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="plus_campus_notice" name="campusName" placeholder="商家公告">
+									<input type="text" class="form-control" id="plus_campus_notice" name="notice" placeholder="商家公告">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="plus_campus_deliver" class="col-sm-2 control-label">配送服务</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="plus_campus_deliver" name="campusName" placeholder="配送服务">
+									<input type="text" class="form-control" id="plus_campus_deliver" name="deliver" placeholder="配送服务">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="plus_open_time" class="col-sm-2 control-label">开店时间</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="plus_open_time" name="openTime"placeholder="例06:00">
+									<input type="text" class="form-control" id="plus_open_time" name="openTime" placeholder="例06:00">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="plus_close_time" class="col-sm-2 control-label">关店时间</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="plus_close_time"name="closeTimeoep" placeholder="例23:00">
+									<input type="text" class="form-control" id="plus_close_time" name="closeTime" placeholder="例23:00">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="plus_campus_minPrice" class="col-sm-2 control-label">起送价</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="plus_campus_minPrice" name="minPrice" placeholder="最低起送价">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="plus_campus_deliveryFee" class="col-sm-2 control-label">配送费</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="plus_campus_deliveryFee" name="deliveryFee" placeholder="配送费">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="plus_campus_reachTime" class="col-sm-2 control-label">送达时间</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="plus_campus_reachTime" name="reachTime" placeholder="送达时间(分钟)">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="plus_status" class="col-sm-2 control-label">状态</label>
 								<div class="col-sm-10">
 									<!-- <input type="text" class="form-control" id="plus_status" placeholder="状态"> -->
-									<div class="dropdown">
-										<button type="button" class="dropdown-toggle btn btn-default" style="width:100%;" data-toggle="dropdown" id="plus_status">
-											<span id="span_plus_status">状态</span>
+									<!-- <div class="dropdown">
+										<button type="button" class="dropdown-toggle btn btn-default" style="width:100%;" data-toggle="dropdown" id="plus_status" >
+											<span id="span_plus_status" name="status">状态</span>
 											<b class="caret" style="float:right;margin-top:8px"></b>
 										</button>
 										<ul class="dropdown-menu"  style="width:100%">
@@ -157,13 +179,20 @@
 												<a role="menuitem" tabindex="-1" style="text-align:center" href="javascript:void(0)">休息</a>
 											</li>
 										</ul>
+									</div> -->
+									<div class="col-md-8">
+										<label class="radio inline"> <input type="radio"
+												name="status" id="status" value="1" checked> 营业
+										</label><label class="radio inline margin-left6"> <input type="radio"
+												name="status" id="status2" value="0"> 休息
+										</label>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="plus_custom_service" class="col-sm-2 control-label">客服电话</label>
 								<div class="col-sm-10">
-									<input type="number" class="form-control" id="plus_custom_service" placeholder="客服电话">
+									<input type="number" class="form-control" id="plus_custom_service" name ="customService" placeholder="客服电话">
 								</div>
 							</div>
 							<div class="modal-footer">
@@ -218,20 +247,26 @@
 						<h4 class="modal-title" id="myEditModalLabel">修改店铺</h4>
 					</div>
 					<div class="modal-body">
-						<form id="edit-campus-form" class="form-horizontal" role="form">
+						<form id="edit_campus_form"  enctype="multipart/form-data" class="form-horizontal" role="form" method="post" action="../campus/updateCampus?server=56846a8a2fee49d14901d39cc48b8b2a">
 							<div class="form-group none">
 								<label for="edit_campus_id" class="col-sm-2 control-label">店铺ID</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_campus_id" placeholder="店铺ID" readonly>
+									<input type="text" class="form-control" id="edit_campus_id" name="campusId" placeholder="店铺ID" readonly>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="edit_campus_name" class="col-sm-2 control-label">店铺名称</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_campus_name" placeholder="店铺名称">
+									<input type="text" class="form-control" id="edit_campus_name" name="campusName" placeholder="店铺名称">
 								</div>
 							</div>
 							<div class="form-group">
+								<label class="control-label col-sm-2" for="imgUrl3">店铺头像</label>
+									<div class="col-sm-10">
+									    <input type="file" id="imgUrl3" name="myfile" placeholder="Choose Picture">
+									</div>
+							</div>
+							<!-- <div class="form-group">
 								<label for="edit_city_name" class="col-sm-2 control-label">城市名称</label>
 								<div class="col-sm-10">
 									<div class="dropdown">
@@ -244,42 +279,60 @@
 										</ul>
 									</div>
 								</div>
-							</div>
+							</div> -->
 							<div class="form-group">
 								<label for="edit_campus_address" class="col-sm-2 control-label">商家地址</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_campus_address" name="campusName" placeholder="商家地址">
+									<input type="text" class="form-control" id="edit_campus_address" name="address" placeholder="商家地址">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="edit_campus_notice" class="col-sm-2 control-label">商家公告</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_campus_notice" name="campusName" placeholder="商家公告">
+									<input type="text" class="form-control" id="edit_campus_notice" name="notice" placeholder="商家公告">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="edit_campus_deliver" class="col-sm-2 control-label">配送服务</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_campus_deliver" name="campusName" placeholder="配送服务">
+									<input type="text" class="form-control" id="edit_campus_deliver" name="deliver" placeholder="配送服务">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="edit_open_time" class="col-sm-2 control-label">开店时间</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_open_time" placeholder="开店时间">
+									<input type="text" class="form-control" id="edit_open_time" name="openTime" placeholder="开店时间">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="edit_close_time" class="col-sm-2 control-label">关店时间</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="edit_close_time" placeholder="关店时间">
+									<input type="text" class="form-control" id="edit_close_time" name="closeTime" placeholder="关店时间">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="edit_campus_minPrice" class="col-sm-2 control-label">起送价</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="edit_campus_minPrice" name="minPrice" placeholder="最低起送价">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="edit_campus_deliveryFee" class="col-sm-2 control-label">配送费</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="edit_campus_deliveryFee" name="deliveryFee" placeholder="配送费">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="edit_campus_reachTime" class="col-sm-2 control-label">送达时间</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="edit_campus_reachTime" name="reachTime" placeholder="送达时间(分钟)">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="edit_status" class="col-sm-2 control-label">状态</label>
 								<div class="col-sm-10">
 									<!-- <input type="text" class="form-control" id="edit_status" placeholder="状态"> -->
-									<div class="dropdown">
+									<!-- <div class="dropdown">
 										<button type="button" class="dropdown-toggle btn btn-default" style="width:100%;" data-toggle="dropdown" id="edit_status">
 											<span id="span_edit_status">状态</span>
 											<b class="caret" style="float:right;margin-top:8px"></b>
@@ -292,11 +345,18 @@
 												<a role="menuitem" tabindex="-1" style="text-align:center" href="javascript:void(0)">休息</a>
 											</li>
 										</ul>
+									</div> -->
+									<div class="col-md-8">
+										<label class="radio inline"> <input type="radio"
+												name="status" id="status" value="1" checked> 营业
+										</label><label class="radio inline margin-left6"> <input type="radio"
+												name="status" id="status2" value="0"> 休息
+										</label>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="edit_custom_service" class="col-sm-2 control-label">客服</label>
+								<label for="edit_custom_service" class="col-sm-2 control-label">客服电话</label>
 								<div class="col-sm-10">
 									<input type="text" class="form-control" id="edit_custom_service" placeholder="客服">
 								</div>
@@ -350,6 +410,17 @@
 		var $editButton = $("#edit");
 		var $deleteButton = $("#delete");
 		var $addCityButton = $("#add_city");
+
+		var adminType = getCookie("type");
+		var campusId = getCookie('campusId');
+
+		if(adminType==1){
+			$("#plus").show();
+			$("#delete").show();
+		}else if(adminType==0){
+			$("#plus").hide();
+			$("#delete").hide();
+		}
 	</script>
 	<script>
 		//可供调用方法
@@ -466,6 +537,9 @@
 				$("#span_edit_city_name").text(array[0].cityName);
 				$("#edit_open_time").val(array[0].openTime);
 				$("#edit_close_time").val(array[0].closeTime);
+				$("#edit_campus_minPrice").val(array[0].min_price);
+				$("#edit_campus_reachTime").val(array[0].reach_time);
+				$("#edit_campus_deliveryFee").val(array[0].delivery_fee);
 				//$("#imgUrl").val("array[0].imgUrl");
 				if(array[0].status==0){
 					$("#span_edit_status").text("休息");
@@ -497,68 +571,56 @@
 		});
 
 		//Modal“提交更改”按钮监听
-		//Post请求并静态刷新表格数据
+		//Post请求并静态刷新表格数据e
 		function plusSubmit(){
 			var campusName = $("#plus_campus_name").val().trim();
-			var cityName = $("#span_plus_city_name").text().trim();
+			//var cityName = $("#span_plus_city_name").text().trim();
 			var address = $("#plus_campus_address").val().trim();
 			var notice = $("#plus_campus_notice").val().trim();
 			var deliver = $("#plus_campus_deliver").val().trim();
 			var openTime = $("#plus_open_time").val().trim();
 			var closeTime = $("#plus_close_time").val().trim();
-			var status = $("#span_plus_status").text().trim();
+			//var status = $("#span_plus_status").text().trim();
 			var customService = $("#plus_custom_service").val().trim();
+			var $campusCommitDataForm=document.getElementById("plus_campus_form");
 
 			//判空
-			if(!campusName||!cityName||!openTime||!closeTime||!status||!customService){
+			if(!campusName||!openTime||!closeTime||!customService){
 				alert("对不起，请补填未填写的地方！");
 				return;
 			}
 
 			//alert(cityName);
 			//status值是“休息”或“营业”，要转换成0或1
-			if(status=="休息"){
-				status = 0;
-			}else if(status == "营业"){
-				status=1;
-			}
+			//if(status=="休息"){
+			//	status = 0;
+			//}else if(status == "营业"){
+			//	status=1;
+			//}
 
-			$.post("../campus/addCampus",{
-				campusName : campusName,
-				cityName : cityName,
-				address : address,
-				notice : notice,
-				deliver : deliver,
-				openTime : openTime,
-				closeTime : closeTime,
-				status : status,
-				customService : customService,
-				server:"56846a8a2fee49d14901d39cc48b8b2a"
-			},function(data){
-				$("#plusModal").modal('hide');
-				$table.bootstrapTable('refresh',{client:true});
-			},"json");
+			$campusCommitDataForm.submit();
 		}
 
 		function editSubmit(){
 			var campusId = $("#edit_campus_id").val().trim();
 			var campusName = $("#edit_campus_name").val().trim();
-			var cityName = $("#span_edit_city_name").text().trim();
+			//var cityName = $("#span_edit_city_name").text().trim();
 			var address = $("#edit_campus_address").val().trim();
 			var notice = $("#edit_campus_notice").val().trim();
 			var deliver = $("#edit_campus_deliver").val().trim();
 			var openTime = $("#edit_open_time").val().trim();
 			var closeTime = $("#edit_close_time").val().trim();
-			var status = $("#span_edit_status").text().trim();
+			//var status = $("#span_edit_status").text().trim();
 			var customService = $("#edit_custom_service").val().trim();
+			var $campusCommitDataForm=document.getElementById("edit_campus_form");
 
 			//判空
-			if(!campusId||!campusName||!cityName||!openTime||!closeTime||!status||!customService){
-				alert("对不起，请补填未填写的地方！");
-				return;
-			}
+			//if(!campusName||!openTime||!closeTime||!customService){
+			//	alert("对不起，请补填未填写的地方！");
+			//	return;
+			//}
 
-			if(status=="休息"){
+			/*if(status=="休息"){
 				status = 0;
 			}else if(status == "营业"){
 				status=1;
@@ -578,7 +640,8 @@
 			},function(data){
 				$("#editModal").modal('hide');
 				$table.bootstrapTable('refresh',{client:true});
-			},"json");
+			},"json");*/
+			$campusCommitDataForm.submit();
 		}
 
 		function deleteSubmit(){
@@ -617,6 +680,13 @@
 
 
 			},"json");
+		}
+
+		function homeImageFormatter(value, row, index){
+			if(value==""||!value){
+			return "暂无图片";
+			}
+			return "<img height='50' width='100' alt='图片加载中' src="+value+">";
 		}
 	</script>
 	<script>

@@ -3,8 +3,6 @@ package com.changyu.foryou.mapper;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.changyu.foryou.model.Food;
 import com.changyu.foryou.model.FoodWithSales;
 import com.changyu.foryou.model.ShortFood;
@@ -56,4 +54,6 @@ public interface FoodMapper {
 	String getFoodHomeImage(Map<String, Object> paramMap);
 
 	String getDetailImg(Map<String, Object> paramMap);   //获取食品详情图片
+	
+	Integer getCampusAllFoodCount(String campusId);
 }

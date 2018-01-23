@@ -15,23 +15,29 @@ import com.changyu.foryou.service.FoodService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.Md5;
 
-
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.security.auth.message.callback.PrivateKeyCallback.IssuerSerialNumRequest;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/campus")
@@ -162,7 +168,7 @@ public class CampusController {
      */
     @RequestMapping("/getCampusById")
     public @ResponseBody
-    Map<String, Object> getCampusById(@RequestParam Integer campusId) {
+    Map<String, Object> getCampusById(@RequestParam String campusId) {
         Map<String, Object> map = new HashMap<String, Object>();
         try {
             Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -188,10 +194,11 @@ public class CampusController {
      */
     @RequestMapping("/getCampusById2")
     public @ResponseBody
-    JSONArray getCampusById2(@RequestParam Integer campusId) {
+    JSONArray getCampusById2(@RequestParam String campusId) {
 
     	try 
         {
+    		System.out.println("getCampusById2 enter:" + campusId);
             Map<String, Object> paramMap = new HashMap<String, Object>();
             paramMap.put("campusId", campusId);
             Campus campus = campusService.getCampusById(paramMap);  
@@ -312,30 +319,85 @@ public class CampusController {
      * @param closeTime
      * @return
      * @throws ParseException
+     * @throws IOException 
      */
-    @RequestMapping("addCampus")
-    public @ResponseBody
-    Map<String, Object> addCampus(@RequestParam String campusName, @RequestParam String cityName, @RequestParam String address, @RequestParam String notice, @RequestParam String deliver, @RequestParam String openTime, @RequestParam String closeTime, @RequestParam Short status, @RequestParam String customService) throws ParseException {
+    @RequestMapping("/addCampus")
+    public String addCampus(@RequestParam MultipartFile[] myfile,HttpServletRequest request){
         Map<String, Object> responseMap;
         Map<String, Object> paramMap = new HashMap<String, Object>();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        Date openTimeDate = sdf.parse(openTime);
-        Date closeTimeDate = sdf.parse(closeTime);
-
-        paramMap.put("campusId", null);
-        paramMap.put("campusName", campusName);
-        paramMap.put("cityId", campusService.getCityByName(cityName).getCityId());
-        paramMap.put("address", address);
-        paramMap.put("notice", notice);
-        paramMap.put("deliver", deliver);
-        paramMap.put("openTime", openTimeDate);
-        paramMap.put("closeTime", closeTimeDate);
-        paramMap.put("status", status);                    //默认开启校区
-        paramMap.put("customService", customService);
-
-        responseMap = campusService.addCampus(paramMap);
-        return responseMap;
+        System.out.println("addCampus enter");
+        
+        String campusName = request.getParameter("campusName"); 
+        String cityName = "南京" ;
+        String address = request.getParameter("address"); 
+        String notice = request.getParameter("notice"); 
+        String deliver = request.getParameter("deliver"); 
+        String openTime = request.getParameter("openTime"); 
+        String closeTime = request.getParameter("closeTime");
+        String status = request.getParameter("status");//1为营业，0为休息
+        String customService = request.getParameter("customService");
+        String minPrice = request.getParameter("minPrice");
+        String deliveryFee = request.getParameter("deliveryFee");
+        String reachTime = request.getParameter("reachTime");
+        
+        try{
+	        String realPath = request.getSession().getServletContext().getRealPath("/");
+	
+	        realPath = realPath.concat("JiMuImage/shop/");
+	        
+	        List<String> imageUrl = new ArrayList<String>();
+	        for (MultipartFile file : myfile) {
+	            if (file.isEmpty()) {
+	                System.out.println("文件未上传");
+	                imageUrl.add(null);
+	            } else 
+	            {
+	                String contentType = file.getContentType();
+	                System.out.println("contentType:" + contentType);
+	                if (contentType.startsWith("image"))
+	                {
+	                    String newFileName = new Date().getTime() + "" + new Random().nextInt() + ".jpg";
+	                    FileUtils.copyInputStreamToFile(file.getInputStream(),new File(realPath, newFileName)); // 写文件
+	                    imageUrl.add(Constants.localIp + "/shop/" + newFileName);
+	                }
+	            }
+	        }
+	
+	        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	        Date openTimeDate = sdf.parse(openTime);
+	        Date closeTimeDate = sdf.parse(closeTime);
+	        
+	        Calendar calendar=Calendar.getInstance();
+	
+	        paramMap.put("campusId", String.valueOf(calendar.getTimeInMillis()));
+	        paramMap.put("campusName", campusName);
+	        paramMap.put("cityId", campusService.getCityByName(cityName).getCityId());
+	        paramMap.put("address", address);
+	        paramMap.put("notice", notice);
+	        paramMap.put("deliver", deliver);
+	        paramMap.put("openTime", openTimeDate);
+	        paramMap.put("closeTime", closeTimeDate);
+	        paramMap.put("status", status);   
+	        paramMap.put("sales", 0);//默认开启校区
+	        paramMap.put("pic_url", imageUrl.get(0));   
+	        paramMap.put("customService", customService);
+	        paramMap.put("min_price", minPrice);
+	        paramMap.put("delivery_fee", deliveryFee);
+	        paramMap.put("reach_time", reachTime);
+	
+	        int flag = campusService.addCampus(paramMap);
+	        
+	        
+	        if (flag != -1 && flag != 0) 
+	        {
+	            return "redirect:/pages/campus.html";
+	        }
+        }
+        catch (Exception e)
+        {
+        	return "redirect:/pages/uploadError.html";
+        }
+        return "redirect:/pages/campus.html";
     }
 
     /**
@@ -411,34 +473,81 @@ public class CampusController {
     }
 
     @RequestMapping("updateCampus")
-    @ResponseBody
-    public Map<String, Object> updateCampus(@RequestParam String campusId, @RequestParam String campusName, @RequestParam String cityName, @RequestParam String address, @RequestParam String notice, @RequestParam String deliver, @RequestParam String openTime, @RequestParam String closeTime, @RequestParam Short status, @RequestParam String customService) {
+    public String updateCampus(@RequestParam MultipartFile[] myfile,HttpServletRequest request) throws IOException, ParseException {
         //管理端这些值都要传过来，传之前判空
         Map<String, Object> responseMap = new HashMap<String, Object>();
         Map<String, Object> paramMap = new HashMap<String, Object>();
+        
+        String campusId = request.getParameter("campusId"); 
+        String campusName = request.getParameter("campusName"); 
+        String address = request.getParameter("address"); 
+        String notice = request.getParameter("notice"); 
+        String deliver = request.getParameter("deliver"); 
+        String openTime = request.getParameter("openTime"); 
+        String closeTime = request.getParameter("closeTime");
+        String status = request.getParameter("status");//1为营业，0为休息
+        String customService = request.getParameter("customService");
+        String minPrice = request.getParameter("minPrice");
+        String deliveryFee = request.getParameter("deliveryFee");
+        String reachTime = request.getParameter("reachTime");
+        
+        String realPath = request.getSession().getServletContext().getRealPath("/");
+
+        realPath = realPath.concat("JiMuImage/shop/");
+        
+        System.out.println("openTime:" + openTime);
+        System.out.println("closeTime:" + closeTime);
+        
+        List<String> imageUrl = new ArrayList<String>();
+        for (MultipartFile file : myfile) {
+            if (file.isEmpty()) {
+                System.out.println("文件未上传");
+                imageUrl.add(null);
+            } else 
+            {
+                String contentType = file.getContentType();
+
+                if (contentType.startsWith("image"))
+                {
+                    String newFileName = new Date().getTime() + "" + new Random().nextInt() + ".jpg";
+                    FileUtils.copyInputStreamToFile(file.getInputStream(),new File(realPath, newFileName)); // 写文件
+                    imageUrl.add(Constants.localIp + "/shop/" + newFileName);
+                }
+            }
+        }
+
+
+        paramMap.put("campusId", campusId);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Date openTimeDate = sdf.parse(openTime);
+        Date closeTimeDate = sdf.parse(closeTime);
 
         paramMap.put("campusId", campusId);
         paramMap.put("campusName", campusName);
-        paramMap.put("cityId", campusService.getCityByName(cityName).getCityId());
+        paramMap.put("cityId", campusService.getCityByName("南京").getCityId());
         paramMap.put("address", address);
         paramMap.put("notice", notice);
         paramMap.put("deliver", deliver);
-        paramMap.put("openTime", openTime);
-        paramMap.put("closeTime", closeTime);
-        paramMap.put("status", status);
+        paramMap.put("openTime", openTimeDate);
+        paramMap.put("closeTime", closeTimeDate);
+        paramMap.put("status", status); //默认开启校区
+        if(imageUrl.get(0) != null)
+        {
+        	paramMap.put("pic_url", imageUrl.get(0));   
+        }
         paramMap.put("customService", customService);
+        paramMap.put("min_price", minPrice);
+        paramMap.put("delivery_fee", deliveryFee);
+        paramMap.put("reach_time", reachTime);
 
         Integer result = campusService.updateCampus(paramMap);
 
         if (result != 0 && result != -1) {
-            responseMap.put(Constants.STATUS, Constants.SUCCESS);
-            responseMap.put(Constants.MESSAGE, "更新校区成功！");
+        	return "redirect:/pages/campus.html";
         } else {
-            responseMap.put(Constants.STATUS, Constants.FAILURE);
-            responseMap.put(Constants.MESSAGE, "更新校区失败！");
+            return responseMap.put(Constants.MESSAGE, "更新店铺信息失败！").toString();
         }
 
-        return responseMap;
     }
 
 
@@ -497,14 +606,14 @@ public class CampusController {
 			node.put("seller_name", campus.getCampusName());
 			node.put("sales", String.valueOf(campus.getSales()));
 			node.put("min_price", String.valueOf(campus.getMin_price()));
+			node.put("delivery_fee", String.valueOf(campus.getDelivery_fee()));
 			node.put("reach_time", String.valueOf(campus.getReach_time()));
 			node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
-			node.put("distanceFormat", "10000");//设置店铺与买家地址的距离，先写死
 			node.put("pic_url", campus.getPic_url());
 			node.put("is_rest", String.valueOf(campus.getStatus()==1 ? 0:1));//status 为营业
+			node.put("overall", "5");//综合评分
 			jsonarray.add(node);
 		}
-		System.out.println(jsonarray.toString());
 		Map<String,String> data = new HashMap<String, String>();
 		data.put("State", "Success");
 		data.put("data", jsonarray.toString());				

@@ -2,7 +2,7 @@ package com.changyu.foryou.model;
 
 public class ShortFood {
 	private Long foodId;
-    private Integer campusId;
+    private String campusId;
     
 	private String name;
 
@@ -74,11 +74,11 @@ public class ShortFood {
 		this.saleNumber = saleNumber;
 	}
 
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 

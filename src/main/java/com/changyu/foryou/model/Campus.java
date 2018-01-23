@@ -4,7 +4,7 @@ import java.sql.Time;
 
 
 public class Campus {
-	private Integer campusId;
+	private String campusId;
 
 	private String campusName;
 
@@ -81,11 +81,11 @@ public class Campus {
 		this.reach_time = reach_time;
 	}
 
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 

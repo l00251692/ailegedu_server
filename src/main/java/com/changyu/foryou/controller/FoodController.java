@@ -284,7 +284,7 @@ public class FoodController {
     @RequestMapping("deleteFood")
     public @ResponseBody
     Map<String, Object> deleteFood(@RequestParam String foodId,
-                                   @RequestParam Integer campusId) {
+                                   @RequestParam String campusId) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         try {
@@ -412,7 +412,7 @@ public class FoodController {
      */
     @RequestMapping("/getAllFoods")
     public @ResponseBody
-    List<Food> getAllFoods(@RequestParam Integer campusId) {
+    List<Food> getAllFoods(@RequestParam String campusId) {
         List<Food> foods = new ArrayList<Food>();
 
         try {
@@ -683,14 +683,13 @@ public class FoodController {
      */
     @RequestMapping(value = "updateFoodCategory")
     public @ResponseBody
-    Map<String, Object> updateFoodFristCategory(@RequestParam Integer campusId,
+    Map<String, Object> updateFoodFristCategory(@RequestParam String campusId,
                                                 Integer categoryId, @RequestParam String categoryName,
                                                 @RequestParam Short isOpen, Integer status) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         try {
             FoodCategory foodCategory = new FoodCategory();
-            foodCategory.setCategoryId(categoryId);
             foodCategory.setCategory(categoryName);
             foodCategory.setTag((short) 1);
             foodCategory.setParentId(0);
@@ -702,6 +701,7 @@ public class FoodController {
             paramMap.put("campusId", campusId);
             int flag = 0;
             if (categoryId != null) {
+            	foodCategory.setCategoryId(categoryId);
                 // 查询是否已存在该分类
                 FoodCategory foodCategory2 = foodService
                         .selectCategoryByPrimaryKey(paramMap);
@@ -719,6 +719,8 @@ public class FoodController {
                     }
                 }
             } else { // 新增商品
+            	int count = foodService.getAllCategoryCountByCampus(campusId);
+            	foodCategory.setCategoryId(count+1);
                 flag = foodService.insertCategorySelective(foodCategory);
             }
             if (flag == 0 || flag == -1) {
@@ -806,7 +808,7 @@ public class FoodController {
      */
     @RequestMapping("/deleteFoodCategory")
     public @ResponseBody
-    Map<String, Object> deleteFoodCategory(@RequestParam Integer campusId,
+    Map<String, Object> deleteFoodCategory(@RequestParam String campusId,
                                            @RequestParam String categoryIds) {
         Map<String, Object> map = new HashMap<>();
 
@@ -853,7 +855,7 @@ public class FoodController {
     public String updateFoods(@RequestParam MultipartFile[] myfile,
                               HttpServletRequest request) {
         try {
-            Long foodId = Long.valueOf(request.getParameter("foodId")); // 获取食品id
+            
             String price = request.getParameter("price").replaceAll(" ", "");; // 获取价格，去掉空格
             String name = request.getParameter("foodName"); // 获取食品名称
             /*Float discountPrice = Float.valueOf(request
@@ -876,8 +878,7 @@ public class FoodController {
             /*String temp1 = request.getParameter("primeCost"); // 获取成本价*/
             String temp1 = null;
             String temp2 = request.getParameter("foodCount"); // 获取哭尊
-            Integer campusId = Integer
-                    .valueOf(request.getParameter("campusId")); // 获取店铺
+            String campusId = request.getParameter("campusId"); // 获取店铺
             /*if (temp1 != null && !temp1.trim().equals("")) {
                 primeCost = Float.valueOf(request.getParameter("primeCost"));
             }*/
@@ -909,6 +910,12 @@ public class FoodController {
                     }
                 }
             }
+            Long foodId = 0l; // 获取食品id
+            if(request.getParameter("foodId") != null && !request.getParameter("foodId").isEmpty())
+            {
+            	foodId = Long.valueOf(request.getParameter("foodId"));
+            }
+      
             Food food = new Food(campusId, foodId, name, price, discountPrice,
                     imageUrl.get(0), null, status, foodFlag, isDiscount,
                     categoryId, primeCost);
@@ -916,12 +923,15 @@ public class FoodController {
             food.setFoodCount(foodCount);
             food.setIsFullDiscount(isFullDiscount);
             Map<String, Object> paramMap = new HashMap<String, Object>();
-            paramMap.put("campusId", campusId);
             paramMap.put("foodId", foodId);
+            paramMap.put("campusId", campusId);
+            
             Food orignFood = foodService.selectFoodByPrimaryKey(paramMap); // 查看该食品是否存在
             int flag = 0;
             if (orignFood == null) {
                 // 不存在即添加
+            	int count = foodService.getCampusAllFoodCount(campusId);
+            	food.setFoodId(new Long((long)count+1));
                 flag = foodService.insertFoodSelective(food);
 
             } else {
@@ -945,7 +955,6 @@ public class FoodController {
                     return "redirect:/pages/food.html";
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             return "redirect:/pages/uploadError.html";
@@ -1322,7 +1331,7 @@ public class FoodController {
      */
     @RequestMapping("getAllFoodCategories4Client")
     public @ResponseBody
-    JSONArray getAllFoodCategories4Client(@RequestParam Long campusId) {
+    JSONArray getAllFoodCategories4Client(@RequestParam String campusId) {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("campusId", campusId);
 
@@ -1341,7 +1350,7 @@ public class FoodController {
     @RequestMapping("cancelRecommend")
     public @ResponseBody
     Map<String, Object> cancelRecommend(@RequestParam Long foodId,
-                                        @RequestParam Integer campusId) {
+                                        @RequestParam String campusId) {
         Map<String, Object> responseMap = new HashMap<String, Object>();
         Map<String, Object> paramMap = new HashMap<String, Object>();
 
@@ -1405,7 +1414,7 @@ public class FoodController {
      */
     @RequestMapping("addFoodCountById")
     @ResponseBody
-    public Map<String, Object> addFoodCountById(@RequestParam Integer campusId,
+    public Map<String, Object> addFoodCountById(@RequestParam String campusId,
                                                 @RequestParam Integer foodId, @RequestParam Integer addCount) {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         Map<String, Object> responseMap = new HashMap<String, Object>();

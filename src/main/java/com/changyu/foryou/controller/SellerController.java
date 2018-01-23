@@ -53,6 +53,7 @@ public class SellerController {
 				&& !campusAdmin.trim().equals("")
 				&& !password.trim().equals("")) {
 			Sellers sellers = sellerService.selectByCampusAdmin(campusAdmin);
+			System.out.println("sellers111111111");
 			if (sellers != null) {
 				if (sellers.getPassword().equals(Md5.GetMD5Code(password))) {
 					map.put(Constants.STATUS, Constants.SUCCESS);
@@ -136,7 +137,7 @@ public class SellerController {
 				Sellers seller = new Sellers();
 				seller.setCampusAdmin(campusAdmin);
 				seller.setPassword(passwordMd5);
-				seller.setCampusId(campusId);
+				seller.setCampusId(String.valueOf(campusId));
 				sellerService.addASeller(seller);	
 				map.put(Constants.STATUS, Constants.SUCCESS);
 				map.put(Constants.MESSAGE, "注册成功");

@@ -75,7 +75,7 @@
 					<thead>
 						<tr>
 							<th data-field="state" data-checkbox="true"></th>
-							<th data-align="left" data-field="foodId" data-sortable="true">商品Id</th>
+							<th data-align="left" data-field="foodId" data-sortable="true" display="none">商品Id</th>
 							<th data-align="left" data-field="name">名&nbsp;&nbsp;&nbsp;&nbsp;称</th>
 							<th data-align="left" data-field="message" data-sortable="true" data-visible="false">商品介绍</th>
 							<th data-align="left" data-field="price" data-sortable="true">商品价格</th>
@@ -122,7 +122,7 @@
 								<input type="text" id="campusId2" name="campusId" readonly="readonly">
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group" style="display:none">
 							<label class="control-label col-md-4" for="foodId2">商品Id</label>
 							<div class="col-md-8">
 								<input type="text" id="foodId2" name="foodId"
@@ -847,12 +847,12 @@ $("#commitFoodDataButton").on("click",function(){
         var $foodCommitDataForm=document.getElementById("dataCommit");
 
         console.log(categoryId);
-        if(!(/^[0-9]+$/.test(categoryId))||!(/[0-9]+$/.test(foodId))){
+        /*if(!(/^[0-9]+$/.test(categoryId))||!(/[0-9]+$/.test(foodId))){
         	alert("商品id和上级分类id只可以是数字");
         	return;
         }
 
-       /* if(!(/^\d+(\.\d{1,2})?$/).test(price)){
+        if(!(/^\d+(\.\d{1,2})?$/).test(price)){
         	alert("商品单价格式有问题,检查后重新输入。");
         	return;
         }*/

@@ -9,7 +9,7 @@ public class Sellers {
 	
 	private Short type;  //商户类型
 	
-	private Integer campusId; //店铺ID
+	private String campusId; //店铺ID
 	
 	private Date lastLoginDate;
 	
@@ -40,11 +40,11 @@ public class Sellers {
 		this.type = type;
 	}
 
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 

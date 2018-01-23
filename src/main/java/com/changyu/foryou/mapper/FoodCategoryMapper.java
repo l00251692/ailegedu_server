@@ -35,5 +35,7 @@ public interface FoodCategoryMapper {
 	
 	int getAllCategoryCount();
 	
+	int getAllCategoryCountByCampus(String campusId);
+	
 	Integer addCategoryWhenAddCampus(Map<String, Object> paramMap);
 }

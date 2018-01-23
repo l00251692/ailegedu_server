@@ -6,7 +6,7 @@
 		<id column="campus_admin" property="campusAdmin" jdbcType="VARCHAR" />
 		<result column="password" property="password" jdbcType="VARCHAR" />
 		<result column="type" property="type" jdbcType="SMALLINT" />
-		<result column="campus_id" property="campusId" jdbcType="INTEGER" />
+		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
 		<result column="last_login_date" property="lastLoginDate"
 			jdbcType="DATE" />
 	</resultMap>
@@ -53,7 +53,7 @@
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="campusId!=null">
-				#{campusId,jdbcType=INTEGER},
+				#{campusId,jdbcType=VARCHAR},
 			</if>
 			<if test="type!=null">
 				#{type,jdbcType=SMALLINT},

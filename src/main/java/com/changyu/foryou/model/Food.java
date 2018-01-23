@@ -40,7 +40,7 @@ public class Food {
 	
 	//private List<FoodSpecial> foodSpecial;
 	
-	private Integer campusId;
+	private String campusId;
 	
 	private Short toHome;
 	
@@ -59,7 +59,7 @@ public class Food {
 	public Food(){
 		
 	}
-	public Food(Integer campusId,Long foodId2, String name2, String price2, Float discountPrice2, String imageurl, String info, Short status2, String foodFlag2, Short isDiscount2, Integer categoryId2, Float primeCost2){
+	public Food(String campusId2,Long foodId2, String name2, String price2, Float discountPrice2, String imageurl, String info, Short status2, String foodFlag2, Short isDiscount2, Integer categoryId2, Float primeCost2){
 		foodId=foodId2;
 		name=name2;
 		price=price2;
@@ -73,7 +73,7 @@ public class Food {
 		primeCost=primeCost2;
 		modifyTime=new Date();
 		saleNumber=0l;
-		this.campusId=campusId;
+		this.campusId=campusId2;
 	}
 	public Food(Long foodId2, String name2, String price2,
 			String discountPrice2, String grade2, String imgUrl2, String info2,
@@ -275,10 +275,10 @@ public class Food {
 	public void setCommentNumber(Long commentNumber) {
 		this.commentNumber = commentNumber;
 	}
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 	public Short getToHome() {

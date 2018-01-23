@@ -130,7 +130,7 @@ public class FoodServiceImpl implements FoodService{
 	public Integer getFoodSpecialCount(Map<String,Object> paramMap) {
 		return foodSpecialMapper.getFoodSpecialCount(paramMap);
 	}
-
+	
 	public String getSpecialName(Map<String,Object> paramMap) {		
 		return foodSpecialMapper.getSpecialName(paramMap);
 	}
@@ -224,6 +224,11 @@ public class FoodServiceImpl implements FoodService{
 		
 		return foodCategoryMapper.getAllCategoryCount();
 	}
+	
+	public Integer getAllCategoryCountByCampus(String campusId)
+	{
+		return foodCategoryMapper.getAllCategoryCountByCampus(campusId);
+	}
 
 	@Override
 	public Integer uploadHomeFoodByFoodId(Map<String, Object> paramMap) {
@@ -273,6 +278,10 @@ public class FoodServiceImpl implements FoodService{
 	@Override
 	public String getDetailImg(Map<String, Object> paramMap) {
 		return foodMapper.getDetailImg(paramMap);
+	}
+	
+	public Integer getCampusAllFoodCount(String campusId) {
+		return foodMapper.getCampusAllFoodCount(campusId);
 	}
 	
 }

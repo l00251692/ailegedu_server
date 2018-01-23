@@ -26,7 +26,7 @@ public interface CampusService {
 	
 	Integer updateCampusAdmin(Map<String, Object> paramMap);
 	
-	Map<String,Object> addCampus(Map<String, Object> paramMap);
+	Integer addCampus(Map<String, Object> paramMap);
 
 	Campus getCampus(Map<String, Object> paramMap);      //从订单信息里面获取校区信息
 	

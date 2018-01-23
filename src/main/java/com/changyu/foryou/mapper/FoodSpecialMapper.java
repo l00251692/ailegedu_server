@@ -34,4 +34,7 @@ public interface FoodSpecialMapper {
 	int changeFoodCount(Map<String, Object> paramMap);
 
 	Integer getFoodSpecialCount(Map<String, Object> paramMap);
+	
+	
+	
 }
