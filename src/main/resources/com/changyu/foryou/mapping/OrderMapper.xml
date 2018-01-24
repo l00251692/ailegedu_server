@@ -4,7 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.changyu.foryou.model.Order">
 		<id column="order_id" property="orderId" jdbcType="BIGINT" />
 		<id column="user_id" property="userId" jdbcType="VARCHAR" />
-		<result column="campus_id" property="campusId" jdbcType="INTEGER" />
+		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="status" property="status" jdbcType="SMALLINT" />
 		<result column="goods" property="goods" jdbcType="LONGVARCHAR" />
@@ -39,17 +39,19 @@
 
 	<!-- 配送员配送界面model -->
 	<resultMap id="DeliverOrderMap" type="com.changyu.foryou.model.DeliverOrder">
-		<id column="together_id" property="togetherId" jdbcType="VARCHAR" />
-		<result column="nickname" property="nickName" jdbcType="VARCHAR" />
-		<result column="custome_phone" property="customePhone"
-			jdbcType="VARCHAR" />
-		<result column="admin_name" property="adminName" jdbcType="VARCHAR" />
-		<result column="status" property="status" jdbcType="SMALLINT" />
-		<result column="address" property="address" jdbcType="VARCHAR" />
-		<result column="reserve_time" property="reserveTime" jdbcType="VARCHAR" />
+		<id column="order_id" property="orderId" jdbcType="BIGINT" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
+		<result column="goods" property="goods" jdbcType="LONGVARCHAR" />
 		<result column="message" property="message" jdbcType="VARCHAR" />
-		<result column="together_date" property="togetherDate"
-			jdbcType="TIMESTAMP" />
+		<result column="status" property="status" jdbcType="SMALLINT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="order_price" property="orderPrice" jdbcType="FLOAT" />
+		<result column="pay_price" property="payPrice" jdbcType="FLOAT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+		<result column="detail" property="detail" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<!-- 配送员配送界面的子订单 -->
@@ -84,7 +86,7 @@
 		<result column="address" property="address" jdbcType="VARCHAR" />
 		<result column="message" property="message" jdbcType="VARCHAR" />
 		<result column="pay_way" property="payWay" jdbcType="SMALLINT" />
-		<result column="campus_id" property="campusId" jdbcType="INTEGER" />
+		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
 		<result column="total_price" property="totalPrice" jdbcType="REAL" />
 		<result column="is_full_discount" property="isFullDiscount"
 			jdbcType="TINYINT" />
@@ -221,7 +223,7 @@
 				#{userId,jdbcType=VARCHAR},
 			</if>
 			<if test="campusId != null">
-				#{campusId,jdbcType=INTEGER},
+				#{campusId,jdbcType=VARCHAR},
 			</if>
 			<if test="createTime != null">
 				#{createTime,jdbcType=TIMESTAMP},
@@ -330,7 +332,7 @@
 		orders.food_id=food.food_id and orders.campus_id = food.campus_id and
 		phone =
 		#{phoneId,jdbcType=VARCHAR} and
-		orders.campus_id=#{campusId,jdbcType=INTEGER}
+		orders.campus_id=#{campusId,jdbcType=VARCHAR}
 		and food.status=1 and
 		orders.tag = 1 and
 		orders.status = 0
@@ -523,7 +525,7 @@
 		where phone=
 		#{phone,jdbcType=VARCHAR} And food_id=
 		#{foodId,jdbcType=BIGINT} and status=0 and orders.tag=1 and
-		campus_id=#{campusId,jdbcType=INTEGER}
+		campus_id=#{campusId,jdbcType=VARCHAR}
 		order by
 		create_time DESC -->
 	</select>
@@ -572,7 +574,7 @@
 		FROM
 		together_order
 		WHERE
-		campus_id = #{campusId,jdbcType=INTEGER}
+		campus_id = #{campusId,jdbcType=VARCHAR}
 		AND tag =
 		#{tag,jdbcType=SMALLINT}
 		AND status IN (2,3)
@@ -628,7 +630,7 @@
 		orders.phone=receiver.phone_id and orders.admin_phone =
 		#{phoneId,jdbcType=VARCHAR} and orders.tag=1
 		and
-		orders.campus_id=#{campusId,jdbcType=INTEGER}
+		orders.campus_id=#{campusId,jdbcType=VARCHAR}
 		group by together_id
 		order by
 		together_date
@@ -725,7 +727,7 @@
 		left join users on orders.admin_phone=users.phone
 		WHERE orders. STATUS =#{status,jdbcType=SMALLINT}
 		AND orders.tag = 1
-		and orders.campus_id=#{campusId,jdbcType=INTEGER}
+		and orders.campus_id=#{campusId,jdbcType=VARCHAR}
 		<if test="search!=null">
 			and orders.phone like "%${search}%"
 		</if>
@@ -739,7 +741,7 @@
 		WHERE orders. STATUS =#{status,jdbcType=SMALLINT}
 		AND orders.tag = 1
 		and
-		orders.campus_id=#{campusId,jdbcType=INTEGER}
+		orders.campus_id=#{campusId,jdbcType=VARCHAR}
 		<if test="search!=null">
 			and phone like "%${search}%"
 		</if> -->
@@ -800,20 +802,20 @@
 
 	<!-- 获取某天的总订单详情和数目 -->
 	<select id="selectOrdersByDate" resultMap="DeliverOrderMap">
-		<!-- select *
-		from together_order
+		select *
+		from deliver_order
 		where
-		status !=1 and tag=1 and
-		campus_id=#{campusId,jdbcType=INTEGER}
-		<if test="date!=null">
+		status !=1 and
+		campus_id=#{campusId,jdbcType=VARCHAR}
+		<if test="createTime!=null">
 			and
-			DATE_FORMAT(together_date,"%Y-%m-%d")=#{date,jdbcType=DATE}
+			DATE_FORMAT(create_time,"%Y-%m-%d")=#{createTime,jdbcType=DATE}
 		</if>
-		<if test="date==null">
-			and DATE_FORMAT(together_date,"%Y-%m-%d")=CURDATE()
+		<if test="createTime==null">
+			and DATE_FORMAT(create_time,"%Y-%m-%d")=CURDATE()
 		</if>
 		ORDER BY
-		together_date ASC -->
+		create_time ASC
 	</select>
 
 	<!-- 获取大订单中的小订单子订单,包含成功订单 -->
@@ -997,7 +999,7 @@
 				and status=#{status}
 			</if>
 			<if test="campusId != null">
-				and campus_id=#{campusId,jdbcType=INTEGER}
+				and campus_id=#{campusId,jdbcType=VARCHAR}
 			</if>
 		</where> -->
 	</select>
@@ -1007,7 +1009,7 @@
 		together_id,custome_phone as phone,together_date,total_price as
 		price,address,charge_id
 		from together_order	
-	    where status=1 and campus_id=#{campusId,jdbcType=INTEGER} and tag=0 -->
+	    where status=1 and campus_id=#{campusId,jdbcType=VARCHAR} and tag=0 -->
 	</select>
      
 	<!-- 退款订单取消退款 -->
@@ -1079,7 +1081,7 @@
 		<!-- SELECT sum(total_price)
 		from together_order
 		<where>
-			campus_id=#{campusId,jdbcType=INTEGER} and status=4
+			campus_id=#{campusId,jdbcType=VARCHAR} and status=4
 			<if test="dateStart!=null and dateEnd!=null">
 				and together_date BETWEEN #{dateStart,jdbcType=TIMESTAMP}
 				AND #{dateEnd,jdbcType=TIMESTAMP}

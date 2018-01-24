@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class SmallOrder {
 	private Long foodId;
-	private Integer campusId;
+	private String campusId;
 	
     private Long orderId;
     
@@ -201,11 +201,11 @@ public class SmallOrder {
 		this.foodId = foodId;
 	}
 
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 	public Short getPayWay() {

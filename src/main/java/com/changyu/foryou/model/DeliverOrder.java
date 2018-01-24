@@ -5,134 +5,61 @@ import java.util.List;
 
 public class DeliverOrder {
 
-	private String togetherId;
+	private Long orderId;
+	
+	private String userName;
 
-	private String nickName;
+	private String campusId;
+	
+	private String goods;
+	
+	private String message;
+	
+	private Date createTime;
 
 	private Short status;
 
-	private Float totalPrice;
-
-	private String address;   //配送地址
-
-	private String customePhone;  
-
-	private Date togetherDate;
+	private Float orderPrice;
 	
-	private String reserveTime;
+	private Float payPrice;
+
+	private String name;   //配送地址
+
+	private String phone;  
+
+	private String address;
 	
-	private String message;
+	private String detail;
 
-	private String adminName;
 	
-	private List<DeliverChildOrder> orderList;
-
-	public String getTogetherId() {
-		return togetherId;
+	public Long getOrderId() {
+		return orderId;
 	}
 
 
-
-	public void setTogetherId(String togetherId) {
-		this.togetherId = togetherId;
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
 	}
 
 
-
-	public String getNickName() {
-		return nickName;
+	public String getUserName() {
+		return userName;
 	}
 
 
-
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 
-
-	public Short getStatus() {
-		return status;
+	public String getCampusId() {
+		return campusId;
 	}
 
 
-
-	public void setStatus(Short status) {
-		this.status = status;
+	public void setCampusId(String campusId) {
+		this.campusId = campusId;
 	}
-
-
-
-	public Float getTotalPrice() {
-		return totalPrice;
-	}
-
-
-
-	public void setTotalPrice(Float totalPrice) {
-		this.totalPrice = totalPrice;
-	}
-
-
-
-	public String getAddress() {
-		return address;
-	}
-
-
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-
-
-	public String getCustomePhone() {
-		return customePhone;
-	}
-
-
-
-	public void setCustomePhone(String customePhone) {
-		this.customePhone = customePhone;
-	}
-
-
-
-	public Date getTogetherDate() {
-		return togetherDate;
-	}
-
-
-
-	public void setTogetherDate(Date togetherDate) {
-		this.togetherDate = togetherDate;
-	}
-
-
-
-	public List<DeliverChildOrder> getOrderList() {
-		return orderList;
-	}
-
-
-
-	public void setOrderList(List<DeliverChildOrder> orderList) {
-		this.orderList = orderList;
-	}
-
-
-
-	public String getReserveTime() {
-		return reserveTime;
-	}
-
-
-
-	public void setReserveTime(String reserveTime) {
-		this.reserveTime = reserveTime;
-	}
-
 
 
 	public String getMessage() {
@@ -140,23 +67,114 @@ public class DeliverOrder {
 	}
 
 
-
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
 
-
-	public String getAdminName() {
-		return adminName;
+	public Date getCreateTime() {
+		return createTime;
 	}
 
 
-
-	public void setAdminName(String adminName) {
-		this.adminName = adminName;
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
+
+	public Short getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(Short status) {
+		this.status = status;
+	}
+
+
+	public Float getOrderPrice() {
+		return orderPrice;
+	}
+
+
+	public void setOrderPrice(Float orderPrice) {
+		this.orderPrice = orderPrice;
+	}
+
+
+	public Float getPayPrice() {
+		return payPrice;
+	}
+
+
+	public void setPayPrice(Float payPrice) {
+		this.payPrice = payPrice;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public String getPhone() {
+		return phone;
+	}
+
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+
+	public String getAddress() {
+		return address;
+	}
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+
+	public String getDetail() {
+		return detail;
+	}
+
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
+
+
+	public List<DeliverChildOrder> getOrderList() {
+		return orderList;
+	}
+
+
+	public void setOrderList(List<DeliverChildOrder> orderList) {
+		this.orderList = orderList;
+	}
+
+
+	public String getGoods() {
+		return goods;
+	}
+
+
+	public void setGoods(String goods) {
+		this.goods = goods;
+	}
+
+
+	private List<DeliverChildOrder> orderList;
+
+	
 
 
 

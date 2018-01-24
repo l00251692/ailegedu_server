@@ -491,6 +491,8 @@ public class CampusController {
         String deliveryFee = request.getParameter("deliveryFee");
         String reachTime = request.getParameter("reachTime");
         
+        System.out.println("updateCampus:customService=" + customService);
+        
         String realPath = request.getSession().getServletContext().getRealPath("/");
 
         realPath = realPath.concat("JiMuImage/shop/");

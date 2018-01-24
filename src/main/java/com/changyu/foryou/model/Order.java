@@ -5,7 +5,7 @@ import java.util.Date;
 public class Order {
     private Long orderId;
     
-    private Integer campusId;
+    private String campusId;
     
     private String userId;
 
@@ -39,11 +39,11 @@ public class Order {
 		this.orderId = orderId;
 	}
 
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 
@@ -140,7 +140,7 @@ public class Order {
     	
     }
     
-    public Order(Integer campusId2,String userId2, String goods2,Float deliveryFee2 ) {
+    public Order(String campusId2,String userId2, String goods2,Float deliveryFee2 ) {
     	campusId = campusId2;
     	userId=userId2;
     	goods = goods2;

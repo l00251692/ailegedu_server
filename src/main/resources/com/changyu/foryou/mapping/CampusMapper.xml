@@ -399,8 +399,11 @@
 		custom_service=#{customService,jdbcType=VARCHAR},
 		min_price=#{min_price,jdbcType=REAL},
 		delivery_fee=#{delivery_fee,jdbcType=REAL},
-		reach_time=#{reach_time,jdbcType=INTEGER},
-		pic_url=#{pic_url,jdbcType=VARCHAR}
+		<if test="pic_url != null">
+			pic_url=#{pic_url,jdbcType=VARCHAR},
+		</if>
+		reach_time=#{reach_time,jdbcType=INTEGER}
+		
 		where
 		campus_id=#{campusId,jdbcType=VARCHAR}
 	</update>

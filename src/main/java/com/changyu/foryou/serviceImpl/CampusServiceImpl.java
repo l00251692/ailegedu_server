@@ -191,7 +191,7 @@ public class CampusServiceImpl implements CampusService {
 	}
 
 	@Override
-	public String getCampusName(Integer campusId) {
+	public String getCampusName(String campusId) {
 		return campusMapper.getCampusName(campusId);
 	}
 

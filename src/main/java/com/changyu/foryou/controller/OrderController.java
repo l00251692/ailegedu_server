@@ -49,6 +49,8 @@ import com.changyu.foryou.tools.Constants;
 import com.pingplusplus.model.Charge;
 import com.pingplusplus.model.Refund;
 
+//import net.sf.json.JSONObject;
+
 /**
  * 处理订单控制器
  * 
@@ -170,7 +172,7 @@ public class OrderController {
 		System.out.println("createOrderWx:" + user_id + "," + seller_id + "," + goods);
 
 		try {
-			Order order = new Order(Integer.valueOf(seller_id), user_id, goods,Float.valueOf(totalPackingFee));
+			Order order = new Order(seller_id, user_id, goods,Float.valueOf(totalPackingFee));
 			Long orderId=order.getOrderId();
 
 			int flag = orderService.insertSelectiveOrder(order);
@@ -213,7 +215,7 @@ public class OrderController {
 		JSONObject node = new JSONObject();
 		float packingFee = 0.0f;
 		float orderPrice = 0.0f;
-		float cutMoneyTotal = 2.0f;
+		float cutMoneyTotal = 0.0f;
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		System.out.println("getQuasiOrderInfoWx enter:" + quasi_order_id);
@@ -266,10 +268,10 @@ public class OrderController {
 		node.put("packing_fee", String.valueOf(packingFee));
 		node.put("delivery_fee", campus.getDelivery_fee().toString());
 		
-		node.put("cut_money", String.valueOf(2)); //优惠多少
+		node.put("cut_money", String.valueOf(0)); //优惠多少
 		node.put("coupon_money", String.valueOf(0)); //优惠多少
 		node.put("cut_money_total", String.valueOf(cutMoneyTotal)); //总优惠
-		node.put("pay_price", String.valueOf(orderPrice - cutMoneyTotal)); 
+		node.put("pay_price", String.valueOf(orderPrice + campus.getDelivery_fee() - cutMoneyTotal)); 
 		node.put("order_price", String.valueOf(orderPrice));
 		
 		data.put("State", "Success");
@@ -296,7 +298,7 @@ public class OrderController {
 		JSONObject node = new JSONObject();
 		float packingFee = 0.0f;
 		float orderPrice = 0.0f;
-		float cutMoneyTotal = 2.0f;
+		float cutMoneyTotal = 0.0f;
 		
 		
 		System.out.println("updateOrderAddrWx:" + user_id + "," + quasi_order_id + "," + addr_id);
@@ -356,10 +358,10 @@ public class OrderController {
 				node.put("packing_fee", String.valueOf(packingFee));
 				node.put("delivery_fee", campus.getDelivery_fee().toString());
 				
-				node.put("cut_money", String.valueOf(2)); //优惠多少
+				node.put("cut_money", String.valueOf(0)); //优惠多少
 				node.put("coupon_money", String.valueOf(0)); //优惠多少
 				node.put("cut_money_total", String.valueOf(cutMoneyTotal)); //总优惠
-				node.put("pay_price", String.valueOf(orderPrice - cutMoneyTotal)); 
+				node.put("pay_price", String.valueOf(orderPrice + campus.getDelivery_fee() - cutMoneyTotal)); 
 				node.put("order_price", String.valueOf(orderPrice));
 				
 				map.put("State", "Success");
@@ -444,8 +446,8 @@ public class OrderController {
 			order.setDeliveryFee(campus.getDelivery_fee());
 			
 			order.setOrderPrice(orderPrice);
-			order.setPayPrice(orderPrice-2.0f);
-			order.setCutMoney(2.0f);
+			order.setPayPrice(orderPrice + campus.getDelivery_fee() -0.0f);
+			order.setCutMoney(0.0f);//TODO
 			order.setCouponMoney(0.0f);
 			order.setPackingFee(packingFee);
 
@@ -606,7 +608,7 @@ public class OrderController {
 			
 			rtnOrder.put("remark", order.getMessage());
 			rtnOrder.put("order_no", order.getOrderId());
-			rtnOrder.put("seller_phone", "10086");
+			rtnOrder.put("seller_phone", campus.getCustomService());
 			rtnOrder.put("localphone", "10010");
 
 			map.put("State", "Success");
@@ -1345,7 +1347,8 @@ public class OrderController {
 				map.put(Constants.MESSAGE, "订单列表为空，请检查phoneId和campusId是否正确。如正确，则当前没有要配送的订单");
 			}else{
 				for (DeliverOrder deliverOrder : deliverOrders) {
-					String togetherId = deliverOrder.getTogetherId();
+					//String togetherId = deliverOrder.getTogetherId();
+					String togetherId =  "1";
 					// 获取订单食品集
 					List<DeliverChildOrder> deliverChildOrders = orderService
 							.getDeliverChildOrders(togetherId);
@@ -1361,8 +1364,8 @@ public class OrderController {
 //									* deliverChildOrder.getOrderCount();
 //						}
 //					}
-					deliverOrder.setTotalPrice(priceFloat);
-					deliverOrder.setOrderList(deliverChildOrders);
+					//deliverOrder.setTotalPrice(priceFloat);
+					//deliverOrder.setOrderList(deliverChildOrders);
 				}
 
 				map.put(Constants.STATUS, Constants.SUCCESS);
@@ -1470,7 +1473,7 @@ public class OrderController {
 	@RequestMapping("/getOrdersByDate")
 	@ResponseBody
 	public Map<String, Object> getOrdersByDate(String date,
-			@RequestParam Integer campusId, Integer limit, Integer page) {
+			@RequestParam String campusId, Integer limit, Integer page) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		DecimalFormat df = new DecimalFormat("####.00");
 
@@ -1484,7 +1487,7 @@ public class OrderController {
 				date = date.replace("年", "-").replace("月", "-").replace("日", "");
 			}
 			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("date", date);
+			paramMap.put("createTime", date);
 			paramMap.put("campusId", campusId);
 
 			if (page != null && limit != null) {
@@ -1493,42 +1496,62 @@ public class OrderController {
 			}
 
 			System.out.println("getOrdersByDate:" + date);
-			System.out.println("campusId:" +campusId.toString());
-			//TODO:现在不输入日子是查出来所有的订单，后面改回去查看今天的订单
-			List<DeliverOrder> deliverOrders = orderService
-					.selectOrdersByDate(paramMap);
+			System.out.println("campusId:" +campusId);
+
+			List<DeliverOrder> deliverOrders = orderService.selectOrdersByDate(paramMap);
 			Float totalPrice = 0f;
 			System.out.println("deliverOrders size:" + String.valueOf(deliverOrders.size()));
-			for (DeliverOrder deliverOrder : deliverOrders) {
-				String togetherId = deliverOrder.getTogetherId();
-				System.out.println(JSON.toJSON(deliverOrder.getTogetherDate()));
+			for (DeliverOrder deliverOrder : deliverOrders)
+			{
+				totalPrice = totalPrice + deliverOrder.getPayPrice();
+				//JSONArray goods = new JSONArray();
+				JSONArray goodsTmp = JSON.parseArray(deliverOrder.getGoods());
+				List<DeliverChildOrder> goods  = new ArrayList<>();
+				
+				for (int i = 0; i < goodsTmp.size(); i ++)
+				{
+					JSONObject good = new JSONObject();
+					good.put("foodName",goodsTmp.getJSONObject(i).getString("goods_name"));
+					good.put("orderCount",goodsTmp.getJSONObject(i).getString("num"));
+					//good.put("select_property",goodsTmp.getJSONObject(i).getString("select_property"));
+					good.put("price",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price")));
+					//good.put("totalPrice",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
+					//goods.add((DeliverChildOrder)JSONObject.toBean(good, DeliverChildOrder.class));
+					goods.add(JSON.parseObject(JSON.toJSONString(good),DeliverChildOrder.class));
+
+				}
+				deliverOrder.setOrderList(goods);
+			}
+			
+			
+			//for (DeliverOrder deliverOrder : deliverOrders) {
+				//String togetherId = deliverOrder.getTogetherId();
+				//System.out.println(JSON.toJSON(deliverOrder.getTogetherDate()));
 				// 获取订单食品集
-				paramMap.put("togetherId", togetherId);
+				/*paramMap.put("togetherId", togetherId);
 				List<DeliverChildOrder> deliverChildOrders = orderService
 						.getAllChildOrders(paramMap);
-				Float priceFloat = 0f;
+				Float priceFloat = 0f;*/
 				
-				// 获取该笔订单总价
+				/*// 获取该笔订单总价
 				for (DeliverChildOrder deliverChildOrder : deliverChildOrders) {
-					/*if (deliverChildOrder.getIsDiscount() == 0) {
+					if (deliverChildOrder.getIsDiscount() == 0) {
 						priceFloat += deliverChildOrder.getPrice()
 								* deliverChildOrder.getOrderCount();
 					} else {
 						priceFloat += deliverChildOrder.getDiscountPrice()
 								* deliverChildOrder.getOrderCount();
-					}*/
+					}
 					priceFloat+=deliverChildOrder.getPrice();
 				}
-				totalPrice += priceFloat;
-				deliverOrder.setTotalPrice(Float.parseFloat(df
-						.format(priceFloat)));
-				deliverOrder.setOrderList(deliverChildOrders);
-			}
+				totalPrice += priceFloat;*/
+				//deliverOrder.setTotalPrice(Float.parseFloat(df.format(priceFloat)));
+				//deliverOrder.setOrderList(goods);
+			//}
 
 			resultMap.put("total_price", df.format(totalPrice));
 			resultMap.put("counts", deliverOrders.size());
-			resultMap.put("orderList", JSONArray.parse(JSON
-					.toJSONStringWithDateFormat(deliverOrders,
+			resultMap.put("orderList", JSONArray.parse(JSON.toJSONStringWithDateFormat(deliverOrders,
 							"yyyy-MM-dd HH:mm:ss")));
 
 		} catch (Exception e) {
@@ -1555,7 +1578,7 @@ public class OrderController {
 		bigOrder.setTogetherId(togetherId);
 		List<SmallOrder> orders = orderService.getOrdersById(paramMap);
 		
-		Integer campusId=orders.get(0).getCampusId();
+		String campusId=orders.get(0).getCampusId();
 		
 		String campusName=campusService.getCampusName(campusId);
 		

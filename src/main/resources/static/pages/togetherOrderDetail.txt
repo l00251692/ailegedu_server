@@ -22,7 +22,7 @@
                   <span class="info_name">顾客电话:</span><span>customePhone##</span>
                   <span class="info_name ml20">顾客地址:</span><span>customeAddress##</span>
                   <span class="info_name ml20">预约送达时间:</span><span>reserveTime##</span>
-                  <span class="info_name ml20">配送人:</span><span>adminName##</span>
+                  <span class="info_name ml20">买家名字:</span><span>adminName##</span>
                 </tr>
                 <tr>
                   <td class="item_quantity"><span class="info_name">订单备注:</span><span>message##</span></td>
