@@ -870,14 +870,14 @@ public class CampusController {
 
 		JSONArray jsonarray = new JSONArray(); 
 		
-		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
 				
 		for (FoodComment comment: commentlist)
 		{
 			JSONObject node = new JSONObject();
 			node.put("head_pic", comment.getImgUrl());
 			node.put("nick", comment.getNickName());
-			node.put("quality", comment.getGrade());
+			node.put("quality", comment.getQuality());
 			node.put("content", comment.getComment());
 			node.put("time", sdf.format(comment.getDate()));
 			jsonarray.add(node);

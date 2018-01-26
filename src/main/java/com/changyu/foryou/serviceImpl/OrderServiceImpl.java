@@ -190,6 +190,10 @@ public class OrderServiceImpl implements OrderService {
 	public int setOrderInvalid(Map<String, Object> parameterMap) {
 		return orderMapper.setOrderInvalid(parameterMap);
 	}
+	
+	public int setOrderStatus(Map<String, Object> parameterMap) {
+		return orderMapper.setOrderStatus(parameterMap);
+	}
 
 	public List<DeliverOrder> selectOrdersByDate(Map<String, Object> paramMap) {
 		return orderMapper.selectOrdersByDate(paramMap);
@@ -356,7 +360,7 @@ public class OrderServiceImpl implements OrderService {
 		return orderMapper.getTradeVolumeByCampusId(paramMap);
 	}
 
-	public List<PCOrder> getPCSimpleOrders(Map<String, Object> paramMap) {
+	public List<DeliverOrder> getPCSimpleOrders(Map<String, Object> paramMap) {
 		return orderMapper.getPCSimpleOrders(paramMap);
 	}
 

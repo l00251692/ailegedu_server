@@ -92,7 +92,7 @@
 			server:"56846a8a2fee49d14901d39cc48b8b2a"
 		}, function(text) {
 			var data = eval(text);
-            console.log("getdata:" + data);
+            console.log("getTotalDate:" + JSON.stringify(data));
 			$("h2[name='counts']").text("订单列表(" + data.counts + ")");
 			$("span[name='counts']").text(data.counts);
 			$("span[name='total_price']").text(data.total_price);
@@ -109,7 +109,7 @@
 		$.get("togetherOrderDetail.txt", function(text) {
 			text = text.replace(/(orderId##)/g, data.orderId).replace(
 					/(date##)/g, data.createTime).replace(/(orderPrice##)/g,
-					data.orderPrice).replace(/(customeAddress##)/g,
+					data.payPrice).replace(/(customeAddress##)/g,
 					data.address).replace(/(customePhone##)/g,
 					data.phone).replace(/(index##)/g, i);
 

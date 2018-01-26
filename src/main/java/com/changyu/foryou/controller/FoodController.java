@@ -494,47 +494,52 @@ public class FoodController {
      * @param isHidden
      * @return
      */
-    @RequestMapping(value = "/creatOrderComment")
+    @RequestMapping(value = "/creatOrderCommentWx")
     public @ResponseBody
-    Map<String, Object> createOrderComment(@RequestParam Integer campusId,
-                                           @RequestParam String phoneId, @RequestParam Long orderId,
-                                           @RequestParam Short grade, String comment,
-                                           @RequestParam Long foodId, @RequestParam Short isHidden) {
+    Map<String, Object> createOrderCommentWx(@RequestParam String order_id, @RequestParam String user_id, 
+    		@RequestParam Short service, @RequestParam Short quality, @RequestParam String content ) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         try {
-            Order order = orderService.selectPersonOrder(phoneId, orderId); // 查询数据库看是否有订单存在，下了单才可以评论
-            if (order == null) {
-                map.put(Constants.STATUS, Constants.FAILURE);
-                map.put(Constants.MESSAGE, "没有评论权限！");
-            } else {
+        	Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("orderId",order_id);
+			Order order = orderService.getOrderByIdWx(paramMap); 
+            if (order == null || !order.getUserId().equals(user_id)) 
+            {
+            	map.put("State", "Fail");
+        		map.put("data", null);	
+        		return map;
+            } 
+            else 
+            {
                 FoodComment foodComment = new FoodComment();
-                foodComment.setComment(comment);
-                foodComment.setFoodId(foodId);
+                foodComment.setOrderId(Long.valueOf(order_id));
+                foodComment.setCampusId(order.getCampusId());
+                foodComment.setUserId(user_id);
+                foodComment.setService(service);
+                foodComment.setQuality(quality);
+                foodComment.setComment(content);         
                 foodComment.setDate(Calendar.getInstance().getTime());
-                foodComment.setGrade(grade);
-                foodComment.setPhone(phoneId);
                 foodComment.setTag((short) 1);
-                foodComment.setCampusId(campusId);
-                foodComment.setIsHidden(isHidden);
-                foodComment.setOrderId(orderId);
-
+                
                 Integer flag = foodService.insertFoodComment(foodComment);
                 if (flag == 1) {
-                    orderService.updateOrderRemarked(phoneId, orderId);
-                    map.put(Constants.STATUS, Constants.SUCCESS);
-                    map.put(Constants.MESSAGE, "添加评论成功！");
+                	//更新订单状态
+                	paramMap.put("status", 8);//订单完成评论
+                	orderService.setOrderStatus(paramMap);
+                	map.put("State", "Success");
+            		map.put("data", null);	
                 } else {
-                    map.put(Constants.STATUS, Constants.FAILURE);
-                    map.put(Constants.MESSAGE, "添加评论失败！");
+                	map.put("State", "Fail");
+            		map.put("data", null);	
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e) 
+        {
             e.printStackTrace();
-            map.put(Constants.STATUS, Constants.FAILURE);
-            map.put(Constants.MESSAGE, "添加评论失败！");
+            map.put("State", "Fail");
+    		map.put("data", null);	
         }
-
         return map;
     }
 

@@ -58,6 +58,8 @@ public interface OrderService {
 	List<DeliverChildOrder> getDeliverChildOrders(String togetherId);
 
 	int setOrderInvalid(Map<String, Object> parameterMap);
+	
+	int setOrderStatus(Map<String, Object> parameterMap);
 
 	List<DeliverOrder> selectOrdersByDate(Map<String, Object> paramMap);
 
@@ -118,7 +120,7 @@ public interface OrderService {
 	
 	Float getTradeVolumeByCampusId(Map<String, Object> paramMap);		//获取指定时间段和指定校区的订单交易额
 
-	List<PCOrder> getPCSimpleOrders(Map<String, Object> paramMap);
+	List<DeliverOrder> getPCSimpleOrders(Map<String, Object> paramMap);
 
 	long getPCSimpleOrdersCount(Map<String, Object> paramMap);
 

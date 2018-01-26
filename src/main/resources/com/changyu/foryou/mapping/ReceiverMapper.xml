@@ -40,11 +40,11 @@
 		from receiver
 		where user_id = #{userId,jdbcType=VARCHAR}
 	</select>
-	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+	<delete id="deleteByPrimaryKey" >
 		delete from receiver
 		where user_id = #{userId,jdbcType=VARCHAR}
 		and address_id = #{addressId,jdbcType=VARCHAR}
-	</update>
+	</delete>
 	<insert id="insert" parameterType="com.changyu.foryou.model.Receiver">
 		<!-- insert into receiver (rank, phone_id, phone,
 		name, address, tag,is_out,campus_id

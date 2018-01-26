@@ -200,19 +200,25 @@ public class ReceiverController {
 	@RequestMapping("/deleteUserAddrWx")
 	public @ResponseBody Map<String,Object> deleteUserAddrWx(@RequestParam String user_id,@RequestParam String addr_id){
 		Map<String, Object> map=new HashMap<String ,Object>();
-		try {
-      
-			int flag=receiverService.deleteByPrimaryKey(user_id, addr_id);
-			if(flag!=-1&&flag!=0){
+		try 
+		{
+			System.out.println("deleteUserAddrWx:"+ user_id + "," +addr_id );
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("userId",user_id);
+			paramMap.put("addressId",addr_id);
+			int flag=receiverService.deleteByPrimaryKey(paramMap);
+			if(flag!=-1&&flag!=0)
+			{
 				map.put("State", "Success");
 				map.put("data", "删除成功");
 			}
 		} catch (Exception e) {
 			e.getStackTrace();
+			map.put("State", "False");
+			map.put("data", null);
 		}
 		
-		map.put("State", "False");
-		map.put("data", null);
+		
 		return map;
 	}
 	

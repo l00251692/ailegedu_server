@@ -28,19 +28,19 @@
    <div class="container">
 		<div class="page-header">
 			<h1>
-				退款订单管理
+				无效订单管理
 			</h1>
 		</div>
-		<table id="table" 
+		<table id="table"
 		       data-id-field="togetherId"
 		       data-pagination="true"
 		       data-side-pagination="client"
 		       data-search="true"
 		       data-height="80%"
-		       data-show-refresh="true" 
-		       data-show-columns="true"   
-		       data-show-toggle="true" 
-		       data-toolbar-align="right" 
+		       data-show-refresh="true"
+		       data-show-columns="true"
+		       data-show-toggle="true"
+		       data-toolbar-align="right"
 	      >
 			<thead>
 				<tr>
@@ -56,7 +56,7 @@
 				</tr>
 			</thead>
 		</table>
-</div>  
+</div>
 <script type="text/javascript">
 	 var campusId = getCookie("campusId");
 	 var type=getCookie("type");
@@ -71,12 +71,12 @@
 				 '<a class="invalide btn" herf="javascript:void(0)" title="close">',
 				 '确认删除',
 				 '</a>'
-				].join('');					
-	} 
+				].join('');
+	}
 
       window.deleteEvents = {
         'click .invalide': function (e, value, row, index) {
-        	
+
         			//校区管理员删除订单
         			$.post("../order/deleteOrderTrue",
         			   {
@@ -92,10 +92,10 @@
         			      }else{
         			    	  $('#info').show();
 		               	      $('#info').html("操作失败");
-		             	      setTimeout("$('#info').hide()", 2000 );       
+		             	      setTimeout("$('#info').hide()", 2000 );
         			     }
         			 },'json'
-        			 );	
+        			 );
         		}
     };
 </script>

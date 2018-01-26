@@ -7,7 +7,7 @@ import java.util.Map;
 import com.changyu.foryou.model.Receiver;
 
 public interface ReceiverService {
-	int deleteByPrimaryKey(String userId,String addressId);
+	int deleteByPrimaryKey(Map<String, Object> paramMap);
 
 	int insertSelective(Map<String, Object> paramMap);
 

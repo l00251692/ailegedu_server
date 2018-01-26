@@ -25,8 +25,8 @@ public class ReceiverServiceImpl implements ReceiverService {
 		this.receiverMapper = receiverMapper;
 	}
 
-	public int deleteByPrimaryKey(String userId, String addressId) {
-		return receiverMapper.deleteByPrimaryKey(userId,addressId);
+	public int deleteByPrimaryKey(Map<String, Object> paramMap) {
+		return receiverMapper.deleteByPrimaryKey(paramMap);
 		
 	}
 

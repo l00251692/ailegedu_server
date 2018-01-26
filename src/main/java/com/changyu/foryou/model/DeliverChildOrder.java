@@ -8,6 +8,8 @@ public class DeliverChildOrder {
 	private Short status;
 
 	private Float price;
+	
+	private Float totalPrice;
 
 	private Float discountPrice;
 
@@ -66,6 +68,14 @@ public class DeliverChildOrder {
 
 	public void setOrderCount(Integer orderCount) {
 		this.orderCount = orderCount;
+	}
+
+	public Float getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(Float totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	/*public String getSpecialName() {

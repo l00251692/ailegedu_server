@@ -3,38 +3,64 @@ package com.changyu.foryou.model;
 import java.util.Date;
 
 public class FoodComment {
-    private Long foodId;
-    private Integer campusId;
+	
+    private Long orderId;
+    
+    private String campusId;
+    
+    private String userId;
+    
+    public String getCampusId() {
+		return campusId;
+	}
+
+	public void setCampusId(String campusId) {
+		this.campusId = campusId;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public Short getService() {
+		return service;
+	}
+
+	public void setService(Short service) {
+		this.service = service;
+	}
+
+	public Short getQuality() {
+		return quality;
+	}
+
+	public void setQuality(Short quality) {
+		this.quality = quality;
+	}
+
+	private Date date;
+
+    private Short service;
+    
+    private Short quality;
     
     private String comment;
-
-    private String foodName;
     
-    private Date date;
-
-    private Short grade;
+    private Short tag;
 
     private String imgUrl;
     
     private String nickName;
     
     private String phone;
-
-    private Short tag;
-    
-    private Short isHidden;
-    
+   
     private Integer orderCount;
     
-    private Long orderId;
 
-    public Long getFoodId() {
-        return foodId;
-    }
-
-    public void setFoodId(Long foodId) {
-        this.foodId = foodId;
-    }
 
     public String getComment() {
         return comment;
@@ -52,13 +78,7 @@ public class FoodComment {
         this.date = date;
     }
 
-    public Short getGrade() {
-        return grade;
-    }
-
-    public void setGrade(Short grade) {
-        this.grade = grade;
-    }
+    
 
     public String getNickName() {
         return nickName;
@@ -90,30 +110,6 @@ public class FoodComment {
 
 	public void setImgUrl(String imgUrl) {
 		this.imgUrl = imgUrl;
-	}
-
-	public String getFoodName() {
-		return foodName;
-	}
-
-	public void setFoodName(String foodName) {
-		this.foodName = foodName;
-	}
-
-	public Integer getCampusId() {
-		return campusId;
-	}
-
-	public void setCampusId(Integer campusId) {
-		this.campusId = campusId;
-	}
-
-	public Short getIsHidden() {
-		return isHidden;
-	}
-
-	public void setIsHidden(Short isHidden) {
-		this.isHidden = isHidden;
 	}
 
 	public Integer getOrderCount() {

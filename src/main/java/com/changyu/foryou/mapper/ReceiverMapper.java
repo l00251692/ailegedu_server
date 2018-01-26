@@ -9,7 +9,7 @@ import com.changyu.foryou.model.Receiver;
 import com.changyu.foryou.model.ReceiverKey;
 
 public interface ReceiverMapper {
-    int deleteByPrimaryKey(String userId,String addressId);
+    int deleteByPrimaryKey(Map<String, Object> paramMap);
 
     int insert(Receiver record);
 

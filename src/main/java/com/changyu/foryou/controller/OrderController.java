@@ -516,10 +516,18 @@ public class OrderController {
 				order.put("seller_name", campus.getCampusName());
 				order.put("pic_url", campus.getPic_url());
 				order.put("order_id", order1.getOrderId());
-				order.put("state", order1.getStatus());
-				order.put("pay_price", order1.getPayPrice());
-				order.put("is_reviews", String.valueOf(0));
+				if(order1.getStatus() == 8)//8:订单完成且已评论
+				{
+					order.put("state", 4);
+					order.put("is_reviews", String.valueOf(1));
+				}
+				else
+				{
+					order.put("state", order1.getStatus());
+					order.put("is_reviews", String.valueOf(0));
+				}
 				
+				order.put("pay_price", order1.getPayPrice());	
 				orderArray.add(order);
 				
 			}
@@ -1391,7 +1399,7 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping("/getPCSimpleOrder")
-	public @ResponseBody Map<String, Object> getPcOrders(Short status,@RequestParam Integer campusId,
+	public @ResponseBody Map<String, Object> getPcOrders(Short status,@RequestParam String campusId,
 			Integer limit, Integer offset, String search) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
@@ -1405,26 +1413,73 @@ public class OrderController {
         System.out.println("offset:" + offset);
         System.out.println("search:" + search);
         System.out.println("status:" + status);
-		List<PCOrder> lists = orderService.getPCSimpleOrders(paramMap);
-		DecimalFormat df = new DecimalFormat("####.00");
+		
+		List<PCOrder> listsresult = new ArrayList<>();
+	
+		List<DeliverOrder> lists = orderService.getPCSimpleOrders(paramMap);
+		for (DeliverOrder order: lists)
+		{
+			JSONObject obj = new JSONObject();
+			obj.put("togetherId", order.getOrderId());
+			obj.put("phone", order.getPhone());
+			obj.put("name", order.getName());//食品名称
+			obj.put("address", order.getAddress());
+			obj.put("price", order.getPayPrice());
+			obj.put("adminName", order.getUserName());
+			obj.put("orderCount", 10 );
+			
+			obj.put("isDiscount", "0");
+			obj.put("discountPrice", "0");
+			obj.put("foodPrice", order.getOrderPrice());
+			obj.put("receiverPhone", order.getPhone());
+			obj.put("togetherDate", order.getCreateTime());
+			obj.put("adminPhone", "111");
+			listsresult.add(JSON.parseObject(JSON.toJSONString(obj),PCOrder.class));
+		}
+		if (status == 4)
+		{
+			//状态4：已完成，8：已完成且完成评论
+			paramMap.put("status", 8);
+			List<DeliverOrder> lists2 = orderService.getPCSimpleOrders(paramMap);
+			for (DeliverOrder order: lists2)
+			{
+				JSONObject obj = new JSONObject();
+				obj.put("togetherId", order.getOrderId());
+				obj.put("phone", order.getPhone());
+				obj.put("name", order.getName());//食品名称
+				obj.put("address", order.getAddress());
+				obj.put("price", order.getPayPrice());
+				obj.put("adminName", order.getUserName());
+				obj.put("orderCount", 10 );
+				
+				obj.put("isDiscount", "0");
+				obj.put("discountPrice", "0");
+				obj.put("foodPrice", order.getOrderPrice());
+				obj.put("receiverPhone", order.getPhone());
+				obj.put("togetherDate", order.getCreateTime());
+				obj.put("adminPhone", "111");
+				listsresult.add(JSON.parseObject(JSON.toJSONString(obj),PCOrder.class));
+			}
+		}
+		//DecimalFormat df = new DecimalFormat("####.00");
 
-		for (PCOrder order : lists) {
+		/*for (PCOrder order : lists) {
 			// 如果是完成订单，直接显示交易价格，否则计算应收取的价格
 			if (order.getPrice() == null) {
-				/*if (order.getIsDiscount() == 0) {
+				if (order.getIsDiscount() == 0) {
 					order.setPrice(Float.parseFloat(df.format(order
 							.getFoodPrice() * order.getOrderCount())));
 				} else {
 					order.setPrice(Float.parseFloat(df.format(order
 							.getDiscountPrice() * order.getOrderCount())));
-				}*/
+				}
 				//先设置个价格
 				order.setPrice(0.0f);
 			}
-		}
+		}*/
 
 		JSONArray jsonArray = JSONArray.parseArray(JSON
-				.toJSONStringWithDateFormat(lists, "yyyy-MM-dd"));
+				.toJSONStringWithDateFormat(listsresult, "yyyy-MM-dd"));
 
 		long totalCount = orderService.getPCSimpleOrdersCount(paramMap);
 		map.put("rows", jsonArray);
@@ -1515,7 +1570,7 @@ public class OrderController {
 					good.put("orderCount",goodsTmp.getJSONObject(i).getString("num"));
 					//good.put("select_property",goodsTmp.getJSONObject(i).getString("select_property"));
 					good.put("price",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price")));
-					//good.put("totalPrice",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
+					good.put("totalPrice",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
 					//goods.add((DeliverChildOrder)JSONObject.toBean(good, DeliverChildOrder.class));
 					goods.add(JSON.parseObject(JSON.toJSONString(good),DeliverChildOrder.class));
 
