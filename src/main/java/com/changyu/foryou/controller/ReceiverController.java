@@ -218,7 +218,6 @@ public class ReceiverController {
 			map.put("data", null);
 		}
 		
-		
 		return map;
 	}
 	

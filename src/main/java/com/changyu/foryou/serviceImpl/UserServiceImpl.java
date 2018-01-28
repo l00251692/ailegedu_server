@@ -33,6 +33,10 @@ public class UserServiceImpl implements UserService {
 	public Users selectByUsername(String phone) {
 		return usersMapper.selectByPrimaryKey(phone);
 	}
+	
+	public Users selectByUserId(String userId) {
+		return usersMapper.selectByPrimaryKey(userId);
+	}
 
 
 	public void addUsers(Users users) {

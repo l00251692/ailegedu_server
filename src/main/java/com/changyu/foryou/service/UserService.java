@@ -9,6 +9,8 @@ import com.changyu.foryou.model.Users;
 
 public interface UserService {
 	Users selectByUsername(String id);//根据用户手机号获取用户信息
+	
+	Users selectByUserId(String user_id);//根据用户手机号获取用户信息
 
 	void addUsers(Users users);
 

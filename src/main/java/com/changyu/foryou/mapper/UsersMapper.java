@@ -15,7 +15,7 @@ public interface UsersMapper {
 
     int insertSelective(Users record);
 
-    Users selectByPrimaryKey(String phone);
+    Users selectByPrimaryKey(String userId);
 
     int updateByPrimaryKeySelective(Users record);
 

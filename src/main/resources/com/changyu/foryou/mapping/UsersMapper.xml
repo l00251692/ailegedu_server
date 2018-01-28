@@ -39,11 +39,9 @@
 		academy,
 		qq,
 		weixin,
-		receiver.address AS default_address,
 		users.campus_id
 		FROM
 		users
-		left join receiver on receiver.phone_id = users.phone AND receiver.tag = 0
 		WHERE
 		users.user_id = #{user_id,jdbcType=VARCHAR}
 		LIMIT 1

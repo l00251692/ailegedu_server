@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.changyu.foryou.mapper.ProjectMapper">
+	<cache eviction="LRU" flushInterval="60000" size="512" readOnly="true" />
+	<resultMap id="BaseResultMap" type="com.changyu.foryou.model.Project">
+		<id column="project_id" property="projectId" jdbcType="VARCHAR" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="DATE" />
+		<result column="create_userid" property="createUserId" jdbcType="VARCHAR" />
+		<result column="head_img" property="headImg" jdbcType="VARCHAR" />
+		<result column="interest" property="interest" jdbcType="INTEGER" />
+	</resultMap> 
+	
+	<resultMap id="BannerResultMap" type="com.changyu.foryou.model.Banner">
+		<id column="banner_id" property="bannerId" jdbcType="INTEGER" />
+		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getBannerInfo" resultMap="BannerResultMap">
+		select
+		*
+		from
+		banner_info
+	</select>
+	
+	<select id="getProjectList" resultMap="BaseResultMap">
+		select
+		*
+		from
+		project
+		order by
+		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+
+</mapper>
+
