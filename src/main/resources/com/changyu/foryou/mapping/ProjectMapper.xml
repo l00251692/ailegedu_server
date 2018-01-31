@@ -6,7 +6,7 @@
 		<id column="project_id" property="projectId" jdbcType="VARCHAR" />
 		<result column="title" property="title" jdbcType="VARCHAR" />
 		<result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
-		<result column="create_time" property="createTime" jdbcType="DATE" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="create_userid" property="createUserId" jdbcType="VARCHAR" />
 		<result column="head_img" property="headImg" jdbcType="VARCHAR" />
 		<result column="interest" property="interest" jdbcType="INTEGER" />
@@ -17,6 +17,15 @@
 		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
 		<result column="content" property="content" jdbcType="VARCHAR" />
 	</resultMap>
+	
+	<resultMap id="CommentResultMap" type="com.changyu.foryou.model.ProjectComment">
+		<id column="project_id" property="projectId" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="comment" property="comment" jdbcType="VARCHAR" />
+		<result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
+		<result column="user_head" property="userHead" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+	</resultMap>
 
 	<select id="getBannerInfo" resultMap="BannerResultMap">
 		select
@@ -25,13 +34,126 @@
 		banner_info
 	</select>
 	
-	<select id="getProjectList" resultMap="BaseResultMap">
+	<select id="getProjectList" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from
 		project
 		order by
 		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+	<select id="getProjectInfo" resultMap="BaseResultMap" flushCache="true" useCache="false">
+		select
+		*
+		from
+		project
+		 where project_id = #{projectId,jdbcType=VARCHAR} 
+	</select>
+	
+	<insert id="insertSelective" parameterType="com.changyu.foryou.model.Project">
+		insert into project
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">
+				project_id,
+			</if>
+			<if test="title != null">
+				title,
+			</if>
+			<if test="subtitle != null">
+				subtitle,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="createUserId != null">
+				create_userid,
+			</if>
+			<if test="headImg != null">
+				head_img,
+			</if>
+			<if test="interest != null">
+				interest,
+			</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">
+				#{projectId,jdbcType=VARCHAR},
+			</if>
+			<if test="title != null">
+				#{title,jdbcType=VARCHAR},
+			</if>
+			<if test="subtitle != null">
+				#{subtitle,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createUserId != null">
+				#{createUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="headImg != null">
+				#{headImg,jdbcType=VARCHAR},
+			</if>
+			<if test="interest != null">
+				#{interest,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateProjectHeadImg">
+		update project
+		set
+		head_img = #{headImg,jdbcType=VARCHAR} 
+		where project_id = #{projectId,jdbcType=VARCHAR} 
+	</update>
+	
+	<insert id="commitComment" parameterType="com.changyu.foryou.model.ProjectComment">
+		insert into project_comment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">
+				project_id,
+			</if>
+			<if test="userId != null">
+				user_id,
+			</if>
+			<if test="comment != null">
+				comment,
+			</if>
+			<if test="commentTime != null">
+				comment_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">
+				#{projectId,jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				#{userId,jdbcType=VARCHAR},
+			</if>
+			<if test="comment != null">
+				#{comment,jdbcType=VARCHAR},
+			</if>
+			<if test="commentTime != null">
+				#{commentTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	
+	<select id="getCommentList" resultMap="CommentResultMap" flushCache="true" useCache="false">
+		select
+		*
+		from
+		project_comment_user
+		<where>
+		project_id = #{projectId,jdbcType=VARCHAR} 
+		</where> 
+		order by
+		comment_time DESC
 		<if test="limit !=null and offset !=null">
 			LIMIT #{limit,jdbcType=INTEGER} OFFSET
 			#{offset,jdbcType=INTEGER}

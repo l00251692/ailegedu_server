@@ -10,6 +10,7 @@ import com.changyu.foryou.mapper.CampusMapper;
 import com.changyu.foryou.mapper.ProjectMapper;
 import com.changyu.foryou.model.Banner;
 import com.changyu.foryou.model.Project;
+import com.changyu.foryou.model.ProjectComment;
 import com.changyu.foryou.service.ProjectService;
 
 @Service("projectService")
@@ -27,5 +28,29 @@ public class ProjectServiceImpl implements ProjectService{
 	{
 		return projectMapper.getProjectList(paramMap);
 	}
+	
+	public Project getProjectInfo(Map<String, Object> paramMap)
+	{
+		return projectMapper.getProjectInfo(paramMap);
+	}
+	
+	public int createProject(Map<String, Object> paramMap)
+	{
+		return projectMapper.insertSelective(paramMap);
+	}
 
+	public int updateProjectHeadImg(Map<String, Object> paramMap)
+	{
+		return projectMapper.updateProjectHeadImg(paramMap);
+	}
+	
+	public int commitProjectComment(Map<String, Object> paramMap)
+	{
+		return projectMapper.commitComment(paramMap);
+	}
+	
+	public List<ProjectComment> getCommentList(Map<String, Object> paramMap)
+	{
+		return projectMapper.getCommentList(paramMap);
+	}
 }
