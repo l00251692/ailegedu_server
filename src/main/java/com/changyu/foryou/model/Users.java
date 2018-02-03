@@ -32,7 +32,7 @@ public class Users {
     
     private String weiXin;
     
-    private Integer campusId;
+    private String campusId;
      
     public Users(String phone2, String password2, String nickname2) {
 		phone=phone2;
@@ -162,11 +162,11 @@ public class Users {
 		this.weiXin = weiXin;
 	}
 
-	public Integer getCampusId() {
+	public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 

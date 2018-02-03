@@ -201,7 +201,6 @@ public class UserController {
 		//用户的唯一标识（openid） 
 		String openid = (String) json.get("openid"); 
 	
-		System.out.println("toLoginWx json" + json.toString());
 		//////////////// 2、对encryptedData加密数据进行AES解密 //////////////// 
 		try { 
 		  String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
@@ -221,7 +220,7 @@ public class UserController {
 			userInfo.put("avatarUrl", userInfoJSON.get("avatarUrl")); 
 			userInfo.put("user_id", userInfoJSON.get("openId")); 
 			userInfo.put("user_token", userInfoJSON.get("unionId"));
-			
+
 			JSONObject loginInfo = new JSONObject();
 			loginInfo.put("is_login", "1");
 			loginInfo.put("session_key", session_key);
@@ -418,45 +417,25 @@ public class UserController {
 	 * @param phone 用户id
 	 * @return
 	 */
-	@RequestMapping(value="mineInfo")
-	public @ResponseBody Map<String, Object> getMineInfo(@RequestParam String phone){
+	@RequestMapping(value="getMineInfoWx")
+	public @ResponseBody Map<String, Object> getMineInfoWx(@RequestParam String user_id){
 		Map<String, Object> map = new HashMap<String, Object>();
-		try {
-			Map<String, Object> paramMap = new HashMap<String, Object>();
-			Users users=userService.selectByUsername(phone);
-			paramMap.put("phoneId", phone);
-			paramMap.put("status", 1);
-			List<String> togetherId1=orderService.getTogetherId(paramMap);
-			paramMap.put("status", 2);
-			List<String> togetherId2=orderService.getTogetherId(paramMap);
-			paramMap.put("status", 3);
-			List<String> togetherId3=orderService.getTogetherId(paramMap);
-			paramMap.put("status", 4);
-			List<String> togetherId4=orderService.getTogetherId(paramMap);
-			paramMap.put("status", 5);
-			List<String> togetherId5=orderService.getTogetherId(paramMap);
-			if(users!=null){		
-				users.setPassword(null);
-				map.put("userInfo", users);
-				//map.put("waitDeliveryOrder", counts.get("wait"));
-				//map.put("waitReceiveOrder",counts.get("deliver"));
-				//map.put("waitCommentOrder", counts.get("comment"));
-				
-				map.put(Constants.STATUS,Constants.SUCCESS);
-				map.put(Constants.MESSAGE, "获取数据成功");
-				map.put("waitPayOrder", togetherId1.size());
-				map.put("waitMakeSureOrder", togetherId2.size());
-				map.put("distribution", togetherId3.size());
-				map.put("waitCommentOrder", togetherId4.size());
-				map.put("doneOrder", togetherId5.size());
-			
-			}	
-		} catch (Exception e) {
-			e.printStackTrace();
-			map.put(Constants.MESSAGE, "获取用户信息失败！");
-			map.put(Constants.STATUS, Constants.FAILURE);
+	
+		Users users=userService.selectByUserId(user_id);
+		System.out.println("getMineInfoWx:" + user_id);
+		if(users == null)
+		{
+			map.put("State", "False"); 
+			map.put("info", "获得我的信息失败"); 
+			return map; 
 		}
-
+		
+		JSONObject obj = new JSONObject();
+		obj.put("campus_id", users.getCampusId());
+		obj.put("weixin", users.getWeiXin());
+			
+		map.put("State", "Success"); 
+		map.put("data", obj); 
 		return map;
 	}
 

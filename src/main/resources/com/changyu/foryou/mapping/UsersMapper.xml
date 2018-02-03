@@ -19,7 +19,7 @@
 		<result column="academy" property="academy" jdbcType="VARCHAR" />
 		<result column="qq" property="qq" jdbcType="VARCHAR" />
 		<result column="weixin" property="weiXin" jdbcType="VARCHAR" />
-		<result column="campus_id" property="campusId" jdbcType="INTEGER" />
+		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		user_id,phone, password, type, nickname, img_url,
@@ -184,7 +184,7 @@
 	<update id="setUserAdmin">
 		update users
 		set type=1 ,
-		campus_id=#{campusId,jdbcType=INTEGER}
+		campus_id=#{campusId,jdbcType=VARCHAR}
 		where phone =
 		#{phone,jdbcType=VARCHAR}
 	</update>
@@ -192,7 +192,7 @@
 	<update id="setUserCommon">
 		update users
 		set type=2,
-		campus_id=#{campusId,jdbcType=INTEGER}
+		campus_id=#{campusId,jdbcType=VARCHAR}
 		where phone =
 		#{phone,jdbcType=VARCHAR}
 	</update>
@@ -201,7 +201,7 @@
 		update users
 		set
 		type=0,
-		campus_id=#{campusId,jdbcType=INTEGER}
+		campus_id=#{campusId,jdbcType=VARCHAR}
 		where phone =
 		#{phone,jdbcType=VARCHAR}
 	</update>
@@ -274,7 +274,7 @@
 		user_id,nickname
 		from
 		users
-		where type=1 and campus_id=#{campusId,jdbcType=INTEGER}
+		where type=1 and campus_id=#{campusId,jdbcType=VARCHAR}
 	</select>
 
 	<update id="setUserToken">
@@ -318,7 +318,7 @@
 		from users
 		where type=0
 		and
-		campus_id=#{campusId,jdbcType=INTEGER}
+		campus_id=#{campusId,jdbcType=VARCHAR}
 	</select>
 
 	<!-- 获取用户token,通过手机号 -->
@@ -366,6 +366,6 @@
 	<select id="getUserByType" resultType="String">
 	   select phone
 	   from users
-	   where type=#{type,jdbcType=SMALLINT} and campus_id=#{campusId,jdbcType=INTEGER}
+	   where type=#{type,jdbcType=SMALLINT} and campus_id=#{campusId,jdbcType=VARCHAR}
 	</select>
 </mapper>

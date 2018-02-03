@@ -30,6 +30,8 @@ public interface OrderMapper {
 	List<CartGood> getOrderListByPhone(Map<String, Object> paramMap);
 	
 	List<Order> getOrderListByUserId(Map<String, Object> paramMap);
+	
+	List<Order> getOrderListByCampusId(Map<String, Object> paramMap);
 
 	List<Order> getSuccessOrder(String phoneId);
 
@@ -142,4 +144,6 @@ public interface OrderMapper {
 	int deleteStatus7Order(String phone);              //删除无效订单（从商品详情点立即购买，却没有支付的
 
 	List<Order> getAllOrderByTogetherId(String orderNo);   //
+	
+	public int updateOrderStatusWx(Map<String, Object> paramMap);
 }

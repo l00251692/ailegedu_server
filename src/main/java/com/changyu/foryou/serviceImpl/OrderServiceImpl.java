@@ -53,6 +53,10 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> getOrdersMine(Map<String,Object> paramMap) {
 		return orderMapper.getOrderListByUserId(paramMap);
 	}
+	
+	public List<Order> getCampusOrders(Map<String,Object> paramMap) {
+		return orderMapper.getOrderListByCampusId(paramMap);
+	}
 
 	public List<Order> getOrderSuccessList(String phoneId) {
 		return orderMapper.getSuccessOrder(phoneId);
@@ -385,6 +389,12 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Order> getAllOrdersByTogetherId(String orderNo) {
 		return orderMapper.getAllOrderByTogetherId(orderNo);
+	}
+	
+	
+	@Override
+	public int updateOrderStatusWx(Map<String, Object> paramMap) {
+		return orderMapper.updateOrderStatusWx(paramMap);
 	}
 	
 

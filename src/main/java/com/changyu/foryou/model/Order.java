@@ -11,8 +11,10 @@ public class Order {
 
     private Date createTime;
 
-    //0:无效，1:订单待支付  ，2：等待商家接单 ，3：订单进行中， 4：订单已完成， 5：订单取消,6 :退款中,7:已退款，8：订单完成评论
+    //0:无效，1:订单待支付  ，2：等待商家接单 ，3：商家已接单， 4：订单完成， 5：订单取消,6 :退款中,7:已退款，8：订单完成评论，9：商家拒单
     private Short status;
+    
+    private String records;
 
     private String goods;
     
@@ -145,8 +147,8 @@ public class Order {
     	userId=userId2;
     	goods = goods2;
     	deliveryFee = deliveryFee2;
-    	createTime=new Date();
     	status=1; //准订单
+    	createTime = new Date();
     	orderId=createTime.getTime();
 	}
 
@@ -164,6 +166,14 @@ public class Order {
 
 	public void setDeliveryFee(Float deliveryFee) {
 		this.deliveryFee = deliveryFee;
+	}
+
+	public String getRecords() {
+		return records;
+	}
+
+	public void setRecords(String records) {
+		this.records = records;
 	}
 
 	

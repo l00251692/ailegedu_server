@@ -7,6 +7,7 @@
 		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="status" property="status" jdbcType="SMALLINT" />
+		<result column="records" property="records" jdbcType="VARCHAR" />
 		<result column="goods" property="goods" jdbcType="LONGVARCHAR" />
 		<result column="message" property="message" jdbcType="VARCHAR" />
 		<result column="addr_id" property="addrId" jdbcType="VARCHAR" />
@@ -132,7 +133,7 @@
 
 
 	<sql id="Base_Column_List">
-		order_id, user_id, campus_id,create_time, status, goods,
+		order_id, user_id, campus_id,create_time, status, records,goods,
 		message,addr_id,cut_money,coupon_money,packing_fee,delivery_fee,order_price,pay_price
 	</sql>
 
@@ -202,6 +203,9 @@
 			<if test="status != null">
 				status,
 			</if>
+			<if test="records != null">
+				records,
+			</if>
 			<if test="goods != null">
 				goods,
 			</if>
@@ -221,6 +225,18 @@
 			<if test="payWay != null">
 				pay_way,
 			</if>
+			<if test="packingFee != null">
+				packing_fee,
+			</if>
+			<if test="deliveryFee != null">
+				delivery_fee,
+			</if>
+			<if test="orderPrice != null">
+				order_price,
+			</if>
+			<if test="payPrice != null">
+				pay_price,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="orderId != null">
@@ -237,6 +253,9 @@
 			</if>
 			<if test="status != null">
 				#{status,jdbcType=SMALLINT},
+			</if>
+			<if test="records != null">
+				#{records,jdbcType=VARCHAR},
 			</if>
 			<if test="goods != null">
 				#{goods,jdbcType=LONGVARCHAR},
@@ -256,6 +275,18 @@
 			<if test="payWay != null">
 				#{payWay,jdbcType=SMALLINT},
 			</if>
+			<if test="packingFee != null">
+				#{packingFee,jdbcType=FLOAT},
+			</if>
+			<if test="deliveryFee != null">
+				#{deliveryFee,jdbcType=FLOAT},
+			</if>
+			<if test="orderPrice != null">
+				#{orderPrice,jdbcType=FLOAT},
+			</if>
+			<if test="payPrice != null">
+				#{payPrice,jdbcType=FLOAT},
+			</if>
 		</trim>
 	</insert>
 	<update id="updateByPrimaryKeySelective" parameterType="com.changyu.foryou.model.Order">
@@ -266,6 +297,9 @@
 			</if>
 			<if test="status != null">
 				status = #{status,jdbcType=SMALLINT},
+			</if>
+			<if test="records != null">
+				records = #{records,jdbcType=VARCHAR},
 			</if>
 			<if test="goods != null">
 				goods = #{goods,jdbcType=LONGVARCHAR},
@@ -356,6 +390,20 @@
 		<include refid="Base_Column_List" />
 		from orders
 		where user_id = #{userId,jdbcType=BIGINT} 
+		order by
+		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+	
+	<select id="getOrderListByCampusId" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List" />
+		from orders
+		where campus_id = #{campusId,jdbcType=VARCHAR}
+		and status > 1 
 		order by
 		create_time DESC
 		<if test="limit !=null and offset !=null">
@@ -1134,4 +1182,17 @@
 	       orders
 	    where together_id=#{togetherId,jdbcType=VARCHAR} -->
 	</select>
+	
+	<update id="updateOrderStatusWx">
+		 update orders set
+		<if test="status != null">
+			status=#{status, jdbcType=SMALLINT}
+		</if>
+		<if test="records != null">
+			,records=#{records, jdbcType=VARCHAR}
+		</if>
+		<where>
+			order_id=#{orderId, jdbcType=BIGINT}
+		</where> 
+	</update>
 </mapper>

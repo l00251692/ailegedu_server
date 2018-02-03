@@ -70,6 +70,8 @@ public interface OrderService {
 	List<SmallOrder> getOrderListInMine(Map<String, Object> paramMap);
 	
 	List<Order> getOrdersMine(Map<String,Object> paramMap);
+	
+	List<Order> getCampusOrders(Map<String,Object> paramMap);
 
 	Date getTogetherDate(Map<String, Object> paramMap);
 
@@ -131,4 +133,6 @@ public interface OrderService {
 	void deleteStatus7Order(String phone);    //删除无效订单（从商品详情点立即购买，却没有支付的)
 
 	List<Order> getAllOrdersByTogetherId(String orderNo);   //根据大订单号获取所有的订单
+	
+	int updateOrderStatusWx(Map<String, Object> paramMap);
 }
