@@ -3,6 +3,7 @@ package com.changyu.foryou.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.Order;
 import com.changyu.foryou.service.*;
 import com.changyu.foryou.tools.PayUtil;
@@ -28,6 +29,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +46,8 @@ public class PayController {
     private PushService pushService;
     @Autowired
     private FoodService foodService;
+    @Autowired
+    private CampusService  campusService;
     
     private static final Logger LOGGER = Logger
 			.getLogger(PayController.class);
@@ -304,5 +308,63 @@ public class PayController {
         out.flush();  
         out.close();  
     }  
+    
+    /**
+	 * 获得微信支付参数
+	 * 
+	 * @param phoneId
+	 * @param foodId
+	 * @param foodCount
+	 * @param foodSpecial
+	 * @return
+	 */
+	@RequestMapping("/setPaySuccessWx")
+	public @ResponseBody Map<String, Object> setPaySuccessWx(@RequestParam String order_id,@RequestParam String user_id){
+		//user_id就是openid
+		Map<String,Object> map = new HashMap<String, Object>();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("orderId", order_id);
+		Order order =orderService.getOrderByIdWx(paramMap);
+		
+		if(order == null)
+		{
+			return null;
+		}
+		
+		order.setStatus((short)2);
+		JSONArray records = JSON.parseArray(order.getRecords());
+		JSONObject record = new JSONObject();
+		record.put("status", 2);
+		record.put("time", new Date());
+		
+		records.add(record);
+		order.setRecords(records.toJSONString());
+
+		int flag = orderService.updateOrder(order);
+		if (flag != -1 && flag != 0)
+		{
+			map.put("order_id", order_id);
+			map.put("State", "Success");
+			map.put("data", null);
+			//向商家推送订单信息
+			new Thread(new Runnable() {
+
+				 public void run() { //推送
+					Map<String, Object> paramMap = new HashMap<String, Object>();
+					paramMap.put("campusId", order.getCampusId());
+					Campus campus=campusService.getCampusById(paramMap);
+					pushService.sendPhoneCall(campus.getCustomService());
+
+				} }).start();
+			return map;
+		} else 
+		{
+			map.put("State", "False");
+			map.put("data", null);	
+			return map;
+		}
+	
+	}
+	
 }
 	

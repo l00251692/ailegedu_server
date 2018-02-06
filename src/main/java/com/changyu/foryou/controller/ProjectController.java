@@ -95,13 +95,12 @@ public class ProjectController {
 	
 	
 	@RequestMapping("/getProjectListWx")
-    public @ResponseBody Map<String,Object> getProjectListWx(@RequestParam String user_id,@RequestParam Integer page) {
+    public @ResponseBody Map<String,Object> getProjectListWx(@RequestParam Integer page) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("offset", page * 10);
 		paramMap.put("limit", 10);
         List<Project> projectlist = projectService.getProjectList(paramMap);
-		System.out.println("getProjectListWx: page=" + String.valueOf(page));
 		JSONArray jsonarray = new JSONArray(); 
 		JSONObject rtn = new JSONObject();
 		rtn.put("count", projectlist.size());
@@ -166,9 +165,9 @@ public class ProjectController {
 	}
 	
 	@RequestMapping("/createProjectWx")
-    public @ResponseBody Map<String,String> createProjectWx(@RequestParam String user_id,@RequestParam String title,@RequestParam String instruction) {
+    public @ResponseBody Map<String,Object> createProjectWx(@RequestParam String user_id,@RequestParam String title,@RequestParam String instruction) {
 		
-		Map<String,String> map = new HashMap<String, String>();
+		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		
 		Calendar calendar=Calendar.getInstance();
@@ -190,7 +189,7 @@ public class ProjectController {
         	data.put("project_id", projectId);
         	
         	map.put("State", "Success");
-        	map.put("data", data.toString());	
+        	map.put("data", data);	
         }
         else
         {

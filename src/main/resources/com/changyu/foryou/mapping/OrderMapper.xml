@@ -385,7 +385,7 @@
 		</if> -->
 	</select>
 	
-	<select id="getOrderListByUserId" resultMap="BaseResultMap">
+	<select id="getOrderListByUserId" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select 
 		<include refid="Base_Column_List" />
 		from orders
@@ -398,7 +398,7 @@
 		</if> 
 	</select>
 	
-	<select id="getOrderListByCampusId" resultMap="BaseResultMap">
+	<select id="getOrderListByCampusId" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select 
 		<include refid="Base_Column_List" />
 		from orders
@@ -412,7 +412,7 @@
 		</if> 
 	</select>
 
-	<select id="getSuccessOrder" resultMap="BaseResultMap"
+	<select id="getSuccessOrder" resultMap="BaseResultMap" flushCache="true" useCache="false"
 		parameterType="String">
 		select
 		<include refid="Base_Column_List" />

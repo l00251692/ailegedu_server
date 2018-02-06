@@ -432,9 +432,7 @@ public class OrderController {
 			@RequestParam String remark){
 		Map<String,String> map = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
-			
-		System.out.println("SubmitOrderWx:" + user_id + "," + quasi_order_id + "," + remark);
-		Date createTime=new Date();
+		
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("orderId",Long.parseLong(quasi_order_id));
@@ -448,24 +446,15 @@ public class OrderController {
 			}
 			
 			order.setMessage(remark);
-			order.setStatus((short)2);
+			order.setStatus((short)1);
 			order.setAddrId(addr_id);
 			
-			JSONArray records = JSON.parseArray(order.getRecords());
-			JSONObject record = new JSONObject();
-			record.put("status", 2);
-			record.put("time", createTime);
-			
-			records.add(record);
-			order.setRecords(records.toJSONString());
-
 			int flag = orderService.updateOrder(order);
 			if (flag != -1 && flag != 0)
 			{
 				node.put("order_id", quasi_order_id);
 				map.put("State", "Success");
 				map.put("data", node.toString());
-				//向商家推送新订单信息，消息保存1天
 				return map;
 			} else 
 			{
