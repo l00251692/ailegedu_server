@@ -10,6 +10,8 @@ public class Project {
 	
 	private String subtitle;
 	
+	private String concat;
+	
 	private Date createTime;
 	
 	private String createUserId;
@@ -74,6 +76,14 @@ public class Project {
 
 	public void setHeadImg(String headImg) {
 		this.headImg = headImg;
+	}
+
+	public String getConcat() {
+		return concat;
+	}
+
+	public void setConcat(String concat) {
+		this.concat = concat;
 	}
 	
 	

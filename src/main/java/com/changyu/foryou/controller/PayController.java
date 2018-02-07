@@ -343,6 +343,24 @@ public class PayController {
 		int flag = orderService.updateOrder(order);
 		if (flag != -1 && flag != 0)
 		{
+			JSONArray goodsTmp = JSON.parseArray(order.getGoods());
+			Map<String, Object> paramMap2 = new HashMap<String, Object>();
+			paramMap2.put("campusId", order.getCampusId());
+			for (int i = 0; i < goodsTmp.size(); i ++)
+			{	
+				paramMap2.put("saleNumber", goodsTmp.getJSONObject(i).getString("num"));
+				paramMap2.put("foodId", goodsTmp.getJSONObject(i).getString("goods_id"));
+				try
+				{
+					foodService.addFoodSales(paramMap2);
+				}
+				catch(Exception e)
+				{
+					continue;
+				}
+				
+				
+			}
 			map.put("order_id", order_id);
 			map.put("State", "Success");
 			map.put("data", null);

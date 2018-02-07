@@ -549,6 +549,17 @@
 		</where>
 	</update>
 	
+	<update id="addFoodSales">
+		UPDATE food
+		SET sale_number = sale_number + #{saleNumber,jdbcType=BIGINT}
+		<where>
+		campus_id=#{campusId,jdbcType=VARCHAR}
+		<if test="foodId!=null">
+		and food_id=#{foodId,jdbcType=BIGINT}	
+		</if>
+		</where>
+	</update>
+	
 	<select id="getFoodHomeImage" resultType="String">
 	  select
 	     home_image

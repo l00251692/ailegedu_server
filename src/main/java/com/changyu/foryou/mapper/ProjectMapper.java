@@ -13,6 +13,8 @@ public interface ProjectMapper {
 	
 	public List<Project> getProjectList(Map<String, Object> paramMap);
 	
+	public List<Project> getMyProjectList(Map<String, Object> paramMap);
+	
 	public Project getProjectInfo(Map<String, Object> paramMap);
 	
 	public int insertSelective(Map<String, Object> paramMap);

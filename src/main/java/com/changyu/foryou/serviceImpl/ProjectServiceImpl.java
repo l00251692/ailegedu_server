@@ -29,6 +29,11 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.getProjectList(paramMap);
 	}
 	
+	public List<Project> getMyProjectList(Map<String, Object> paramMap)
+	{
+		return projectMapper.getMyProjectList(paramMap);
+	}
+	
 	public Project getProjectInfo(Map<String, Object> paramMap)
 	{
 		return projectMapper.getProjectInfo(paramMap);

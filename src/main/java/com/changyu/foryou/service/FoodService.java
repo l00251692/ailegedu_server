@@ -112,4 +112,6 @@ public interface FoodService {
 	String getFoodHomeImage(Map<String, Object> paramMap);  //获取原来的首页图片
 
 	String getDetailImg(Map<String, Object> paramMap);   //获取详情图片
+	
+	Integer addFoodSales(Map<String, Object> paramMap);
 }

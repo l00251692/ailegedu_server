@@ -13,6 +13,8 @@ public interface ProjectService {
 	
 	public List<Project> getProjectList(Map<String, Object> paramMap);
 	
+	public List<Project> getMyProjectList(Map<String, Object> paramMap);
+	
 	public Project getProjectInfo(Map<String, Object> paramMap);
 	
 	public int createProject(Map<String, Object> paramMap);

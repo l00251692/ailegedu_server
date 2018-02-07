@@ -279,10 +279,15 @@ public class FoodServiceImpl implements FoodService{
 	public String getDetailImg(Map<String, Object> paramMap) {
 		return foodMapper.getDetailImg(paramMap);
 	}
-	
+	@Override
 	public Integer getCampusAllFoodCount(String campusId) {
 		return foodMapper.getCampusAllFoodCount(campusId);
 	}
 	
+	@Override
+	public Integer addFoodSales(Map<String, Object> paramMap)
+	{
+		return foodMapper.addFoodSales(paramMap);
+	}
 }
 

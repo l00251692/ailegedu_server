@@ -6,6 +6,7 @@
 		<id column="project_id" property="projectId" jdbcType="VARCHAR" />
 		<result column="title" property="title" jdbcType="VARCHAR" />
 		<result column="subtitle" property="subtitle" jdbcType="VARCHAR" />
+		<result column="concat" property="concat" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="create_userid" property="createUserId" jdbcType="VARCHAR" />
 		<result column="head_img" property="headImg" jdbcType="VARCHAR" />
@@ -46,6 +47,21 @@
 			#{offset,jdbcType=INTEGER}
 		</if> 
 	</select>
+	
+	<select id="getMyProjectList" resultMap="BaseResultMap" flushCache="true" useCache="false">
+		select
+		*
+		from
+		project
+		where create_userid = #{createUserId,jdbcType=VARCHAR} 
+		order by
+		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+	
 	<select id="getProjectInfo" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
@@ -65,6 +81,9 @@
 			</if>
 			<if test="subtitle != null">
 				subtitle,
+			</if>
+			<if test="concat != null">
+				concat,
 			</if>
 			<if test="createTime != null">
 				create_time,
@@ -89,6 +108,9 @@
 			</if>
 			<if test="subtitle != null">
 				#{subtitle,jdbcType=VARCHAR},
+			</if>
+			<if test="concat != null">
+				#{concat,jdbcType=VARCHAR},
 			</if>
 			<if test="createTime != null">
 				#{createTime,jdbcType=TIMESTAMP},

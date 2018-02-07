@@ -130,6 +130,43 @@ public class ProjectController {
 		
 	}
 	
+	@RequestMapping("/getMyProjectListWx")
+    public @ResponseBody Map<String,Object> getMyProjectListWx(@RequestParam String user_id, @RequestParam Integer page) {
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("offset", page * 10);
+		paramMap.put("limit", 10);
+		paramMap.put("createUserId", user_id);
+        List<Project> projectlist = projectService.getMyProjectList(paramMap);
+		JSONArray jsonarray = new JSONArray(); 
+		JSONObject rtn = new JSONObject();
+		rtn.put("count", projectlist.size());
+				
+		for (Project project: projectlist)
+		{
+			JSONObject node = new JSONObject(); 
+			node.put("project_id", project.getProjectId());
+			node.put("item_title", project.getTitle());
+			node.put("subtitle", project.getSubtitle());
+			DateFormat formattmp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+			node.put("create_time", formattmp.format(project.getCreateTime()));
+			node.put("project_head", project.getHeadImg());
+			node.put("interest", String.valueOf(project.getInterest()));
+			
+			Users user = userService.selectByUserId(project.getCreateUserId());
+			node.put("create_userName", user.getNickname());
+			node.put("create_userHead", user.getImgUrl());
+			
+			jsonarray.add(node);
+		}
+		rtn.put("list", jsonarray);
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("State", "Success");
+		data.put("data", rtn);				
+		return data;
+		
+	}
+	
 	@RequestMapping("/getProjectInfoWx")
     public @ResponseBody Map<String,Object> getProjectInfoWx(@RequestParam String project_id) {
 		Map<String,Object> data = new HashMap<String, Object>();
@@ -149,6 +186,7 @@ public class ProjectController {
 		node.put("project_id", project.getProjectId());
 		node.put("item_title", project.getTitle());
 		node.put("subtitle", project.getSubtitle());
+		node.put("concat", project.getConcat());
 		DateFormat formattmp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		node.put("create_time", formattmp.format(project.getCreateTime()));
 		node.put("project_head", project.getHeadImg());
@@ -165,7 +203,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping("/createProjectWx")
-    public @ResponseBody Map<String,Object> createProjectWx(@RequestParam String user_id,@RequestParam String title,@RequestParam String instruction) {
+    public @ResponseBody Map<String,Object> createProjectWx(@RequestParam String user_id,@RequestParam String title,@RequestParam String concat, @RequestParam String instruction) {
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -176,6 +214,7 @@ public class ProjectController {
 		
 		paramMap.put("projectId", projectId);
 		paramMap.put("title", title);
+		paramMap.put("concat", concat);
 		paramMap.put("subtitle", instruction);
 		paramMap.put("createTime", new Date());
 		paramMap.put("createUserId", user_id);
