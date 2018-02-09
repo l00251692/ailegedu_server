@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.Order;
+import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.*;
 import com.changyu.foryou.tools.PayUtil;
 import com.changyu.foryou.tools.StringUtil;
@@ -20,7 +21,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.TextMessage;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,6 +51,9 @@ public class PayController {
     private FoodService foodService;
     @Autowired
     private CampusService  campusService;
+    
+    @Resource  
+    private WebSocketPushHandler webSocketHandler;  
     
     private static final Logger LOGGER = Logger
 			.getLogger(PayController.class);
@@ -364,8 +370,8 @@ public class PayController {
 			map.put("order_id", order_id);
 			map.put("State", "Success");
 			map.put("data", null);
-			//向商家推送订单信息
-			new Thread(new Runnable() {
+			//向商家推送语音通知订单信息，容联云需要企业资质，暂不放开
+			/*new Thread(new Runnable() {
 
 				 public void run() { //推送
 					Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -373,7 +379,19 @@ public class PayController {
 					Campus campus=campusService.getCampusById(paramMap);
 					pushService.sendPhoneCall(campus.getCustomService());
 
-				} }).start();
+				} }).start();*/
+			Map<String, Object> paramMap3 = new HashMap<String, Object>();
+			paramMap3.put("campusId", order.getCampusId());
+			Users user = userService.getUserByCampusId(paramMap3);
+			if(user != null)
+			{
+				webSocketHandler.sendMessageToUser(user.getUserId(), new TextMessage("新订单"));
+			}
+			else
+			{
+				
+			}
+			
 			return map;
 		} else 
 		{

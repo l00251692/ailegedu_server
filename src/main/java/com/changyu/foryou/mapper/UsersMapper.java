@@ -62,4 +62,6 @@ public interface UsersMapper {
 	Users checkLogin(String user_id);
 
 	List<String> getUserByType(Map<String, Object> paramMap);
+	
+	Users getUserByCampusId(Map<String, Object> paramMap);
 }

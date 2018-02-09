@@ -23,7 +23,7 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		user_id,phone, password, type, nickname, img_url,
-		last_login_date,create_time,sex,academy,qq,weixin
+		last_login_date,create_time,sex,academy,qq,weixin,campus_id
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
@@ -367,5 +367,12 @@
 	   select phone
 	   from users
 	   where type=#{type,jdbcType=SMALLINT} and campus_id=#{campusId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getUserByCampusId" resultMap="BaseResultMap">
+	   select 
+	   <include refid="Base_Column_List"></include>
+	   from users
+	   where  campus_id=#{campusId,jdbcType=VARCHAR}
 	</select>
 </mapper>

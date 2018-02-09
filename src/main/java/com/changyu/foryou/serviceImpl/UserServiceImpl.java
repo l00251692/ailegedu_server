@@ -145,5 +145,11 @@ public class UserServiceImpl implements UserService {
 	public List<String> getUserByType(Map<String, Object> paramMap) {
 		return usersMapper.getUserByType(paramMap);
 	}
+	
+	
+	@Override
+	public Users getUserByCampusId(Map<String, Object> paramMap) {
+		return usersMapper.getUserByCampusId(paramMap);
+	}
 
 }
