@@ -15,7 +15,7 @@ import cn.jpush.api.push.model.PushPayload;
 
 import com.changyu.foryou.service.PushService;
 import com.changyu.foryou.tools.JpushInterface;
-import com.cloopen.rest.sdk.CCPRestSDK;
+//import com.cloopen.rest.sdk.CCPRestSDK;
 
 @Service("pushService")
 public class PushServiceImpl implements PushService{
@@ -77,8 +77,9 @@ public class PushServiceImpl implements PushService{
 		{
 			return false;
 		}
+		return true;
 
-		CCPRestSDK restAPI = new CCPRestSDK();
+		/*CCPRestSDK restAPI = new CCPRestSDK();
 		restAPI.init("app.cloopen.com", "8883");// 初始化服务器地址和端口，格式如下，服务器地址不需要写https://
 		restAPI.setAccount("aaf98f894526e89a014530c51a73072b", "0646f9ca871743df84f6b181f475734d");// 初始化主帐号和主帐号TOKEN
 		restAPI.setAppId("8a216da86150f043016164f06b4c04fc");// 初始化应用ID
@@ -90,18 +91,18 @@ public class PushServiceImpl implements PushService{
 		
 		if("000000".equals(result.get("statusCode"))){
 			//正常返回输出data包体信息（map）
-			/*HashMap<String,Object> data = (HashMap<String, Object>)result.get("data");
+			HashMap<String,Object> data = (HashMap<String, Object>)result.get("data");
 			Set<String> keySet = data.keySet();
 			for(String key:keySet){
 				Object object = data.get(key);
 				System.out.println(key +" = "+object);
-			}*/
+			}
 			return true;
 		}else{
 			//异常返回输出错误码和错误信息
 			System.out.println("错误码=" + result.get("statusCode") +" 错误信息= "+result.get("statusMsg"));
 			return false;
-		}
+		}*/
 		
 	}
 }

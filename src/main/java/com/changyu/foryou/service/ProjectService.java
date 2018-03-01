@@ -24,5 +24,10 @@ public interface ProjectService {
 	public int commitProjectComment(Map<String, Object> paramMap);
 	
 	public List<ProjectComment> getCommentList(Map<String, Object> paramMap);
-
+	
+	public List<ProjectComment> getProjectCommentMsg(String userId);
+	
+	public int getCommentUnreadMsgCount(String userId);
+	
+	public int setProjectCommentRead(Map<String, Object> paramMap);
 }

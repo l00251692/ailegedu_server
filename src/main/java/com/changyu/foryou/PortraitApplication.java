@@ -4,11 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 import javax.servlet.MultipartConfigElement;
+import com.changyu.foryou.listener.InitContextListener;
 
 @SpringBootApplication
 @PropertySource("application.properties")
@@ -26,6 +28,12 @@ public class PortraitApplication extends SpringBootServletInitializer {
 		// factory.setLocation("路径地址");
 		return factory.createMultipartConfig();
 	}
+	
+	@Bean  
+    public ServletListenerRegistrationBean<InitContextListener> testListenerRegistration(){  
+        ServletListenerRegistrationBean<InitContextListener> registration = new ServletListenerRegistrationBean<InitContextListener>(new InitContextListener());  
+        return registration;  
+    } 
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {

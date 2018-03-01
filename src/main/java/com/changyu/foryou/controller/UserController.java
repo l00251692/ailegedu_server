@@ -31,8 +31,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.model.Feedback;
+import com.changyu.foryou.model.ProjectComment;
 import com.changyu.foryou.model.Users;
+import com.changyu.foryou.model.WeChatContext;
 import com.changyu.foryou.service.OrderService;
+import com.changyu.foryou.service.ProjectService;
 import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.AesCbcUtil;
 import com.changyu.foryou.tools.Constants;
@@ -47,6 +50,10 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private ProjectService projectService;
+	
+	private WeChatContext context = WeChatContext.getInstance();
 
 	/**
 	 * 取得用户信息
@@ -181,10 +188,10 @@ public class UserController {
 		} 
 
 		//小程序唯一标识  (在微信小程序管理后台获取) 
-		String wxspAppid = "wxcc5ecb17be242087"; 
+		String wxspAppid = context.getAppId(); 
 		//小程序的 app secret (在微信小程序管理后台获取) 
-		String wxspSecret = "a47f5b489462471957207c3e5c3e5baa"; 
-		//授权（必填） 
+		String wxspSecret = context.getAppSecrct();
+	    //授权（必填） 
 		String grant_type = "authorization_code"; 
 	
 	
@@ -429,9 +436,11 @@ public class UserController {
 			map.put("info", "获得我的信息失败"); 
 			return map; 
 		}
+		int msgCount = projectService.getCommentUnreadMsgCount(user_id);
 		
 		JSONObject obj = new JSONObject();
 		obj.put("campus_id", users.getCampusId());
+		obj.put("unread_msg_count", msgCount);
 		obj.put("weixin", users.getWeiXin());
 			
 		map.put("State", "Success"); 
@@ -764,5 +773,59 @@ public class UserController {
 					map.put(Constants.MESSAGE, "修改密码失败");					
 				}				
 				return map;	
+	}
+	
+	/**
+	 * 获取我的用户总信息
+	 * @param phone 用户id
+	 * @return
+	 */
+	@RequestMapping(value="getMsgListWx")
+	public @ResponseBody Map<String, Object> getMsgListWx(@RequestParam String user_id){
+		Map<String, Object> map = new HashMap<String, Object>();
+		JSONArray list = new JSONArray();
+		int readCount=0;
+	
+		List <ProjectComment> commentMsgList =projectService.getProjectCommentMsg(user_id);
+		
+		for(int i = 0; i < commentMsgList.size();i++)
+		{
+			if(commentMsgList.get(i).getIsRead())
+			{
+				readCount++;
+			}
+			JSONObject obj = new JSONObject();
+			obj.put("msg_id", i);
+			obj.put("type", 1);
+			obj.put("project_id", commentMsgList.get(i).getProjectId());
+			obj.put("time", commentMsgList.get(i).getCommentTime());
+			obj.put("title", commentMsgList.get(i).getProjectTitle());
+			obj.put("user", commentMsgList.get(i).getUserName());
+			obj.put("is_read", commentMsgList.get(i).getIsRead());
+			list.add(obj);
+		}
+		
+		JSONObject rslt = new JSONObject();
+		rslt.put("count", readCount);
+		rslt.put("list", list);
+			
+		map.put("State", "Success"); 
+		map.put("data", rslt); 
+		return map;
+	}
+	
+	@RequestMapping(value="setProjectCommentReadWx")
+	public @ResponseBody Map<String, Object> setProjectCommentReadWx(@RequestParam String project_id,@RequestParam String user_id){
+		Map<String, Object> map = new HashMap<String, Object>();
+	
+		Map<String, Object> paramMap=new HashMap<String, Object>();
+		paramMap.put("userId",user_id);
+		paramMap.put("projectId",project_id);
+	
+		int flag =projectService.setProjectCommentRead(paramMap);
+			
+		map.put("State", "Success"); 
+		map.put("data", flag); 
+		return map;
 	}
 }

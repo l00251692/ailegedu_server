@@ -354,7 +354,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --  View definition for `project_comment_user`
 -- ----------------------------
 DROP VIEW IF EXISTS `project_comment_user`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `project_comment_user` AS select `project_comment`.`user_id` AS `user_id`,`project_comment`.`project_id` AS `project_id`,`project_comment`.`comment` AS `comment`,`project_comment`.`comment_time` AS `comment_time`,`users`.`nickname` AS `user_name`,`users`.`img_url` AS `user_head` from (`project_comment` left join `users` on((convert(`project_comment`.`user_id` using utf8) = `users`.`user_id`)));
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `project_comment_user` AS select `project_comment`.`user_id` AS `user_id`,`project_comment`.`project_id` AS `project_id`,`project_comment`.`comment` AS `comment`,`project_comment`.`comment_time` AS `comment_time`,`users`.`nickname` AS `user_name`,`users`.`img_url` AS `user_head`,`project_comment`.`is_read` AS `is_read`,`project`.`title` AS `project_title`,`project`.`create_userid` AS `owner_id` from ((`project_comment` left join `users` on((convert(`project_comment`.`user_id` using utf8) = `users`.`user_id`))) left join `project` on((convert(`project_comment`.`project_id` using utf8) = `project`.`project_id`)));
 
 -- ----------------------------
 --  Records 

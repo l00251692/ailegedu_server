@@ -474,6 +474,59 @@ public class OrderController {
 		return map;
 	}
 	
+	@RequestMapping("/cancelOrderWx")
+	public @ResponseBody Map<String, String> cancelOrderWx(
+			@RequestParam String user_id,  @RequestParam String order_id){
+		Map<String,String> map = new HashMap<String, String>();
+		JSONObject node = new JSONObject();
+		
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("orderId",Long.parseLong(order_id));
+			Order order = orderService.getOrderByIdWx(paramMap);
+			if(order == null)
+			{
+				map.put("State", "False");
+				map.put("data", "生成订单失败");	
+
+				return map;
+			}
+
+			order.setStatus((short)5);
+			
+			JSONArray recordes = JSON.parseArray(order.getRecords());
+			JSONObject record = new JSONObject();
+			record.put("status",5);
+			record.put("time", new Date());
+			recordes.add(record);
+			order.setRecords(recordes.toString());
+			
+			
+			int flag = orderService.updateOrder(order);
+			if (flag != -1 && flag != 0)
+			{
+				node.put("order_id", order_id);
+				map.put("State", "Success");
+				map.put("data", node.toString());
+				return map;
+			} else 
+			{
+				map.put("State", "False");
+				map.put("data", null);	
+				return map;
+			}
+			
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		map.put("State", "False");
+		map.put("data", null);	
+
+		return map;
+	}
+	
 	/**
 	 * 获取下达的所有订单
 	 * 
@@ -690,7 +743,7 @@ public class OrderController {
 			}
 			
 			rtnOrder.put("remark", order.getMessage());
-			rtnOrder.put("order_no", order.getOrderId());
+			rtnOrder.put("order_id", order.getOrderId());
 			rtnOrder.put("seller_phone", campus.getCustomService());
 			rtnOrder.put("localphone", "10010");
 

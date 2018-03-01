@@ -252,7 +252,7 @@
 		select campus_id,campus_name,campus.city_id,city.city_name,
 		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver,delivery_fee
 		 from 
-		 campus,city where campus.city_id=city.city_id
+		 campus,city where campus.city_id=city.city_id order by sales desc,status desc
 	</select>
 
 	<select id="getCampusWithCity" resultMap="CampusWithCityMap">

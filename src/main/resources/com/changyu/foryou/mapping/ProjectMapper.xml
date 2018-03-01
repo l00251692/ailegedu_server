@@ -21,11 +21,14 @@
 	
 	<resultMap id="CommentResultMap" type="com.changyu.foryou.model.ProjectComment">
 		<id column="project_id" property="projectId" jdbcType="VARCHAR" />
+		<result column="owner_id" property="ownerId" jdbcType="VARCHAR" />
 		<result column="user_id" property="userId" jdbcType="VARCHAR" />
 		<result column="comment" property="comment" jdbcType="VARCHAR" />
 		<result column="comment_time" property="commentTime" jdbcType="TIMESTAMP" />
 		<result column="user_head" property="userHead" jdbcType="VARCHAR" />
 		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="is_read" property="isRead" jdbcType="BOOLEAN" />
+		<result column="project_title" property="projectTitle" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<select id="getBannerInfo" resultMap="BannerResultMap">
@@ -181,6 +184,39 @@
 			#{offset,jdbcType=INTEGER}
 		</if> 
 	</select>
+	
+	<select id="getProjectCommentMsg" parameterType="String" resultMap="CommentResultMap" flushCache="true" useCache="false">
+		select
+		*
+		from
+		project_comment_user 
+		where
+		owner_id=#{userId,jdbcType=VARCHAR} 
+		and user_id != owner_id
+		order by
+		comment_time DESC
+		LIMIT 10
+	</select>
+	
+	
+	<select id="getCommentUnreadMsgCount" parameterType="String" resultType="java.lang.Integer" flushCache="true" useCache="false">
+		select
+		count(*)
+		from
+		project_comment_user 
+		where
+		owner_id=#{userId,jdbcType=VARCHAR} 
+		and user_id != owner_id
+		and is_read = 0
+	</select>
+	
+	
+	<update id="setProjectCommentRead">
+		update project_comment
+		set
+		is_read = 1
+		where project_id = #{projectId,jdbcType=VARCHAR}
+	</update>
 
 </mapper>
 

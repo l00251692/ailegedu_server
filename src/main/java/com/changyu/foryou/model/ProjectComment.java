@@ -7,6 +7,8 @@ public class ProjectComment {
 	private String userId;
 	
 	private String projectId;
+	
+	private String ownerId;
     
     private String comment;
     
@@ -15,6 +17,10 @@ public class ProjectComment {
     private String userHead;
     
     private String userName;
+    
+    private Boolean isRead;
+    
+    private String projectTitle;
     
     public String getUserId() {
 		return userId;
@@ -62,6 +68,30 @@ public class ProjectComment {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public Boolean getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(Boolean isRead) {
+		this.isRead = isRead;
+	}
+
+	public String getProjectTitle() {
+		return projectTitle;
+	}
+
+	public void setProjectTitle(String projectTitle) {
+		this.projectTitle = projectTitle;
+	}
+
+	public String getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 
 }

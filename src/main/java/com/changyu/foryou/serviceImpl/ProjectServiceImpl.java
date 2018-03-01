@@ -58,4 +58,19 @@ public class ProjectServiceImpl implements ProjectService{
 	{
 		return projectMapper.getCommentList(paramMap);
 	}
+	
+	public List<ProjectComment> getProjectCommentMsg(String userId)
+	{
+		return projectMapper.getProjectCommentMsg(userId);
+	}
+	
+	public int getCommentUnreadMsgCount(String userId)
+	{
+		return projectMapper.getCommentUnreadMsgCount(userId);
+	}
+	
+	public int setProjectCommentRead(Map<String, Object> paramMap)
+	{
+		return projectMapper.setProjectCommentRead(paramMap);
+	}
 }
