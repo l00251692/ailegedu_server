@@ -38,6 +38,7 @@ import com.changyu.foryou.model.Banner;
 import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.Project;
 import com.changyu.foryou.model.ProjectComment;
+import com.changyu.foryou.model.University;
 import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.ProjectService;
 import com.changyu.foryou.service.UserService;
@@ -114,11 +115,33 @@ public class ProjectController {
 			DateFormat formattmp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 			node.put("create_time", formattmp.format(project.getCreateTime()));
 			node.put("project_head", project.getHeadImg());
-			node.put("interest", String.valueOf(project.getInterest()));
 			
 			Users user = userService.selectByUserId(project.getCreateUserId());
 			node.put("create_userName", user.getNickname());
 			node.put("create_userHead", user.getImgUrl());
+			
+			node.put("location", project.getLocation());
+			node.put("like", project.getInterest());
+			
+			if (project.getDeadLineTime() != null)
+			{
+				Date  deadLineTime =  project.getDeadLineTime();	
+				Calendar calendar1 = Calendar.getInstance();
+				calendar1.setTime(deadLineTime);
+				Calendar  today = Calendar.getInstance();
+				double days = ( calendar1.getTimeInMillis() - today.getTimeInMillis())/(1000 * 60 * 60 * 24);
+				node.put("days", days);
+			}
+			else
+			{
+				node.put("days", 0);
+			}
+			
+
+			Map<String, Object> paramMap2 = new HashMap<String, Object>();
+			paramMap2.put("projectId", project.getProjectId());
+	        int count = projectService.getCommentCount(paramMap2);
+			node.put("comments", count);
 			
 			jsonarray.add(node);
 		}
@@ -192,9 +215,23 @@ public class ProjectController {
 		node.put("project_head", project.getHeadImg());
 		node.put("interest", String.valueOf(project.getInterest()));
 		
+		
+		Date  deadLineTime =  project.getDeadLineTime();	
+		Calendar calendar1 = Calendar.getInstance();
+		calendar1.setTime(deadLineTime);
+		Calendar  today = Calendar.getInstance();
+		double days = ( calendar1.getTimeInMillis() - today.getTimeInMillis())/(1000 * 60 * 60 * 24);
+		node.put("days", days);
+		
+		node.put("location", project.getLocation());
+		
 		Users user = userService.selectByUserId(project.getCreateUserId());
 		node.put("create_userName", user.getNickname());
 		node.put("create_userHead", user.getImgUrl());
+		
+		JSONArray arr = JSON.parseArray(project.getAddImgs());
+		node.put("addImgarr", arr);
+		
 
 		data.put("State", "Success");
 		data.put("data", node);				
@@ -203,7 +240,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping("/createProjectWx")
-    public @ResponseBody Map<String,Object> createProjectWx(@RequestParam String user_id,@RequestParam String title,@RequestParam String concat, @RequestParam String instruction) {
+    public @ResponseBody Map<String,Object> createProjectWx(@RequestParam String user_id,@RequestParam String title,@RequestParam String concat, @RequestParam String date, @RequestParam String selectUniv, @RequestParam String instruction) {
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -220,6 +257,9 @@ public class ProjectController {
 		paramMap.put("createUserId", user_id);
 		paramMap.put("headImg", "");
 		paramMap.put("interest", 0);
+		paramMap.put("deadLineTime", date);
+		paramMap.put("location", selectUniv);
+		paramMap.put("addImgs", "");
         int flag = projectService.createProject(paramMap);
         
         if(flag != -1 && flag !=0)
@@ -240,9 +280,9 @@ public class ProjectController {
 	}
 	
 	@RequestMapping("/updateProjectImgWx")
-    public @ResponseBody Map<String,String> updateProjectImgWx(@RequestParam MultipartFile[] image,HttpServletRequest request)throws Exception{
+    public @ResponseBody Map<String,Object> updateProjectImgWx(@RequestParam MultipartFile[] image,HttpServletRequest request)throws Exception{
 		
-		Map<String,String> map = new HashMap<String, String>();
+		Map<String,Object> map = new HashMap<String, Object>();
 		//获取文件需要上传到的路径
         String path = request.getSession().getServletContext().getRealPath("/");
         path = path.concat("JiMuImage/project/");
@@ -278,9 +318,12 @@ public class ProjectController {
         int flag = projectService.updateProjectHeadImg(paramMap);
         
         if(flag != -1 && flag !=0)
-        {       	
+        {  
+        	JSONObject data = new JSONObject();
+        	data.put("project_id", projectId);
         	map.put("State", "Success");
-        	map.put("data", "更新图片成功");	
+        	map.put("data", data);	
+        	return map;	
         }
         else
         {
@@ -289,6 +332,79 @@ public class ProjectController {
         }
     	return map;	
 	}
+	
+	
+	@RequestMapping("/updateProjectInfoImgWx")
+    public @ResponseBody Map<String,String> updateProjectInfoImgWx(@RequestParam MultipartFile[] image,HttpServletRequest request)throws Exception{
+		
+		Map<String,String> map = new HashMap<String, String>();
+		
+		String projectId = request.getParameter("project_id");
+		//获取文件需要上传到的路径
+        String path = request.getSession().getServletContext().getRealPath("/");
+        
+        path = path.concat("JiMuImage/project/"+ projectId + "/");
+        
+   
+        List<String> imageUrl = new ArrayList<String>();
+        for (MultipartFile file : image) 
+        {
+            if (file.isEmpty()) {
+                System.out.println("文件未上传");
+                imageUrl.add(null);
+            } else 
+            {
+                String contentType = file.getContentType();
+
+                if (contentType.startsWith("image"))
+                {
+                	int random = new Random(System.currentTimeMillis()).nextInt();
+                    String newFileName = random + ".jpg";
+                    System.out.println(newFileName);
+                    FileUtils.copyInputStreamToFile(file.getInputStream(),new File(path, newFileName)); // 写文件
+                    imageUrl.add(Constants.localIp + "/project/"+ projectId + "/" + newFileName);
+                }
+            }
+        }
+  
+        System.out.println("url="+ imageUrl.get(0));   
+        
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("projectId", projectId);
+		
+		Project project = projectService.getProjectInfo(paramMap);
+		
+		JSONArray arr;
+		
+		if(project.getAddImgs() != null && !project.getAddImgs().isEmpty())
+		{
+			arr = JSON.parseArray(project.getAddImgs());
+		}
+		else
+		{
+			arr = new JSONArray();
+		}
+		
+		
+		JSONObject obj = new JSONObject();
+		obj.put("url",imageUrl.get(0));
+		arr.add(obj);
+		paramMap.put("addImgs", arr.toJSONString());
+        int flag = projectService.updateProjectAddImgs(paramMap);
+        
+        if(flag != -1 && flag !=0)
+        {       	
+        	map.put("State", "Success");
+        	map.put("data", "上传图片成功");	
+        }
+        else
+        {
+        	map.put("State", "False");
+        	map.put("info", "上传图片失败");	
+        }
+    	return map;	
+	}
+	
 	
 	@RequestMapping("/sendProjdecCommentWx")
     public @ResponseBody Map<String,Object> sendProjdecCommentWx(@RequestParam String user_id,@RequestParam String project_id,@RequestParam String comment) {
@@ -345,6 +461,57 @@ public class ProjectController {
 			jsonarray.add(node);
 		}
 		rtn.put("list", jsonarray);
+		Map<String,Object> data = new HashMap<String, Object>();
+		data.put("State", "Success");
+		data.put("data", rtn);				
+		return data;
+		
+	}
+	
+	
+	@RequestMapping("/getUnivListWx")
+    public @ResponseBody Map<String,Object> getUnivListWx() {
+		
+		JSONArray provinceList = new JSONArray(); 
+		JSONArray univList = new JSONArray(); 
+        
+        List<University> provicelist = projectService.getProviceList();
+        for(University provTmp: provicelist)
+        {
+        	JSONObject provice = new JSONObject();
+        	
+        	provice.put("proviceId", provTmp.getProviceId());
+        	provice.put("name", provTmp.getProvice());
+        	
+        	provinceList.add(provice);
+        	
+        	List<University> universitylist = projectService.getUnivList(provTmp.getProviceId());
+   
+        	JSONArray univs = new JSONArray();
+            for(University univTmp: universitylist)
+            {
+            	
+            	JSONObject tmp = new JSONObject();
+            	tmp.put("id", univTmp.getUnivId());
+            	tmp.put("name", univTmp.getUniversity());
+            	univs.add(tmp);
+            }
+            
+            JSONObject univ = new JSONObject();
+        	univ.put("proviceId", provTmp.getProviceId());
+            univ.put("univs", univs);
+            univList.add(univ);
+        }
+        
+		
+		
+		
+		
+		JSONObject rtn = new JSONObject();
+		rtn.put("provinceList", provinceList);
+		rtn.put("univList", univList);
+				
+		
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("State", "Success");
 		data.put("data", rtn);				

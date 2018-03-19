@@ -20,10 +20,11 @@ import com.changyu.foryou.tools.Constants;
 @Controller
 @RequestMapping("/hotSearch")
 public class HotSearchController {
-    @Resource
-    private HotSearchService hotSearchService;
 
-    /**
+    @Resource
+	private HotSearchService hotSearchService;
+
+	/**
      * 获取所有的热门搜索标签
      *
      * @param campusId 校区id

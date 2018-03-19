@@ -11,12 +11,22 @@
 		<result column="create_userid" property="createUserId" jdbcType="VARCHAR" />
 		<result column="head_img" property="headImg" jdbcType="VARCHAR" />
 		<result column="interest" property="interest" jdbcType="INTEGER" />
+		<result column="deadline_time" property="deadLineTime" jdbcType="TIMESTAMP" />
+		<result column="location" property="location" jdbcType="VARCHAR" />
+		<result column="add_imgs" property="addImgs" jdbcType="VARCHAR" />
 	</resultMap> 
 	
 	<resultMap id="BannerResultMap" type="com.changyu.foryou.model.Banner">
 		<id column="banner_id" property="bannerId" jdbcType="INTEGER" />
 		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
 		<result column="content" property="content" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="UniversityResultMap" type="com.changyu.foryou.model.University">
+		<id column="provice_id" property="proviceId" jdbcType="INTEGER" />
+		<result column="provice" property="provice" jdbcType="VARCHAR" />
+		<result column="univ_id" property="univId" jdbcType="INTEGER" />
+		<result column="university" property="university" jdbcType="VARCHAR" />
 	</resultMap>
 	
 	<resultMap id="CommentResultMap" type="com.changyu.foryou.model.ProjectComment">
@@ -100,6 +110,15 @@
 			<if test="interest != null">
 				interest,
 			</if>
+			<if test="deadLineTime != null">
+				deadline_time,
+			</if>
+			<if test="location != null">
+				location,
+			</if>
+			<if test="addImgs != null">
+				add_imgs,
+			</if>
 
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -127,6 +146,15 @@
 			<if test="interest != null">
 				#{interest,jdbcType=INTEGER},
 			</if>
+			<if test="deadLineTime != null">
+				#{deadLineTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="location != null">
+				#{location,jdbcType=VARCHAR},
+			</if>
+			<if test="addImgs != null">
+				#{addImgs,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	
@@ -134,6 +162,13 @@
 		update project
 		set
 		head_img = #{headImg,jdbcType=VARCHAR} 
+		where project_id = #{projectId,jdbcType=VARCHAR} 
+	</update>
+	
+	<update id="updateProjectAddImgs">
+		update project
+		set
+		add_imgs = #{addImgs,jdbcType=VARCHAR} 
 		where project_id = #{projectId,jdbcType=VARCHAR} 
 	</update>
 	
@@ -185,6 +220,17 @@
 		</if> 
 	</select>
 	
+	<select id="getCommentCount" resultType="java.lang.Integer" flushCache="true" useCache="false">
+		select
+		count(*)
+		from
+		project_comment_user
+		<where>
+		project_id = #{projectId,jdbcType=VARCHAR} 
+		</where> 
+	</select>
+	
+	
 	<select id="getProjectCommentMsg" parameterType="String" resultMap="CommentResultMap" flushCache="true" useCache="false">
 		select
 		*
@@ -218,5 +264,20 @@
 		where project_id = #{projectId,jdbcType=VARCHAR}
 	</update>
 
+	
+	<select id="getProviceList"  resultMap="UniversityResultMap" flushCache="true" useCache="false">
+		select
+		distinct provice_id, provice
+		from
+		university 
+	</select>
+	
+	<select id="getUnivList"  parameterType="INTEGER" resultMap="UniversityResultMap" flushCache="true" useCache="false">
+		select
+		*
+		from
+		university 
+		where provice_id = #{proviceId,jdbcType=INTEGER}
+	</select>
 </mapper>
 

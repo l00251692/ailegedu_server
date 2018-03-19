@@ -6,20 +6,25 @@ public class Project {
 	
 	private String projectId;
 	
-	private String title;
+	private String title; //标题
 	
-	private String subtitle;
+	private String subtitle; //内容
 	
-	private String concat;
+	private String concat;  //联系方式
 	
 	private Date createTime;
 	
 	private String createUserId;
 	
-	private String headImg;
+	private String headImg; //封面
+	
+	private Date deadLineTime;
+	
+	private String location;
+	
+	private String addImgs;
 	
 	private int interest;
-	
 	
 
 	public String getProjectId() {
@@ -84,6 +89,30 @@ public class Project {
 
 	public void setConcat(String concat) {
 		this.concat = concat;
+	}
+
+	public Date getDeadLineTime() {
+		return deadLineTime;
+	}
+
+	public void setDeadLineTime(Date deadLineTime) {
+		this.deadLineTime = deadLineTime;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getAddImgs() {
+		return addImgs;
+	}
+
+	public void setAddImgs(String addImgs) {
+		this.addImgs = addImgs;
 	}
 	
 	

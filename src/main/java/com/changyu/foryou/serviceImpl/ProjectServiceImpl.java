@@ -11,6 +11,7 @@ import com.changyu.foryou.mapper.ProjectMapper;
 import com.changyu.foryou.model.Banner;
 import com.changyu.foryou.model.Project;
 import com.changyu.foryou.model.ProjectComment;
+import com.changyu.foryou.model.University;
 import com.changyu.foryou.service.ProjectService;
 
 @Service("projectService")
@@ -49,6 +50,11 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.updateProjectHeadImg(paramMap);
 	}
 	
+	public int updateProjectAddImgs(Map<String, Object> paramMap)
+	{
+		return projectMapper.updateProjectAddImgs(paramMap);
+	}
+	
 	public int commitProjectComment(Map<String, Object> paramMap)
 	{
 		return projectMapper.commitComment(paramMap);
@@ -57,6 +63,10 @@ public class ProjectServiceImpl implements ProjectService{
 	public List<ProjectComment> getCommentList(Map<String, Object> paramMap)
 	{
 		return projectMapper.getCommentList(paramMap);
+	}
+	public int getCommentCount(Map<String, Object> paramMap)
+	{
+		return projectMapper.getCommentCount(paramMap);
 	}
 	
 	public List<ProjectComment> getProjectCommentMsg(String userId)
@@ -73,4 +83,15 @@ public class ProjectServiceImpl implements ProjectService{
 	{
 		return projectMapper.setProjectCommentRead(paramMap);
 	}
+	
+	public List<University> getUnivList(int proviceId)
+	{
+		return projectMapper.getUnivList(proviceId);
+	}
+	
+	public List<University> getProviceList()
+	{
+		return projectMapper.getProviceList();
+	}
 }
+
