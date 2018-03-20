@@ -21,6 +21,7 @@
 		<result column="weixin" property="weiXin" jdbcType="VARCHAR" />
 		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
 	</resultMap>
+	
 	<sql id="Base_Column_List">
 		user_id,phone, password, type, nickname, img_url,
 		last_login_date,create_time,sex,academy,qq,weixin,campus_id
@@ -375,4 +376,37 @@
 	   from users
 	   where  campus_id=#{campusId,jdbcType=VARCHAR}
 	</select>
+	
+	
+	<select id="checkIsLike" resultType="com.changyu.foryou.model.UserLikeProject" flushCache="true" useCache="false">
+	   select 
+	   *
+	   from user_like_project
+	   where  user_id=#{userId,jdbcType=VARCHAR} 
+	   and project_id=#{projectId,jdbcType=VARCHAR}
+	</select>
+	
+	<insert id="addLike"  parameterType="com.changyu.foryou.model.UserLikeProject">
+	   insert  into user_like_project(user_id, project_id)
+	   values
+	   (#{userId,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR})
+	</insert>
+	
+	<delete id="delLike" parameterType="com.changyu.foryou.model.UserLikeProject">
+	   delete 
+	   from user_like_project
+	   where  user_id=#{userId,jdbcType=VARCHAR} 
+	   and project_id=#{projectId,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="getProjectLikeCount" resultType="Integer" flushCache="true" useCache="false">
+	   select 
+	   count(*)
+	   from user_like_project
+	   <where>
+		project_id = #{projectId,jdbcType=VARCHAR} 
+	  </where> 
+	</select>
+	
+	
 </mapper>

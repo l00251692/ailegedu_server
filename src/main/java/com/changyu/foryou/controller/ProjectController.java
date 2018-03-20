@@ -39,6 +39,7 @@ import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.Project;
 import com.changyu.foryou.model.ProjectComment;
 import com.changyu.foryou.model.University;
+import com.changyu.foryou.model.UserLikeProject;
 import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.ProjectService;
 import com.changyu.foryou.service.UserService;
@@ -121,7 +122,11 @@ public class ProjectController {
 			node.put("create_userHead", user.getImgUrl());
 			
 			node.put("location", project.getLocation());
-			node.put("like", project.getInterest());
+			
+			Map<String, Object> paramMap2 = new HashMap<String, Object>();
+			paramMap2.put("projectId", project.getProjectId());
+			int likecount = userService.getProjectLikeCount(paramMap2);
+			node.put("like", likecount);
 			
 			if (project.getDeadLineTime() != null)
 			{
@@ -138,9 +143,9 @@ public class ProjectController {
 			}
 			
 
-			Map<String, Object> paramMap2 = new HashMap<String, Object>();
-			paramMap2.put("projectId", project.getProjectId());
-	        int count = projectService.getCommentCount(paramMap2);
+			Map<String, Object> paramMap3 = new HashMap<String, Object>();
+			paramMap3.put("projectId", project.getProjectId());
+	        int count = projectService.getCommentCount(paramMap3);
 			node.put("comments", count);
 			
 			jsonarray.add(node);
@@ -180,6 +185,32 @@ public class ProjectController {
 			node.put("create_userName", user.getNickname());
 			node.put("create_userHead", user.getImgUrl());
 			
+			node.put("location", project.getLocation());
+			
+			Map<String, Object> paramMap2 = new HashMap<String, Object>();
+			paramMap2.put("projectId", project.getProjectId());
+			int likecount = userService.getProjectLikeCount(paramMap2);
+			node.put("like", likecount);
+			
+			if (project.getDeadLineTime() != null)
+			{
+				Date  deadLineTime =  project.getDeadLineTime();	
+				Calendar calendar1 = Calendar.getInstance();
+				calendar1.setTime(deadLineTime);
+				Calendar  today = Calendar.getInstance();
+				double days = ( calendar1.getTimeInMillis() - today.getTimeInMillis())/(1000 * 60 * 60 * 24);
+				node.put("days", days);
+			}
+			else
+			{
+				node.put("days", 0);
+			}
+			
+			Map<String, Object> paramMap3 = new HashMap<String, Object>();
+			paramMap3.put("projectId", project.getProjectId());
+	        int count = projectService.getCommentCount(paramMap3);
+			node.put("comments", count);
+			
 			jsonarray.add(node);
 		}
 		rtn.put("list", jsonarray);
@@ -191,7 +222,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping("/getProjectInfoWx")
-    public @ResponseBody Map<String,Object> getProjectInfoWx(@RequestParam String project_id) {
+    public @ResponseBody Map<String,Object> getProjectInfoWx(@RequestParam String user_id, @RequestParam String project_id) {
 		Map<String,Object> data = new HashMap<String, Object>();
 			
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -213,8 +244,6 @@ public class ProjectController {
 		DateFormat formattmp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		node.put("create_time", formattmp.format(project.getCreateTime()));
 		node.put("project_head", project.getHeadImg());
-		node.put("interest", String.valueOf(project.getInterest()));
-		
 		
 		Date  deadLineTime =  project.getDeadLineTime();	
 		Calendar calendar1 = Calendar.getInstance();
@@ -232,7 +261,27 @@ public class ProjectController {
 		JSONArray arr = JSON.parseArray(project.getAddImgs());
 		node.put("addImgarr", arr);
 		
-
+		//查看我是否已经关注了项目
+		Map<String, Object> paramMap2 = new HashMap<String, Object>();
+		paramMap2.put("userId", user_id);
+		paramMap2.put("projectId", project_id);
+		UserLikeProject result = userService.checkIsLike(paramMap2);
+		if(result != null)
+		{
+			node.put("isLike", true);
+		}
+		else
+		{
+			node.put("isLike", false);
+		}
+		
+		Map<String, Object> paramMap3 = new HashMap<String, Object>();
+		paramMap3.put("projectId", project_id);
+		int count = userService.getProjectLikeCount(paramMap3);
+		node.put("interest", count);
+		
+		
+		
 		data.put("State", "Success");
 		data.put("data", node);				
 		return data;
@@ -358,7 +407,9 @@ public class ProjectController {
 
                 if (contentType.startsWith("image"))
                 {
-                	int random = new Random(System.currentTimeMillis()).nextInt();
+                	Calendar calendar=Calendar.getInstance();
+            		String random = String.valueOf(calendar.getTimeInMillis());
+            		
                     String newFileName = random + ".jpg";
                     System.out.println(newFileName);
                     FileUtils.copyInputStreamToFile(file.getInputStream(),new File(path, newFileName)); // 写文件

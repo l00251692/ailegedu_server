@@ -828,4 +828,28 @@ public class UserController {
 		map.put("data", flag); 
 		return map;
 	}
+	
+	@RequestMapping(value="setProjectLikeStatusWx")
+	public @ResponseBody Map<String, Object> setProjectLikeStatusWx(@RequestParam Boolean status, @RequestParam String project_id,@RequestParam String user_id){
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		Map<String, Object> paramMap=new HashMap<String, Object>();
+		paramMap.put("userId",user_id);
+		paramMap.put("projectId",project_id);
+		
+		int flag;
+		if(status == true)
+		{
+			flag =userService.addLike(paramMap);
+		}
+		else
+		{
+			flag =userService.delLike(paramMap);
+		}
+		
+			
+		map.put("State", "Success"); 
+		map.put("data", flag); 
+		return map;
+	}
 }

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.changyu.foryou.model.UserLikeProject;
 import com.changyu.foryou.model.Users;
 
 public interface UsersMapper {
@@ -64,4 +65,12 @@ public interface UsersMapper {
 	List<String> getUserByType(Map<String, Object> paramMap);
 	
 	Users getUserByCampusId(Map<String, Object> paramMap);
+	
+    UserLikeProject checkIsLike(Map<String, Object> paramMap);
+    
+    int addLike(Map<String, Object> paramMap);
+    
+    int delLike(Map<String, Object> paramMap);
+    
+    int getProjectLikeCount(Map<String, Object> paramMap);
 }

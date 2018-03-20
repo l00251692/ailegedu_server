@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.changyu.foryou.model.Feedback;
+import com.changyu.foryou.model.UserLikeProject;
 import com.changyu.foryou.model.Users;
 
 public interface UserService {
@@ -61,4 +62,12 @@ public interface UserService {
 	List<String> getUserByType(Map<String, Object> paramMap);
 	
 	Users getUserByCampusId(Map<String, Object> paramMap);
+	
+	UserLikeProject checkIsLike(Map<String, Object> paramMap);
+	
+	int addLike(Map<String, Object> paramMap);
+	
+	int delLike(Map<String, Object> paramMap);
+	
+	int getProjectLikeCount(Map<String, Object> paramMap);
 }

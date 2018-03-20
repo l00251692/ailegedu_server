@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.changyu.foryou.mapper.FeedbackMapper;
 import com.changyu.foryou.mapper.UsersMapper;
 import com.changyu.foryou.model.Feedback;
+import com.changyu.foryou.model.UserLikeProject;
 import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.UserService;
 
@@ -151,5 +152,24 @@ public class UserServiceImpl implements UserService {
 	public Users getUserByCampusId(Map<String, Object> paramMap) {
 		return usersMapper.getUserByCampusId(paramMap);
 	}
+	
+	@Override
+	public UserLikeProject checkIsLike(Map<String, Object> paramMap) {
+		return usersMapper.checkIsLike(paramMap);
+	}
 
+	@Override
+	public int addLike(Map<String, Object> paramMap){
+		return usersMapper.addLike(paramMap);
+	}
+	
+	@Override
+	public int delLike(Map<String, Object> paramMap){
+		return usersMapper.delLike(paramMap);
+	}
+	
+	@Override
+	public int getProjectLikeCount(Map<String, Object> paramMap){
+		return usersMapper.getProjectLikeCount(paramMap);
+	}
 }
