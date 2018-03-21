@@ -44,6 +44,8 @@ import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.ProjectService;
 import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.Constants;
+import com.changyu.foryou.tools.HttpRequest;
+import com.changyu.foryou.tools.PayUtil;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonBooleanFormatVisitor;
 
 @Controller
@@ -568,5 +570,42 @@ public class ProjectController {
 		data.put("data", rtn);				
 		return data;
 		
+	}
+	
+	@RequestMapping("/getShareQrWx")
+    public @ResponseBody Map<String,Object> getShareQrWx(@RequestParam String project_id, HttpServletRequest request) throws Exception {
+		
+		//接口B：生成无限制但需要先发布的小程序
+		//String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit";
+		
+		//接口C：调试用
+		String url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode";
+
+		String access_token = (String) PayUtil.getAccessToken().get("access_token");
+		//取access_token
+    
+		url = url + "?access_token=" + access_token;
+		
+		Map<String, Object> params = new HashMap<>();
+        //params.put("scene", "test");
+        //params.put("page", "pages/index/index");
+		params.put("path", "pages/project/detail?id=" + project_id);
+        params.put("width", 160);
+        String body = JSON.toJSONString(params);
+        System.out.println("createQr:" + body);
+        
+        String path = request.getSession().getServletContext().getRealPath("/");
+        path = path.concat("JiMuImage/project/QrCode/");
+        
+        HttpRequest.httpPostWithJSON(url,body,path, project_id);
+        
+        JSONObject rtn = new JSONObject();
+        String putpath = Constants.localIp + "/project/QrCode/" + project_id + ".jpg";
+        rtn.put("path", putpath);
+        
+        Map<String,Object> data = new HashMap<String, Object>();
+		data.put("State", "Success");
+		data.put("data", rtn);				
+		return data;
 	}
 }

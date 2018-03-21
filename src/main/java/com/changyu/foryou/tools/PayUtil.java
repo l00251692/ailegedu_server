@@ -9,9 +9,11 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;  
 import java.net.HttpURLConnection;  
 import java.net.URL;  
-import java.security.SignatureException;  
+import java.security.SignatureException;
+import java.text.MessageFormat;
 import java.util.ArrayList;  
-import java.util.Collections;  
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;  
 import java.util.Iterator;  
 import java.util.List;  
@@ -21,9 +23,19 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.jdom.Document;  
 import org.jdom.Element;  
 import org.jdom.JDOMException;  
-import org.jdom.input.SAXBuilder;  
+import org.jdom.input.SAXBuilder;
+
+import com.alibaba.fastjson.JSONObject;
+import com.changyu.foryou.model.WeChatContext;  
   
 public class PayUtil {  
+	
+	public static long ACCESS_TOKEN_TIME = 0;
+	
+	public static Map<String,String> tempData = new HashMap<String, String>();
+	
+	private static WeChatContext context = WeChatContext.getInstance();
+	
      /**   
      * 签名字符串   
      * @param text需要签名的字符串   
@@ -229,4 +241,38 @@ public class PayUtil {
     public static InputStream String2Inputstream(String str) {  
         return new ByteArrayInputStream(str.getBytes());  
     }  
+    
+    /**
+	 * 获取接口acessToken
+	 * @return
+	 */
+	public  static Map<String,Object> getAccessToken()throws Exception{
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		Long nowTime = new Date().getTime();
+		//判断accessToken是否缓存 且是否过期
+		if(ACCESS_TOKEN_TIME < nowTime){
+			//请求接口地址
+			String requestUrl = "https://api.weixin.qq.com/cgi-bin/token";
+
+			
+			//请求参数
+			String parameters = MessageFormat.format(
+				"grant_type=client_credential&appid={0}&secret={1}",context.getAppId(), context.getAppSecrct());
+			
+			String sr = HttpRequest.sendGet(requestUrl, parameters); 
+			//解析相应内容（转换成json对象） 
+			JSONObject json = JSONObject.parseObject(sr);
+			 
+			//获取新的有效时间 单位秒
+			Long newExpiresTime = Long.valueOf(json.get("expires_in").toString()) ;
+			//将access_token的有效时间更新（有效时间默认减少5分钟，避免意外）
+			ACCESS_TOKEN_TIME = newExpiresTime*1000+nowTime-30000;
+			//将access_token更新
+			tempData.put("access_token", json.get("access_token").toString());
+			resultMap.put("access_token", json.get("access_token").toString());
+		}else{
+			resultMap.put("access_token", tempData.get("access_token"));
+		}
+		return resultMap;
+	}
 }  
