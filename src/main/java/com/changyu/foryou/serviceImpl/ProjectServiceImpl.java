@@ -89,9 +89,9 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.getUnivList(proviceId);
 	}
 	
-	public List<University> getProviceList()
+	public List<University> getProviceList(int flag)
 	{
-		return projectMapper.getProviceList();
+		return projectMapper.getProviceList(flag);
 	}
 }
 

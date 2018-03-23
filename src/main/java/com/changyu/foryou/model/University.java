@@ -10,6 +10,8 @@ public class University {
 	
 	private String university;
 	
+	private int chooseFlag;
+	
 	public int getProviceId() {
 		return proviceId;
 	}
@@ -40,6 +42,14 @@ public class University {
 
 	public void setUniversity(String university) {
 		this.university = university;
+	}
+
+	public int getChooseFlag() {
+		return chooseFlag;
+	}
+
+	public void setChooseFlag(int chooseFlag) {
+		this.chooseFlag = chooseFlag;
 	}
 
 	

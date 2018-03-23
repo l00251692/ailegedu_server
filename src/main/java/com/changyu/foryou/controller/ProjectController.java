@@ -523,12 +523,12 @@ public class ProjectController {
 	
 	
 	@RequestMapping("/getUnivListWx")
-    public @ResponseBody Map<String,Object> getUnivListWx() {
+    public @ResponseBody Map<String,Object> getUnivListWx(@RequestParam int flag) {
 		
 		JSONArray provinceList = new JSONArray(); 
 		JSONArray univList = new JSONArray(); 
         
-        List<University> provicelist = projectService.getProviceList();
+        List<University> provicelist = projectService.getProviceList(flag);
         for(University provTmp: provicelist)
         {
         	JSONObject provice = new JSONObject();

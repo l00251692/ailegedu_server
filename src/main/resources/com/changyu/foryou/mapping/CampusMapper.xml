@@ -23,6 +23,7 @@
     	<result column="delivery_fee" property="delivery_fee" jdbcType="REAL" />
     	<result column="reach_time" property="reach_time" jdbcType="INTEGER" />
     	<result column="pic_url" property="pic_url" jdbcType="VARCHAR" />
+    	<result column="univ_name" property="univName" jdbcType="VARCHAR" />
 	</resultMap>
 
 	<resultMap id="CampusWithCityMap" type="com.changyu.foryou.model.CityWithCampus">
@@ -248,11 +249,13 @@
 		#{campusId,jdbcType=VARCHAR}
 	</update>
 
-	<select id="selectAllCampus" resultMap="BaseResultMap">
-		select campus_id,campus_name,campus.city_id,city.city_name,
-		open_time,close_time,status,close_reason,custom_service,sales,min_price,reach_time,pic_url,address,notice,deliver,delivery_fee
+	<select id="selectAllCampus" parameterType="com.changyu.foryou.model.Campus" resultMap="BaseResultMap">
+		select *
 		 from 
-		 campus,city where campus.city_id=city.city_id order by sales desc,status desc
+		 campus,city 
+		 where campus.city_id=city.city_id 
+		 and campus.univ_name = #{univName,jdbcType=VARCHAR}
+		 order by sales desc,status desc
 	</select>
 
 	<select id="getCampusWithCity" resultMap="CampusWithCityMap">

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.changyu</groupId>
 	<artifactId>foryou</artifactId>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>foryou</name>
 	<url>http://maven.apache.org</url>
@@ -170,6 +170,13 @@
 	        <artifactId>spring-messaging</artifactId>
 	        <version>4.3.7.RELEASE</version>
 	    </dependency>
+	    <dependency>  
+		    <groupId>httpclient</groupId>  
+		    <artifactId>httpclient</artifactId>  
+		    <version>4.3.3</version>  
+		    <scope>system</scope>  
+		    <systemPath>${project.basedir}/src/lib/httpclient.jar</systemPath>  
+		</dependency> 
 <!-- 	     <dependency>  
             <groupId>cn.com.guju</groupId>  
             <artifactId>CCP_REST_SMS_SDK_JAVA_v2.6.3r</artifactId>  
@@ -191,9 +198,28 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
-				   <jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005</jvmArguments>
+				    <jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005</jvmArguments>
+				    <compilerArgs> 
+			            <arg>-extdirs</arg> 
+			            <arg>${project.basedir}/src/lib</arg>
+		        	</compilerArgs> 
 				</configuration>
 			</plugin>
+			<plugin>  
+		        <groupId>org.apache.maven.plugins</groupId>  
+		        <artifactId>maven-war-plugin</artifactId>  
+		        <configuration>  
+		            <webResources>    
+		                <resource>    
+		                    <directory>src/lib/</directory>    
+		                    <targetPath>WEB-INF/lib</targetPath>    
+		                    <includes>    
+		                        <include>**/*.jar</include>    
+		                    </includes>    
+		                </resource>    
+		           </webResources>  
+		        </configuration>  
+		    </plugin>  
 		</plugins>
 	</build>
 </project>

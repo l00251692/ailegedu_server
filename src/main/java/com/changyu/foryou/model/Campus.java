@@ -35,6 +35,8 @@ public class Campus {
 	private int reach_time;
 	private String pic_url;
 	
+	private String univName;
+	
 
 	public String getAddress() {
 		return address;
@@ -157,6 +159,12 @@ public class Campus {
 	}
 	public void setDelivery_fee(Float delivery_fee) {
 		this.delivery_fee = delivery_fee;
+	}
+	public String getUnivName() {
+		return univName;
+	}
+	public void setUnivName(String univName) {
+		this.univName = univName;
 	}
 
 	/* public void setCityId(Integer cityId) {

@@ -38,5 +38,5 @@ public interface ProjectMapper {
 	
 	public List<University> getUnivList(int proviceId);
 	
-	public List<University> getProviceList();
+	public List<University> getProviceList(int flag);
 }

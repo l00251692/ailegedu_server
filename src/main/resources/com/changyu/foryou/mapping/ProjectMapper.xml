@@ -27,6 +27,7 @@
 		<result column="provice" property="provice" jdbcType="VARCHAR" />
 		<result column="univ_id" property="univId" jdbcType="INTEGER" />
 		<result column="university" property="university" jdbcType="VARCHAR" />
+		<result column="choose_flag" property="chooseFlag" jdbcType="INTEGER" />
 	</resultMap>
 	
 	<resultMap id="CommentResultMap" type="com.changyu.foryou.model.ProjectComment">
@@ -265,11 +266,12 @@
 	</update>
 
 	
-	<select id="getProviceList"  resultMap="UniversityResultMap" flushCache="true" useCache="false">
+	<select id="getProviceList"  parameterType="INTEGER" resultMap="UniversityResultMap" flushCache="true" useCache="false">
 		select
 		distinct provice_id, provice
 		from
 		university 
+		where provice_id = #{proviceId,jdbcType=INTEGER}
 	</select>
 	
 	<select id="getUnivList"  parameterType="INTEGER" resultMap="UniversityResultMap" flushCache="true" useCache="false">
@@ -277,7 +279,7 @@
 		*
 		from
 		university 
-		where provice_id = #{proviceId,jdbcType=INTEGER}
+		where choose_flag = #{flag,jdbcType=INTEGER}
 	</select>
 </mapper>
 

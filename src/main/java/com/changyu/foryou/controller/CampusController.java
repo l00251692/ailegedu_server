@@ -594,9 +594,10 @@ public class CampusController {
 	 */
 	
 	@RequestMapping("/getAllCampusWx")
-    public @ResponseBody Map<String,String> getAllCampusWx() {
+    public @ResponseBody Map<String,Object> getAllCampusWx(@RequestParam String selectUniv) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("univName", selectUniv);
         List<Campus> campuslist = campusService.getAllCampus(paramMap);
 						
 		JSONArray jsonarray = new JSONArray(); 
@@ -616,9 +617,9 @@ public class CampusController {
 			node.put("overall", "5");//综合评分
 			jsonarray.add(node);
 		}
-		Map<String,String> data = new HashMap<String, String>();
+		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("State", "Success");
-		data.put("data", jsonarray.toString());				
+		data.put("data", jsonarray);				
 		return data;
 		
 	}	
