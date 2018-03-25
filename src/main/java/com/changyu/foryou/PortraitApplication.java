@@ -7,13 +7,15 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import javax.servlet.MultipartConfigElement;
 import com.changyu.foryou.listener.InitContextListener;
 
 @SpringBootApplication
-@PropertySource("application.properties")
+@Configuration
+@PropertySource("classpath:application.properties")
 public class PortraitApplication extends SpringBootServletInitializer {
 
 	@Bean

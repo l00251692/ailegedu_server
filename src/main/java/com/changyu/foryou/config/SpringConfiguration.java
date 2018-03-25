@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @Configuration
 @ComponentScan("com.changyu.foryou")
-@PropertySource("application.properties")
+//@PropertySource("application.properties")
 @EnableAsync
 @EnableScheduling
 @Import(
