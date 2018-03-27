@@ -36,7 +36,7 @@ public interface ProjectMapper {
 	
 	public int setProjectCommentRead(Map<String, Object> paramMap);
 	
-	public List<University> getUnivList(int proviceId);
+	public List<University> getUnivList(Map<String, Object> paramMap);
 	
-	public List<University> getProviceList(int flag);
+	public List<University> getProviceList();
 }

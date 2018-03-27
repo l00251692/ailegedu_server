@@ -527,8 +527,10 @@ public class ProjectController {
 		
 		JSONArray provinceList = new JSONArray(); 
 		JSONArray univList = new JSONArray(); 
+		
+		System.out.println("getUnivListWx enter:" + String.valueOf(flag));
         
-        List<University> provicelist = projectService.getProviceList(flag);
+        List<University> provicelist = projectService.getProviceList();
         for(University provTmp: provicelist)
         {
         	JSONObject provice = new JSONObject();
@@ -538,7 +540,11 @@ public class ProjectController {
         	
         	provinceList.add(provice);
         	
-        	List<University> universitylist = projectService.getUnivList(provTmp.getProviceId());
+        	Map<String, Object> paramMap = new HashMap<String, Object>();
+    		paramMap.put("proviceId", provTmp.getProviceId());
+    		paramMap.put("chooseFlag", flag);
+        	
+        	List<University> universitylist = projectService.getUnivList(paramMap);
    
         	JSONArray univs = new JSONArray();
             for(University univTmp: universitylist)
@@ -563,6 +569,8 @@ public class ProjectController {
 		JSONObject rtn = new JSONObject();
 		rtn.put("provinceList", provinceList);
 		rtn.put("univList", univList);
+		
+		System.out.println("getUnivListWx:" + rtn.toJSONString() );
 				
 		
 		Map<String,Object> data = new HashMap<String, Object>();

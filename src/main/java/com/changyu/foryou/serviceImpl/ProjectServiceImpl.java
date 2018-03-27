@@ -84,14 +84,14 @@ public class ProjectServiceImpl implements ProjectService{
 		return projectMapper.setProjectCommentRead(paramMap);
 	}
 	
-	public List<University> getUnivList(int proviceId)
+	public List<University> getUnivList(Map<String, Object> paramMap)
 	{
-		return projectMapper.getUnivList(proviceId);
+		return projectMapper.getUnivList(paramMap);
 	}
 	
-	public List<University> getProviceList(int flag)
+	public List<University> getProviceList()
 	{
-		return projectMapper.getProviceList(flag);
+		return projectMapper.getProviceList();
 	}
 }
 

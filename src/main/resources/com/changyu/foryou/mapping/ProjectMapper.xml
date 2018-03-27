@@ -266,20 +266,22 @@
 	</update>
 
 	
-	<select id="getProviceList"  parameterType="INTEGER" resultMap="UniversityResultMap" flushCache="true" useCache="false">
+	<select id="getProviceList"  resultMap="UniversityResultMap" flushCache="true" useCache="false">
 		select
 		distinct provice_id, provice
 		from
-		university 
-		where provice_id = #{proviceId,jdbcType=INTEGER}
+		university 	
 	</select>
 	
-	<select id="getUnivList"  parameterType="INTEGER" resultMap="UniversityResultMap" flushCache="true" useCache="false">
+	<select id="getUnivList" resultMap="UniversityResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from
 		university 
-		where choose_flag = #{flag,jdbcType=INTEGER}
+		where provice_id = #{proviceId,jdbcType=VARCHAR}
+		<if test="chooseFlag ==1">
+			and choose_flag = 1
+		</if> 		
 	</select>
 </mapper>
 
