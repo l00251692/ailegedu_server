@@ -263,19 +263,27 @@ public class ProjectController {
 		JSONArray arr = JSON.parseArray(project.getAddImgs());
 		node.put("addImgarr", arr);
 		
-		//查看我是否已经关注了项目
-		Map<String, Object> paramMap2 = new HashMap<String, Object>();
-		paramMap2.put("userId", user_id);
-		paramMap2.put("projectId", project_id);
-		UserLikeProject result = userService.checkIsLike(paramMap2);
-		if(result != null)
-		{
-			node.put("isLike", true);
-		}
-		else
+		if(user_id.equals("0"))//用户未登录
 		{
 			node.put("isLike", false);
 		}
+		else
+		{
+			//查看我是否已经关注了项目
+			Map<String, Object> paramMap2 = new HashMap<String, Object>();
+			paramMap2.put("userId", user_id);
+			paramMap2.put("projectId", project_id);
+			UserLikeProject result = userService.checkIsLike(paramMap2);
+			if(result != null)
+			{
+				node.put("isLike", true);
+			}
+			else
+			{
+				node.put("isLike", false);
+			}
+		}
+		
 		
 		Map<String, Object> paramMap3 = new HashMap<String, Object>();
 		paramMap3.put("projectId", project_id);

@@ -630,7 +630,7 @@ public class CampusController {
 	 */
 	
 	@RequestMapping("/getCampusByIdWx")
-    public @ResponseBody Map<String,String> getCampusByIdWx(@RequestParam String seller_id,@RequestParam String longitude,@RequestParam String latitude) {
+    public @ResponseBody Map<String,String> getCampusByIdWx(@RequestParam String seller_id) {
 		
 		System.out.println("enter:");
 				

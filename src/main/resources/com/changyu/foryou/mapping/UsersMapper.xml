@@ -380,14 +380,14 @@
 	
 	<select id="checkIsLike" resultType="com.changyu.foryou.model.UserLikeProject" flushCache="true" useCache="false">
 	   select 
-	   *
+	   distinct(*)
 	   from user_like_project
 	   where  user_id=#{userId,jdbcType=VARCHAR} 
 	   and project_id=#{projectId,jdbcType=VARCHAR}
 	</select>
 	
 	<insert id="addLike"  parameterType="com.changyu.foryou.model.UserLikeProject">
-	   insert  into user_like_project(user_id, project_id)
+	   insert IGNORE into user_like_project(user_id, project_id)
 	   values
 	   (#{userId,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR})
 	</insert>
