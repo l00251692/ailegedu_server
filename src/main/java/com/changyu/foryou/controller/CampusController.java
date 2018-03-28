@@ -592,10 +592,11 @@ public class CampusController {
     /**
 	 * 小程序获得所有商家列表
 	 * add by ljt
+     * @throws ParseException 
 	 */
 	
 	@RequestMapping("/getAllCampusWx")
-    public @ResponseBody Map<String,Object> getAllCampusWx(@RequestParam Integer page,@RequestParam String selectUniv) {
+    public @ResponseBody Map<String,Object> getAllCampusWx(@RequestParam Integer page,@RequestParam String selectUniv) throws ParseException {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("univName", selectUniv);
@@ -616,7 +617,20 @@ public class CampusController {
 			node.put("reach_time", String.valueOf(campus.getReach_time()));
 			node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
 			node.put("pic_url", campus.getPic_url());
-			node.put("is_rest", String.valueOf(campus.getStatus()==1 ? 0:1));//status 为营业
+			
+			SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+    		Date now = df.parse(df.format(new Date()));
+            Date beginTime = df.parse(df.format(campus.getOpenTime()));
+            Date endTime = df.parse(df.format(campus.getCloseTime()));
+            if(belongCalendar(now, beginTime, endTime) && (campus.getStatus()==1)){
+            	node.put("status", 1);//status 为营业
+            }
+            else{
+            	node.put("status", 0);//status 为休息
+            }
+	        
+			
+			
 			node.put("overall", "5");//综合评分
 			jsonarray.add(node);
 		}
@@ -627,6 +641,30 @@ public class CampusController {
 		
 	}	
 	
+	/**
+     * 判断时间是否在时间段内
+     * @param nowTime
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    public static boolean belongCalendar(Date nowTime, Date beginTime, Date endTime) {
+        Calendar date = Calendar.getInstance();
+        date.setTime(nowTime);
+
+        Calendar begin = Calendar.getInstance();
+        begin.setTime(beginTime);
+
+        Calendar end = Calendar.getInstance();
+        end.setTime(endTime);
+
+        if (date.after(begin) && date.before(end)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
 	//一键关店、开店
 
     /**
