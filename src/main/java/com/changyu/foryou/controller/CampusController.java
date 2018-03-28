@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -594,10 +595,12 @@ public class CampusController {
 	 */
 	
 	@RequestMapping("/getAllCampusWx")
-    public @ResponseBody Map<String,Object> getAllCampusWx(@RequestParam String selectUniv) {
+    public @ResponseBody Map<String,Object> getAllCampusWx(@RequestParam Integer page,@RequestParam String selectUniv) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("univName", selectUniv);
+		paramMap.put("offset", page * 10);
+		paramMap.put("limit", 10);
         List<Campus> campuslist = campusService.getAllCampus(paramMap);
 						
 		JSONArray jsonarray = new JSONArray(); 
@@ -645,7 +648,8 @@ public class CampusController {
             {
             	requestMap.put("status", 1);
             }
-            else if(status == false){
+            else if(status == false)
+            {
             	requestMap.put("status", 0);
             }
             
@@ -718,9 +722,32 @@ public class CampusController {
 		node.put("pic_url", campus.getPic_url());
 		node.put("promotion", "");//优惠活动数组
 		node.put("delivery_fee", campus.getDelivery_fee());//配送费
-		node.put("overall", "5");//综合评分
-		node.put("quality", "4");//商家评分
-		node.put("service", "5");//配送评分
+		
+		//获得用户最近30单订单的评分
+		Map<String, Object> paramMap2 = new HashMap<String, Object>();
+        
+		paramMap2.put("limit", 30);
+		paramMap2.put("offset", 0);
+		paramMap2.put("sort", "date");
+		paramMap2.put("order", "desc");
+		paramMap2.put("campusId", seller_id);
+		
+		float totalQuality = 0.0f;
+		float totalService = 0.0f;
+        
+        List<FoodComment> commentlist = foodService.getAllComments(paramMap2);
+        for (FoodComment comment:commentlist){
+        	
+        	totalQuality = totalQuality + comment.getQuality();
+        	totalService = totalService + comment.getService();  	
+        }
+        DecimalFormat decimalFormat=new DecimalFormat(".0");
+        
+        float quality = totalQuality/commentlist.size();
+        float service = totalService/commentlist.size();
+		node.put("overall", decimalFormat.format((quality + service)/2));//综合评分
+		node.put("quality", decimalFormat.format(quality));//商家评分
+		node.put("service", decimalFormat.format(service));//配送评分
 		
 		//商家基本信息
 		node.put("phone", campus.getCustomService());
@@ -924,13 +951,13 @@ public class CampusController {
 	 */
 	
 	@RequestMapping("/getReviews")
-    public @ResponseBody Map<String,String> getAllReviewsWx(@RequestParam String seller_id,@RequestParam String page) {
+    public @ResponseBody Map<String,String> getAllReviewsWx(@RequestParam String seller_id,@RequestParam Integer page) {
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
         List<Campus> campuslist = campusService.getAllCampus(paramMap);
         
-        paramMap.put("limit", null);
-        paramMap.put("offset", null);
+        paramMap.put("offset", page * 10);
+		paramMap.put("limit", 10);
         paramMap.put("sort", "date");
         paramMap.put("order", "desc");
         paramMap.put("search", null);

@@ -256,6 +256,10 @@
 		 where campus.city_id=city.city_id 
 		 and campus.univ_name = #{univName,jdbcType=VARCHAR}
 		 order by sales desc,status desc
+		 <if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
 	</select>
 
 	<select id="getCampusWithCity" resultMap="CampusWithCityMap">

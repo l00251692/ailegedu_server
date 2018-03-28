@@ -2365,4 +2365,49 @@ s	 * @return
 		return map;
 	}
 	
+	
+	/**
+	 * 用户确认收货
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/setOrderReceiveWx")
+	public @ResponseBody Map<String, Object> setOrderReceiveWx( @RequestParam String order_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		System.out.println("setOrderReceiveWx enter:" +"," + order_id);
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("orderId",order_id);
+		Order order = orderService.getOrderByIdWx(paramMap);
+		if (order == null)
+		{
+			map.put("State", "Fail");
+			map.put("data", "查询订单详细信息失败");	
+			return map;
+		}
+		
+		JSONArray recores = JSON.parseArray(order.getRecords());
+		JSONObject record = new JSONObject();
+		record.put("status",4);
+		record.put("time", new Date());
+		recores.add(record);
+		
+		paramMap.put("records",recores.toJSONString());
+		paramMap.put("status",4);
+		
+		int flage = orderService.updateOrderStatusWx(paramMap);
+		if(flage != -1 && flage !=0)
+		{
+			map.put("State", "Success");
+			map.put("data", null);	
+		}
+		else
+		{
+			map.put("State", "Fail");
+			map.put("data", null);	
+		}
+		
+		return map;
+	}
+	
 }
