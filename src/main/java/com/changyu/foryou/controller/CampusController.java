@@ -624,6 +624,75 @@ public class CampusController {
 		
 	}	
 	
+	//一键关店、开店
+
+    /**
+     * @param campusId
+     * @param closeReason 关店原因
+     * @param status      关店传0，开店传1。
+     * @return
+     */
+    @RequestMapping("/setCampusStatusWx")
+    public @ResponseBody
+    Map<String, Object> setCampusStatusWx(@RequestParam String seller_id, @RequestParam Boolean status) {
+        Map<String, Object> requestMap = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
+        System.out.println("setCampusStatusWx:" +seller_id + String.valueOf(status));
+        try {
+            requestMap.put("campusId", seller_id);
+            requestMap.put("closeReason", "");
+            if(status == true)
+            {
+            	requestMap.put("status", 1);
+            }
+            else if(status == false){
+            	requestMap.put("status", 0);
+            }
+            
+            Integer flag = campusService.closeCampus(requestMap);
+
+            if (flag == 0 || flag== -1) {
+            	
+            	map.put("State", "Fail");
+            	map.put("data", "关店操作失败");
+            } else  {
+            	map.put("State", "Success");
+            	map.put("data", "操作成功");
+            }
+        } catch (Exception e) {
+            e.getStackTrace();
+            map.put("State", "Fail");
+        	map.put("data", "操作失败");
+        }
+        	
+        return map;
+    }
+	
+    
+    @RequestMapping("/getCampusStatusWx")
+    public @ResponseBody
+    Map<String, Object> getCampusStatusWx(@RequestParam String seller_id) {
+    	
+    	Map<String,Object> map = new HashMap<String, Object>();
+    	
+    	Map<String, Object> paramMap = new HashMap<String, Object>();
+        paramMap.put("campusId", seller_id);
+        Campus campus = campusService.getCampusById(paramMap);
+        
+        JSONObject obj = new JSONObject();
+        if(campus != null)
+        {
+        	obj.put("status", campus.getStatus());
+        	map.put("State", "Success");
+            map.put("data", obj);
+        }
+        else{
+        	map.put("State", "Fail");
+            map.put("data", null);
+        }				
+		return map; 
+    }
+    
 	/**
 	 * 获得商家信息
 	 * add by ljt
