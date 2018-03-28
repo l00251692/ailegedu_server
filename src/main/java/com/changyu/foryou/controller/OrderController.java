@@ -205,10 +205,20 @@ public class OrderController {
 			Campus campus = campusService.getCampusById(paramMap3);
 			
 			order.setDeliveryFee(campus.getDelivery_fee());
-			
 			order.setOrderPrice(orderPrice);
-			order.setPayPrice(orderPrice + campus.getDelivery_fee() -0.0f);
-			order.setCutMoney(0.0f);//TODO
+			
+			
+			List<Preferential> list = preferentialService.getPreferential(paramMap3);
+			float cutMoney = 0.0f;
+			for(Preferential pref: list)
+			{
+				if((orderPrice >= pref.getNeedNumber())&& pref.getDiscountNum() > cutMoney)
+				{
+					cutMoney = pref.getDiscountNum();
+				}
+			}
+			order.setCutMoney(cutMoney);//TODO满减钱数
+			order.setPayPrice(orderPrice + campus.getDelivery_fee() - cutMoney);
 			order.setCouponMoney(0.0f);
 			order.setPackingFee(packingFee);
 					

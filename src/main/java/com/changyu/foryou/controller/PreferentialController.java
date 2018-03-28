@@ -41,7 +41,7 @@ public class PreferentialController {
 	 */
 	@RequestMapping("addPref")
 	@ResponseBody
-	public Map<String, Object> addPref(@RequestParam Integer needNumber,@RequestParam Integer discountNum,Integer campusId, String campusName){
+	public Map<String, Object> addPref(@RequestParam Integer needNumber,@RequestParam Integer discountNum,@RequestParam String campusId, String campusName){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		Preferential preferential =new Preferential();
@@ -98,7 +98,7 @@ public class PreferentialController {
 	 */
 	@RequestMapping("updatePref")
 	@ResponseBody
-	public Map<String, Object> updatePref(@RequestParam Integer preferentialId, @RequestParam Integer needNumber, @RequestParam Integer discountNum, @RequestParam Integer campusId){
+	public Map<String, Object> updatePref(@RequestParam Integer preferentialId, @RequestParam Integer needNumber, @RequestParam Integer discountNum, @RequestParam String campusId){
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		Preferential preferential =new Preferential();
@@ -124,7 +124,7 @@ public class PreferentialController {
 	 */
 	@RequestMapping("getAllPref")
 	@ResponseBody
-	public JSONArray getAllPref(Integer campusId){
+	public JSONArray getAllPref(String campusId){
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("campusId", campusId);
 		

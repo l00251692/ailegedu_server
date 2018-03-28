@@ -26,7 +26,7 @@ public interface CampusMapper {
 
 	List<CityWithCampus> getCampusWithCity(Map<String, Object> paramMap);
 
-	Integer getIdByName(Map<String, Object> paramMap);
+	String getIdByName(Map<String, Object> paramMap);
 	
 	Integer closeCampus(Map<String, Object> requestMap);
 	

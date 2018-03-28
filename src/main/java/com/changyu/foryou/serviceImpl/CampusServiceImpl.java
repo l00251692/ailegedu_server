@@ -34,7 +34,7 @@ public class CampusServiceImpl implements CampusService {
 	}
 
 	@Override
-	public Integer getIdByName(Map<String, Object> paramMap) {
+	public String getIdByName(Map<String, Object> paramMap) {
 		return campusMapper.getIdByName(paramMap);
 	}
 

@@ -7,13 +7,13 @@ public class Preferential {
 
     private Integer discountNum;
     
-    private Integer campusId;
+    private String campusId;
 
-    public Integer getCampusId() {
+    public String getCampusId() {
 		return campusId;
 	}
 
-	public void setCampusId(Integer campusId) {
+	public void setCampusId(String campusId) {
 		this.campusId = campusId;
 	}
 

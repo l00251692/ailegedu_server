@@ -5,7 +5,7 @@
     <id column="preferential_id" property="preferentialId" jdbcType="INTEGER" /><!-- 是否自增 -->
     <result column="need_number" property="needNumber" jdbcType="INTEGER" />
     <result column="discount_num" property="discountNum" jdbcType="INTEGER" />
-      <result column="campus_id" property="campusId" jdbcType="INTEGER" />
+      <result column="campus_id" property="campusId" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     preferential_id, need_number, discount_num
@@ -24,7 +24,7 @@
   <insert id="insert" parameterType="com.changyu.foryou.model.Preferential" >
     insert into preferential ( preferential_id, need_number, discount_num,campus_id
       )
-    values (null, #{needNumber,jdbcType=INTEGER}, #{discountNum,jdbcType=INTEGER},#{campusId,jdbcType=INTEGER}
+    values (null, #{needNumber,jdbcType=INTEGER}, #{discountNum,jdbcType=INTEGER},#{campusId,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.changyu.foryou.model.Preferential" >
@@ -64,7 +64,7 @@
         ,discount_num = #{discountNum,jdbcType=INTEGER}
       </if>
       <if test="campusId != null">
-        ,campus_id = #{campusId,jdbcType=INTEGER}
+        ,campus_id = #{campusId,jdbcType=VARCHAR}
       </if>
     </set>
     where  preferential_id = #{preferentialId,jdbcType=INTEGER}
@@ -80,7 +80,7 @@
     ,discount_num = #{discountNum,jdbcType=INTEGER}
     </if>
     <if test="campusId != null">
-    ,campus_id = #{campusId,jdbcType=INTEGER}
+    ,campus_id = #{campusId,jdbcType=VARCHAR}
     </if>
     where  preferential_id = #{preferentialId,jdbcType=INTEGER}
   </update>
@@ -91,7 +91,7 @@
   from preferential
   <where>
   <if test="campusId != null">
-  campus_id=#{campusId,jdbcType=INTEGER} 
+  campus_id=#{campusId,jdbcType=VARCHAR} 
   </if>
   </where>
   order by need_number desc

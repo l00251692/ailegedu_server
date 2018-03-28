@@ -269,7 +269,7 @@
 		left outer join campus on campus.city_id =city.city_id
 	</select>
 
-	<select id="getIdByName" resultType="java.lang.Integer">
+	<select id="getIdByName" resultType="java.lang.String">
 		select
 		campus_id
 		from campus

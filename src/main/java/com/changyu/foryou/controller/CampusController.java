@@ -10,13 +10,16 @@ import com.changyu.foryou.model.CityWithCampus;
 import com.changyu.foryou.model.Food;
 import com.changyu.foryou.model.FoodCategory;
 import com.changyu.foryou.model.FoodComment;
+import com.changyu.foryou.model.Preferential;
 import com.changyu.foryou.service.CampusService;
 import com.changyu.foryou.service.FoodService;
+import com.changyu.foryou.service.PreferentialService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.Md5;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +50,8 @@ public class CampusController {
     
     private FoodService foodService;
     
+	private PreferentialService preferentialService;
+    
 
     @Autowired
     public void setCampusService(CampusService campusService) {
@@ -57,6 +62,11 @@ public class CampusController {
     @Autowired
     public void setFoodService(FoodService foodService) {
         this.foodService = foodService;
+    }
+    
+    @Autowired
+    public void setPreferentialService(PreferentialService preferentialService) {
+        this.preferentialService = preferentialService;
     }
     
     /**
@@ -112,7 +122,7 @@ public class CampusController {
         try {
             Map<String, Object> paramMap = new HashMap<String, Object>();
             paramMap.put("campusName", campusName.trim());
-            Integer campusId = campusService.getIdByName(paramMap);
+            String campusId = campusService.getIdByName(paramMap);
             map.put(Constants.STATUS, Constants.SUCCESS);
             map.put(Constants.MESSAGE, "获取校区Id成功！");
             map.put("campusId", campusId);
@@ -628,8 +638,6 @@ public class CampusController {
             else{
             	node.put("status", 0);//status 为休息
             }
-	        
-			
 			
 			node.put("overall", "5");//综合评分
 			jsonarray.add(node);
@@ -713,7 +721,7 @@ public class CampusController {
     
     @RequestMapping("/getCampusStatusWx")
     public @ResponseBody
-    Map<String, Object> getCampusStatusWx(@RequestParam String seller_id) {
+    Map<String, Object> getCampusStatusWx(@RequestParam String seller_id) throws ParseException {
     	
     	Map<String,Object> map = new HashMap<String, Object>();
     	
@@ -724,7 +732,16 @@ public class CampusController {
         JSONObject obj = new JSONObject();
         if(campus != null)
         {
-        	obj.put("status", campus.getStatus());
+        	SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+    		Date now = df.parse(df.format(new Date()));
+            Date beginTime = df.parse(df.format(campus.getOpenTime()));
+            Date endTime = df.parse(df.format(campus.getCloseTime()));
+            if(belongCalendar(now, beginTime, endTime) && (campus.getStatus()==1)){
+            	obj.put("status", 1);//status 为营业
+            }
+            else{
+            	obj.put("status", 0);//status 为休息
+            }
         	map.put("State", "Success");
             map.put("data", obj);
         }
@@ -741,7 +758,7 @@ public class CampusController {
 	 */
 	
 	@RequestMapping("/getCampusByIdWx")
-    public @ResponseBody Map<String,String> getCampusByIdWx(@RequestParam String seller_id) {
+    public @ResponseBody Map<String,Object> getCampusByIdWx(@RequestParam String seller_id) {
 		
 		System.out.println("enter:");
 				
@@ -758,7 +775,19 @@ public class CampusController {
 		node.put("distance", "98000");//设置店铺与买家地址的距离，先写死
 		node.put("distanceFormat", "10000");//设置店铺与买家地址的距离，先写死
 		node.put("pic_url", campus.getPic_url());
-		node.put("promotion", "");//优惠活动数组
+		
+		//获得优惠活动信息
+		List<Preferential> list = preferentialService.getPreferential(paramMap);
+		JSONArray promotion =  new JSONArray();
+		for(Preferential pref: list)
+		{
+			JSONObject obj = new JSONObject();
+			obj.put("info", " 满"+String.valueOf(pref.getNeedNumber())+" 减 "+String.valueOf(pref.getDiscountNum()));
+			promotion.add(obj);
+		}
+		node.put("promotion",promotion);//优惠活动数组
+		
+		
 		node.put("delivery_fee", campus.getDelivery_fee());//配送费
 		
 		//获得用户最近30单订单的评分
@@ -976,9 +1005,9 @@ public class CampusController {
 		node.put("goods_map", goods_map);
 		System.out.println("return:" + node.toString());
 
-		Map<String,String> data = new HashMap<String, String>();
+		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("State", "Success");
-		data.put("data", node.toString());				
+		data.put("data", node);				
 		return data;
 		
 	}	
