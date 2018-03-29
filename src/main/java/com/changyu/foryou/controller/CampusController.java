@@ -639,7 +639,7 @@ public class CampusController {
             	node.put("status", 0);//status 为休息
             }
 			
-			node.put("overall", "5");//综合评分
+			node.put("overall", campus.getOverAll());//综合评分
 			jsonarray.add(node);
 		}
 		Map<String,Object> data = new HashMap<String, Object>();
@@ -815,6 +815,16 @@ public class CampusController {
 		node.put("overall", decimalFormat.format((quality + service)/2));//综合评分
 		node.put("quality", decimalFormat.format(quality));//商家评分
 		node.put("service", decimalFormat.format(service));//配送评分
+		
+		//更新店铺评分（可能会稍晚）
+		Map<String, Object> paramMap3 = new HashMap<String, Object>();
+		paramMap3.put("campusId", seller_id);
+		paramMap3.put("overAll", (quality + service)/2);
+		int flag = campusService.updateCampusOverAll(paramMap3);
+		
+		if(flag == 0 || flag == -1){
+			System.out.println("更新店铺评分失败");
+		}
 		
 		//商家基本信息
 		node.put("phone", campus.getCustomService());
@@ -1026,7 +1036,7 @@ public class CampusController {
         paramMap.put("offset", page * 10);
 		paramMap.put("limit", 10);
         paramMap.put("sort", "date");
-        paramMap.put("order", "desc");
+        paramMap.put("order", "asc");
         paramMap.put("search", null);
         paramMap.put("campusId", seller_id);
         

@@ -24,6 +24,7 @@
     	<result column="reach_time" property="reach_time" jdbcType="INTEGER" />
     	<result column="pic_url" property="pic_url" jdbcType="VARCHAR" />
     	<result column="univ_name" property="univName" jdbcType="VARCHAR" />
+    	<result column="over_all" property="overAll" jdbcType="REAL" />
 	</resultMap>
 
 	<resultMap id="CampusWithCityMap" type="com.changyu.foryou.model.CityWithCampus">
@@ -60,7 +61,7 @@
 
 	<sql id="Base_Column_List">
 		campus_id, campus_name, city_id,open_time,close_time,location_x,location_y,status,close_reason,custom_service,
-		sales,min_price,reach_time,pic_url,address,notice,deliver,delivery_fee
+		sales,min_price,reach_time,pic_url,address,notice,deliver,delivery_fee,over_all
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
@@ -437,4 +438,12 @@
 	   where 
 	     campus_id=#{campusId,jdbcType=VARCHAR}
 	</select>
+	
+	<update id="updateCampusOverAll">
+		update
+		  campus
+		set
+		   over_all=#{overAll,jdbcType=REAL}
+		where campus_id=#{campusId,jdbcType=VARCHAR}
+	</update>
 </mapper>

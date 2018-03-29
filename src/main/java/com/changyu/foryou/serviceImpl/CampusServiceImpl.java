@@ -194,5 +194,9 @@ public class CampusServiceImpl implements CampusService {
 	public String getCampusName(String campusId) {
 		return campusMapper.getCampusName(campusId);
 	}
-
+	
+	@Override
+	public int updateCampusOverAll(Map<String, Object> paramMap){
+		return campusMapper.updateCampusOverAll(paramMap);
+	}
 }

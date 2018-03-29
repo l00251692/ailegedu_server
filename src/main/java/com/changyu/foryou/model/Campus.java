@@ -37,6 +37,7 @@ public class Campus {
 	
 	private String univName;
 	
+	private Float overAll;
 
 	public String getAddress() {
 		return address;
@@ -165,6 +166,12 @@ public class Campus {
 	}
 	public void setUnivName(String univName) {
 		this.univName = univName;
+	}
+	public Float getOverAll() {
+		return overAll;
+	}
+	public void setOverAll(Float overAll) {
+		this.overAll = overAll;
 	}
 
 	/* public void setCityId(Integer cityId) {

@@ -47,4 +47,6 @@ public interface CampusService {
 	int updateCampusAdminPassword(Map<String, Object> paramMap);
 
 	String getCampusName(String campusId);          //根据校区id获取校区名称
+	
+	int updateCampusOverAll(Map<String, Object> paramMap);
 }
