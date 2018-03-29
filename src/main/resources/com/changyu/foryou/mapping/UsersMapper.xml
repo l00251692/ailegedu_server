@@ -380,21 +380,21 @@
 	
 	<select id="checkIsLike" resultType="com.changyu.foryou.model.UserLikeProject" flushCache="true" useCache="false">
 	   select 
-	   distinct(*)
-	   from user_like_project
+	   distinct user_id,project_id 
+	   from user_focus_project
 	   where  user_id=#{userId,jdbcType=VARCHAR} 
 	   and project_id=#{projectId,jdbcType=VARCHAR}
 	</select>
 	
 	<insert id="addLike"  parameterType="com.changyu.foryou.model.UserLikeProject">
-	   insert IGNORE into user_like_project(user_id, project_id)
+	   insert IGNORE into user_focus_project(user_id, project_id)
 	   values
 	   (#{userId,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR})
 	</insert>
 	
 	<delete id="delLike" parameterType="com.changyu.foryou.model.UserLikeProject">
 	   delete 
-	   from user_like_project
+	   from user_focus_project
 	   where  user_id=#{userId,jdbcType=VARCHAR} 
 	   and project_id=#{projectId,jdbcType=VARCHAR}
 	</delete>
@@ -402,7 +402,7 @@
 	<select id="getProjectLikeCount" resultType="Integer" flushCache="true" useCache="false">
 	   select 
 	   count(*)
-	   from user_like_project
+	   from user_focus_project
 	   <where>
 		project_id = #{projectId,jdbcType=VARCHAR} 
 	  </where> 

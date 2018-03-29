@@ -217,7 +217,7 @@ public class OrderController {
 					cutMoney = pref.getDiscountNum();
 				}
 			}
-			order.setCutMoney(cutMoney);//TODO满减钱数
+			order.setCutMoney(cutMoney);
 			order.setPayPrice(orderPrice + campus.getDelivery_fee() - cutMoney);
 			order.setCouponMoney(0.0f);
 			order.setPackingFee(packingFee);
