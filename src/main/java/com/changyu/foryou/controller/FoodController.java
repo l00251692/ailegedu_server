@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.changyu.foryou.model.DSHOrder;
 import com.changyu.foryou.model.Food;
 import com.changyu.foryou.model.FoodCategory;
 import com.changyu.foryou.model.FoodComment;
@@ -37,9 +38,12 @@ import com.changyu.foryou.model.ShortFood;
 import com.changyu.foryou.model.ShortFoodWithIm;
 import com.changyu.foryou.model.VeryShortFood;
 import com.changyu.foryou.service.CampusService;
+import com.changyu.foryou.service.DelayService;
 import com.changyu.foryou.service.FoodService;
 import com.changyu.foryou.service.OrderService;
+import com.changyu.foryou.service.RedisService;
 import com.changyu.foryou.tools.Constants;
+import com.changyu.foryou.tools.ThreadPoolUtil;
 
 /**
  * 食品控制类
@@ -52,6 +56,11 @@ public class FoodController {
     private FoodService foodService;
     private OrderService orderService;
     private CampusService campusService;
+    
+    @Autowired  
+    private DelayService delayService;  
+    @Autowired  
+    private RedisService redisServie;
     
     private static final Logger logger = LoggerFactory.getLogger(FoodController.class);
 
@@ -525,6 +534,15 @@ public class FoodController {
                 Integer flag = foodService.insertFoodComment(foodComment);
                 if (flag == 1) {
                 	//更新订单状态
+                	//从delay队列删除，从redis删除  
+        	        ThreadPoolUtil.execute(new Runnable(){  
+        	            public void run(){  
+        	                //从delay队列删除  
+        	                delayService.remove(Long.parseLong(order_id));  
+        	                //从redis删除  
+        	                redisServie.delete(Constants.REDISPREFIX+order_id); 
+        	            }  
+        	        });
                 	paramMap.put("status", 8);//订单完成评论
                 	orderService.setOrderStatus(paramMap);
                 	map.put("State", "Success");

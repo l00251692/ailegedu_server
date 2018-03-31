@@ -4,13 +4,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.model.Campus;
+import com.changyu.foryou.model.DSHOrder;
 import com.changyu.foryou.model.Order;
 import com.changyu.foryou.model.Users;
 import com.changyu.foryou.model.WeChatContext;
 import com.changyu.foryou.service.*;
+import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.HttpRequest;
 import com.changyu.foryou.tools.PayUtil;
 import com.changyu.foryou.tools.StringUtil;
+import com.changyu.foryou.tools.ThreadPoolUtil;
 import com.pingplusplus.exception.*;
 import com.pingplusplus.model.Charge;
 import com.pingplusplus.model.Event;
@@ -56,7 +59,11 @@ public class PayController {
     private FoodService foodService;
     @Autowired
     private CampusService  campusService;
-    
+
+    @Autowired  
+    private DelayService delayService;  
+    @Autowired  
+    private RedisService redisServie;  
     
     @Resource  
     private WebSocketPushHandler webSocketHandler;  
@@ -378,8 +385,27 @@ public class PayController {
 			map.put("order_id", order_id);
 			map.put("State", "Success");
 			map.put("data", null);
+			
+			//将待支付的订单从延迟队列删除
+			//从delay队列删除，从redis删除  
+	        ThreadPoolUtil.execute(new Runnable(){  
+	            public void run(){  
+	                //从delay队列删除  
+	                delayService.remove(Long.parseLong(order_id));  
+	                //从redis删除  
+	                redisServie.delete(Constants.REDISPREFIX+order_id); 
+	                
+	                //重新添加呆商户接单的延迟队列
+	                DSHOrder dshOrder = new DSHOrder(Long.parseLong(order_id),Constants.ORDER_PAY_SUCCESS, Constants.WAITRCVTIME);  
+	                delayService.add(dshOrder);  
+	        
+	                //2插入到redis  
+	                redisServie.add(Constants.REDISPREFIX+order_id, dshOrder, Constants.REDISSAVETIME);  
+	            }  
+	        });  
+	        
 			//向商家推送语音通知订单信息，容联云需要企业资质，暂不放开
-			/*new Thread(new Runnable() {
+			/*new Thread(new Runnable() {1 
 
 				 public void run() { //推送
 					Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -399,7 +425,7 @@ public class PayController {
 			{
 				
 			}
-			//向消费用户发送模板消息
+			//向消费用户发送模板消息                                    1
 			String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
 
 			String access_token = (String) PayUtil.getAccessToken().get("access_token");

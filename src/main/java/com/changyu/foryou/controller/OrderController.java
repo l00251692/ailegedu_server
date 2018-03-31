@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,6 +27,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.model.BigOrder;
 import com.changyu.foryou.model.Campus;
 import com.changyu.foryou.model.CartGood;
+import com.changyu.foryou.model.DSHOrder;
 import com.changyu.foryou.model.DeliverChildOrder;
 import com.changyu.foryou.model.DeliverOrder;
 import com.changyu.foryou.model.Order;
@@ -38,14 +40,17 @@ import com.changyu.foryou.model.TogetherOrder;
 import com.changyu.foryou.model.TradeInfo;
 import com.changyu.foryou.payment.ChargeInterface;
 import com.changyu.foryou.service.CampusService;
+import com.changyu.foryou.service.DelayService;
 import com.changyu.foryou.service.FoodService;
 import com.changyu.foryou.service.OrderService;
 import com.changyu.foryou.service.PreferentialService;
 import com.changyu.foryou.service.PushService;
 import com.changyu.foryou.service.ReceiverService;
+import com.changyu.foryou.service.RedisService;
 import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.CalendarTool;
 import com.changyu.foryou.tools.Constants;
+import com.changyu.foryou.tools.ThreadPoolUtil;
 import com.pingplusplus.model.Charge;
 import com.pingplusplus.model.Refund;
 
@@ -66,6 +71,11 @@ public class OrderController {
 	private ReceiverService receiverService;
 	private CampusService  campusService;
 	private PushService pushService;
+	
+	@Autowired  
+    private DelayService delayService;  
+    @Autowired  
+    private RedisService redisServie;  
 	
 	@Autowired()
 	@Qualifier("preferentialService")
@@ -225,6 +235,27 @@ public class OrderController {
 			int flag = orderService.insertSelectiveOrder(order);
 			if (flag != -1 && flag != 0)
 			{
+				//把订单插入到待支付的队列和redis  
+				try{
+					ThreadPoolUtil.execute(new Runnable(){  
+			            @Override  
+			            public void run() {  
+			                //1 插入到待支付队列  
+			                DSHOrder dshOrder = new DSHOrder(orderId,Constants.ORDER_CREATE, Constants.PAYDELAYTIME);  
+			                delayService.add(dshOrder);  
+			                System.out.println("DSHOrder add delayQueue");
+			        
+			                //2插入到redis  
+			                redisServie.add(Constants.REDISPREFIX+orderId, dshOrder, Constants.REDISSAVETIME);  
+			                System.out.println("DSHOrder add redis");
+			            }  
+			        }); 
+				}
+				catch(Exception e)
+				{
+					System.out.println("catch exception" + e);
+				}
+				System.out.println("SubmitOrderWx ok");				
 				node.put("quasi_order_id", String.valueOf(orderId));
 				map.put("State", "Success");
 				map.put("data", node.toString());	
@@ -502,7 +533,7 @@ public class OrderController {
 				return map;
 			}
 
-			order.setStatus((short)5);
+			order.setStatus(Constants.ORDER_CANCEL);
 			
 			JSONArray recordes = JSON.parseArray(order.getRecords());
 			JSONObject record = new JSONObject();
@@ -724,7 +755,23 @@ public class OrderController {
 			
 			rtnOrder.put("add_time", order.getCreateTime());
 			rtnOrder.put("flow", flowarray);
-			rtnOrder.put("left_time", 0); //当前步骤剩余时间计时器，s为单位，小程序会启动定时器，到时间后重新获得订单状态
+			switch (order.getStatus())
+			{
+				case Constants.ORDER_CREATE:
+				{
+					DSHOrder dshOrder = redisServie.get(Constants.REDISPREFIX  + order_id);
+					if(dshOrder != null)
+					{
+						rtnOrder.put("left_time", dshOrder.getDelay(TimeUnit.SECONDS) + Constants.COUNTDELAY);//剩余多少秒
+					}
+					else
+					{
+						rtnOrder.put("left_time", 0);
+					}
+					break;
+				}
+			}
+			 //当前步骤剩余时间计时器，s为单位，小程序会启动定时器，到时间后重新获得订单状态
 			rtnOrder.put("seller_name", campus.getCampusName());
 			rtnOrder.put("is_reviews", String.valueOf(0));
 			rtnOrder.put("state", order.getStatus());
@@ -755,7 +802,7 @@ public class OrderController {
 			rtnOrder.put("remark", order.getMessage());
 			rtnOrder.put("order_id", order.getOrderId());
 			rtnOrder.put("seller_phone", campus.getCustomService());
-			rtnOrder.put("localphone", "10010");
+			rtnOrder.put("localphone", "18551410942");
 
 			map.put("State", "Success");
 			map.put("data", rtnOrder);	
@@ -2313,11 +2360,28 @@ s	 * @return
 		recores.add(record);
 		
 		paramMap.put("records",recores.toJSONString());
-		paramMap.put("status",3);
+		paramMap.put("status",Constants.ORDER_RECEIVE);
 		
 		int flage = orderService.updateOrderStatusWx(paramMap);
 		if(flage != -1 && flage !=0)
 		{
+
+			//从delay队列删除，从redis删除  
+	        ThreadPoolUtil.execute(new Runnable(){  
+	            public void run(){  
+	                //从delay队列删除  
+	                delayService.remove(Long.parseLong(order_id));  
+	                //从redis删除  
+	                redisServie.delete(Constants.REDISPREFIX+order_id); 
+	                
+	                //重新添加代用户收货的延迟队列
+	                DSHOrder dshOrder = new DSHOrder(Long.parseLong(order_id),Constants.ORDER_RECEIVE, Constants.WAITCONFIRM);  
+	                delayService.add(dshOrder);  
+	        
+	                //2插入到redis  
+	                redisServie.add(Constants.REDISPREFIX+order_id, dshOrder, Constants.REDISSAVETIME);  
+	            }  
+	        });
 			map.put("State", "Success");
 			map.put("data", null);	
 		}
@@ -2408,6 +2472,22 @@ s	 * @return
 		int flage = orderService.updateOrderStatusWx(paramMap);
 		if(flage != -1 && flage !=0)
 		{
+			//从delay队列删除，从redis删除  
+	        ThreadPoolUtil.execute(new Runnable(){  
+	            public void run(){  
+	                //从delay队列删除  
+	                delayService.remove(Long.parseLong(order_id));  
+	                //从redis删除  
+	                redisServie.delete(Constants.REDISPREFIX+order_id); 
+	                
+	                //重新添加代用户收货的延迟队列
+	                DSHOrder dshOrder = new DSHOrder(Long.parseLong(order_id),Constants.ORDER_SUCCESS, Constants.WAITREVIEW);  
+	                delayService.add(dshOrder);  
+	        
+	                //2插入到redis  
+	                redisServie.add(Constants.REDISPREFIX+order_id, dshOrder, Constants.REDISSAVETIME);  
+	            }  
+	        });
 			map.put("State", "Success");
 			map.put("data", null);	
 		}
