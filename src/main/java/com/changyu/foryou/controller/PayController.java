@@ -473,8 +473,93 @@ public class PayController {
 	
 	}
 	
-	
-	
+	/**
+     * 申请退款
+     * @return
+     */
+	@RequestMapping("/refundWx")
+    public @ResponseBody Map<String, Object> refundWx(@RequestParam String order_id,String user_id,String fee) {
+		  Map<String,Object> data = new HashMap<String, Object>();
+          Map<String,Object> result = new HashMap<String,Object>();
+          //String currTime = PayUtil.getCurrTime();
+          //String strTime = currTime.substring(8, currTime.length());
+          //String strRandom = PayUtil.buildRandom(4) + "";
+          String nonceStr = StringUtil.getRandomStringByLength(32);
+
+          
+          Map<String, String> packageParams = new HashMap<String, String>(); 
+          packageParams.put("appid", Constants.appId);
+          packageParams.put("mch_id", Constants.mchId);//微信支付分配的商户号
+          packageParams.put("nonce_str", nonceStr);//随机字符串，不长于32位
+          //packageParams.put("op_user_id", Constants.mchId);//操作员帐号, 默认为商户号
+          //out_refund_no只能含有数字、字母和字符_-|*@
+          packageParams.put("out_refund_no", order_id);//商户系统内部的退款单号，商户系统内部唯一，同一退款单号多次请求只退一笔
+          packageParams.put("out_trade_no", order_id);//商户侧传给微信的订单号32位
+          packageParams.put("refund_fee", fee);
+          packageParams.put("total_fee", fee);
+          //packageParams.put("transaction_id", payLog.getTransactionId());//微信生成的订单号，在支付通知中有返回
+          
+          String prestr = PayUtil.createLinkString(packageParams); // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串   
+          
+          //MD5运算生成签名，这里是第一次签名，用于调用统一下单接口  
+          String sign = PayUtil.sign(prestr, Constants.mchKey, "utf-8").toUpperCase();  //微信支付商户密钥为第二个参数
+           
+          String refundUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+          String xmlParam="<xml>"+
+                  "<appid>"+Constants.appId+"</appid>"+
+                  "<mch_id>"+Constants.mchId+"</mch_id>"+
+                  "<nonce_str>"+nonceStr+"</nonce_str>"+
+                  //"<op_user_id>"+Constants.mchId+"</op_user_id>"+
+                  "<out_refund_no>"+order_id+"</out_refund_no>"+
+                  "<out_trade_no>"+order_id+"</out_trade_no>"+
+                  "<refund_fee>"+fee+"</refund_fee>"+
+                  "<total_fee>"+fee+"</total_fee>"+
+                  //"<transaction_id>"+payLog.getTransactionId()+"</transaction_id>"+
+                  "<sign>"+sign+"</sign>"+
+                  "</xml>";
+          String resultStr = PayUtil.httpRequest(refundUrl, "POST", xmlParam);  
+          
+          System.out.println("调试模式_统一下单接口 返回XML数据：" + result);  
+            
+          //解析结果
+          try {
+              Map map =  PayUtil.doXMLParse(resultStr);
+              String returnCode = map.get("return_code").toString();
+              if(returnCode.equals("SUCCESS")){
+                  String resultCode = map.get("result_code").toString();
+                  if(resultCode.equals("SUCCESS")){
+                      JSONObject node = new JSONObject();
+                      node.put("totalFee", fee);
+                      /*profPayLog.setCreatedAt(new Date());
+                      profPayLog.setSource(payLog.getSource());
+                      profPayLog.setTotalFee(payLog.getTotalFee());
+                      profPayLog.setTradeNo(payLog.getTradeNo());
+                      profPayLog.setTransactionId(map.get("refund_id").toString());
+                      profPayLog.setUserId(user);
+                      profPayLog.setType(ProfPayLog.Type.Refund);
+                      profPayLog = wxappOrderService.save(profPayLog);*/
+                 
+                      data.put("State", "Success");
+          			  data.put("data", node);	
+          			return data;
+                  }
+                  else
+                  {
+                      result.put("State", "Fail");
+                  }
+              }
+              else
+              {
+                  result.put("State", "Fail");
+              }
+          } 
+          catch (Exception e) 
+          {
+              e.printStackTrace();
+              data.put("State", "Fail");
+          }
+          return data;
+    }
 	
 }
 	
