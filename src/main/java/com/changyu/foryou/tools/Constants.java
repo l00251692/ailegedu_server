@@ -35,6 +35,12 @@ public  class Constants {
     public static final short ORDER_REFUND_SUCCESS = 7;
     public static final short ORDER_REVIEWED = 8;
     public static final short ORDER_REJECT = 9;
+    
+    
+    //七牛云相关配置
+    public  static final String QINIU_AK = "YxW2_V1FQj2yOYNlHlzhHiAHI4cwWkPWNIxiT_ae";
+    public  static final String QINIU_SK = "1d1Uo7S3x7qJXSL8ljbW46b2dKgWL0fPjHxG4PdI";
+    public  static final String QINIU_BUCKET = "lanjing";
   
     
 	

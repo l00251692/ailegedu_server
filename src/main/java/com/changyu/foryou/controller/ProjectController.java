@@ -47,6 +47,7 @@ import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.HttpRequest;
 import com.changyu.foryou.tools.PayUtil;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonBooleanFormatVisitor;
+import com.qiniu.util.Auth;
 
 @Controller
 @RequestMapping("/project")
@@ -66,10 +67,6 @@ public class ProjectController {
 		this.userService = userService;
 	}
 	
-	
-	
-
-
 	/**
 	 * 获得首页广告信息
 	 * add by ljt
@@ -88,8 +85,8 @@ public class ProjectController {
         {
         	JSONObject obj = new JSONObject();
         	obj.put("banner_id",banner.getBannerId());
-        	String url = Constants.localIp + "/banner/" + banner.getImgUrl();
-        	obj.put("carousel_img",url);
+        	//String url = Constants.localIp + "/banner/" + banner.getImgUrl();
+        	obj.put("carousel_img",banner.getImgUrl());
         	banner_arr.add(obj);
         }
         data.put("State", "Success");
@@ -338,7 +335,7 @@ public class ProjectController {
 		return map;	
 	}
 	
-	@RequestMapping("/updateProjectImgWx")
+	/*@RequestMapping("/updateProjectImgWx")
     public @ResponseBody Map<String,Object> updateProjectImgWx(@RequestParam MultipartFile[] image,HttpServletRequest request)throws Exception{
 		
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -390,48 +387,43 @@ public class ProjectController {
         	map.put("info", "上传项目图片失败");	
         }
     	return map;	
+	}*/
+	
+	@RequestMapping("/updateProjectImgWx")
+    public @ResponseBody Map<String,Object> updateProjectImgWx(@RequestParam String project_id,@RequestParam String head_img)throws Exception{
+		
+		Map<String,Object> map = new HashMap<String, Object>();
+        
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("projectId", project_id);
+		paramMap.put("headImg", "https://" + head_img);
+        int flag = projectService.updateProjectHeadImg(paramMap);
+        
+        if(flag != -1 && flag !=0)
+        {  
+        	JSONObject data = new JSONObject();
+        	data.put("project_id", project_id);
+        	map.put("State", "Success");
+        	map.put("data", data);	
+        	return map;	
+        }
+        else
+        {
+        	map.put("State", "False");
+        	map.put("info", "上传项目图片失败");	
+        }
+    	return map;	
 	}
 	
 	
 	@RequestMapping("/updateProjectInfoImgWx")
-    public @ResponseBody Map<String,String> updateProjectInfoImgWx(@RequestParam MultipartFile[] image,HttpServletRequest request)throws Exception{
+    public @ResponseBody Map<String,String> updateProjectInfoImgWx(@RequestParam String project_id,@RequestParam String info_img_url)throws Exception{
 		
 		Map<String,String> map = new HashMap<String, String>();
-		
-		String projectId = request.getParameter("project_id");
-		//获取文件需要上传到的路径
-        String path = request.getSession().getServletContext().getRealPath("/");
-        
-        path = path.concat("JiMuImage/project/"+ projectId + "/");
-        
-   
-        List<String> imageUrl = new ArrayList<String>();
-        for (MultipartFile file : image) 
-        {
-            if (file.isEmpty()) {
-                System.out.println("文件未上传");
-                imageUrl.add(null);
-            } else 
-            {
-                String contentType = file.getContentType();
-
-                if (contentType.startsWith("image"))
-                {
-                	Calendar calendar=Calendar.getInstance();
-            		String random = String.valueOf(calendar.getTimeInMillis());
-            		
-                    String newFileName = random + ".jpg";
-                    System.out.println(newFileName);
-                    FileUtils.copyInputStreamToFile(file.getInputStream(),new File(path, newFileName)); // 写文件
-                    imageUrl.add(Constants.localIp + "/project/"+ projectId + "/" + newFileName);
-                }
-            }
-        }
-  
-        System.out.println("url="+ imageUrl.get(0));   
+		 
         
         Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("projectId", projectId);
+		paramMap.put("projectId", project_id);
 		
 		Project project = projectService.getProjectInfo(paramMap);
 		
@@ -448,7 +440,7 @@ public class ProjectController {
 		
 		
 		JSONObject obj = new JSONObject();
-		obj.put("url",imageUrl.get(0));
+		obj.put("url","https://" + info_img_url);
 		arr.add(obj);
 		paramMap.put("addImgs", arr.toJSONString());
         int flag = projectService.updateProjectAddImgs(paramMap);
@@ -623,5 +615,22 @@ public class ProjectController {
 		data.put("State", "Success");
 		data.put("data", rtn);				
 		return data;
+	}
+	
+	@RequestMapping("/getQiniuTokenWx")
+    public @ResponseBody Map<String,Object> getQiniuTokenWx()throws Exception{
+		Map<String,Object> data = new HashMap<String, Object>();
+		
+		Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
+		String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
+		
+		System.out.println("QINIU upToken:" + upToken);
+		
+		JSONObject rtn = new JSONObject();
+        rtn.put("upToken", upToken);
+        
+		data.put("State", "Success");
+		data.put("data", rtn);			
+    	return data;	
 	}
 }
