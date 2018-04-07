@@ -43,6 +43,7 @@ import com.changyu.foryou.service.CampusService;
 import com.changyu.foryou.service.DelayService;
 import com.changyu.foryou.service.FoodService;
 import com.changyu.foryou.service.OrderService;
+import com.changyu.foryou.service.PayService;
 import com.changyu.foryou.service.PreferentialService;
 import com.changyu.foryou.service.PushService;
 import com.changyu.foryou.service.ReceiverService;
@@ -50,6 +51,7 @@ import com.changyu.foryou.service.RedisService;
 import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.CalendarTool;
 import com.changyu.foryou.tools.Constants;
+import com.changyu.foryou.tools.PayUtil;
 import com.changyu.foryou.tools.ThreadPoolUtil;
 import com.pingplusplus.model.Charge;
 import com.pingplusplus.model.Refund;
@@ -71,6 +73,9 @@ public class OrderController {
 	private ReceiverService receiverService;
 	private CampusService  campusService;
 	private PushService pushService;
+	
+	@Autowired
+	private PayService payService;
 	
 	@Autowired  
     private DelayService delayService;  
@@ -518,7 +523,7 @@ public class OrderController {
 	@RequestMapping("/cancelOrderWx")
 	public @ResponseBody Map<String, String> cancelOrderWx(
 			@RequestParam String user_id,  @RequestParam String order_id){
-		Map<String,String> map = new HashMap<String, String>();
+		Map<String,String> result = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
 		
 		try {
@@ -527,10 +532,10 @@ public class OrderController {
 			Order order = orderService.getOrderByIdWx(paramMap);
 			if(order == null)
 			{
-				map.put("State", "False");
-				map.put("data", "生成订单失败");	
+				result.put("State", "False");
+				result.put("data", "生成订单失败");	
 
-				return map;
+				return result;
 			}
 
 			order.setStatus(Constants.ORDER_CANCEL);
@@ -546,26 +551,44 @@ public class OrderController {
 			int flag = orderService.updateOrder(order);
 			if (flag != -1 && flag != 0)
 			{
-				node.put("order_id", order_id);
-				map.put("State", "Success");
-				map.put("data", node.toString());
-				return map;
-			} else 
+				//启动退款流程，退款金额单位为分
+				String resultStr = payService.refund(order_id, String.valueOf(order.getPayPrice()*100));
+				try {
+		              Map map =  PayUtil.doXMLParse(resultStr);
+		              String returnCode = map.get("return_code").toString();
+		              if(returnCode.equals("SUCCESS")){
+		                  String resultCode = map.get("result_code").toString();
+		                  if(resultCode.equals("SUCCESS")){
+		                	//返回订单取消成功
+		      				node.put("order_id", order_id);
+		      				result.put("State", "Success");
+		      				result.put("data", node.toString());
+		      				return result;
+		                  }   
+		              }
+		          } 
+		          catch (Exception e) 
+		          {
+		              e.printStackTrace();
+		
+		          }
+				
+			} 
+			else 
 			{
-				map.put("State", "False");
-				map.put("data", null);	
-				return map;
+				result.put("State", "False");
+				result.put("data", null);	
+				return result;
 			}
-			
-			
+				
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		
-		map.put("State", "False");
-		map.put("data", null);	
+		result.put("State", "Fail");
+		result.put("data", null);	
 
-		return map;
+		return result;
 	}
 	
 	/**
@@ -2402,7 +2425,7 @@ s	 * @return
 	@RequestMapping("/setRejectOrderWx")
 	public @ResponseBody Map<String, Object> setRejectOrderWx(
 			@RequestParam String  user_id, @RequestParam String order_id) {
-		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> result = new HashMap<String, Object>();
 
 		System.out.println("setRejectOrderWx enter:" + user_id +"," + order_id);
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -2410,9 +2433,9 @@ s	 * @return
 		Order order = orderService.getOrderByIdWx(paramMap);
 		if (order == null)
 		{
-			map.put("State", "False");
-			map.put("data", "查询订单详细信息失败");	
-			return map;
+			result.put("State", "False");
+			result.put("data", "查询订单详细信息失败");	
+			return result;
 		}
 		
 		JSONArray recores = JSON.parseArray(order.getRecords());
@@ -2427,16 +2450,35 @@ s	 * @return
 		int flage = orderService.updateOrderStatusWx(paramMap);
 		if(flage != -1 && flage !=0)
 		{
-			map.put("State", "Success");
-			map.put("data", null);	
+			//启动退款流程，退款金额单位为分
+			String resultStr = payService.refund(order_id, String.valueOf(order.getPayPrice()*100));
+			try {
+	              Map map =  PayUtil.doXMLParse(resultStr);
+	              String returnCode = map.get("return_code").toString();
+	              if(returnCode.equals("SUCCESS")){
+	                  String resultCode = map.get("result_code").toString();
+	                  if(resultCode.equals("SUCCESS")){
+	                	//返回订单取消成功
+	                	result.put("State", "Success");
+	          			result.put("data", null);
+	      				return result;
+	                  }   
+	              }
+	          } 
+	          catch (Exception e) 
+	          {
+	              e.printStackTrace();
+	
+	          }
+				
 		}
 		else
 		{
-			map.put("State", "False");
-			map.put("data", null);	
+			result.put("State", "False");
+			result.put("data", null);	
 		}
 		
-		return map;
+		return result;
 	}
 	
 	

@@ -28,6 +28,8 @@ import javax.net.ssl.SSLContext;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -42,9 +44,7 @@ import org.jdom.input.SAXBuilder;
 import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.model.WeChatContext;
 
-import ytx.org.apache.http.client.methods.HttpPost;
-import ytx.org.apache.http.entity.StringEntity;
-  
+
 public class PayUtil {  
 	
 	public static long ACCESS_TOKEN_TIME = 0;
@@ -294,52 +294,69 @@ public class PayUtil {
 		return resultMap;
 	}
 	
-	/*public static String Refundpost(String url, String xmlParam){
-        StringBuilder sb = new StringBuilder();
-         try {
-            KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-            FileInputStream instream = new FileInputStream(new File(Constants.REFUND_KEY_PATH));
-            try {
-                keyStore.load(instream, "商户id".toCharArray());
-            } finally {
-                instream.close();
-            }
-      
-            // 证书
-            SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, "商户id".toCharArray()).build();
-            // 只允许TLSv1协议
-            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,new String[] { "TLSv1" },null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-            //创建基于证书的httpClient,后面要用到
-            CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-             
-             HttpPost httpPost = new HttpPost(url);//退款接口
-             StringEntity  reqEntity  = new StringEntity(xmlParam);
-             // 设置类型
-             reqEntity.setContentType("application/x-www-form-urlencoded");
-             httpPost.setEntity(reqEntity);
-             CloseableHttpResponse response = client.execute(httpPost);
-             try {
-                 HttpEntity entity = response.getEntity();
-                 System.out.println(response.getStatusLine());
-                 if (entity != null) {
-                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(),"UTF-8"));
-                     String text="";
-                     while ((text = bufferedReader.readLine()) != null) {
-                         sb.append(text);
-                     }
-                 }
-                 EntityUtils.consume(entity);
-             } catch(Exception e){
-                 e.printStackTrace();
-             }finally {
-                 try {
-                    response.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-             }
-         } catch (Exception e) {
-                e.printStackTrace();
-        }
-	}*/
+	public static String refundpost(String url, String xmlParam)
+	{
+		StringBuilder sb = new StringBuilder();
+     	try 
+     	{
+	        KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+	        FileInputStream instream = new FileInputStream(new File(Constants.REFUND_KEY_PATH));
+	        try 
+	        {
+	        	keyStore.load(instream, Constants.mchId.toCharArray());
+	        } 
+	        finally 
+	        {
+	        	instream.close();
+	        }
+  
+	        // 证书
+	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, Constants.mchId.toCharArray()).build();
+	        // 只允许TLSv1协议
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,new String[] { "TLSv1" },null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	        //创建基于证书的httpClient,后面要用到
+	        CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+         
+	        HttpPost httpPost = new HttpPost(url);//退款接口
+	        StringEntity  reqEntity  = new StringEntity(xmlParam);
+	        // 设置类型
+	        reqEntity.setContentType("application/x-www-form-urlencoded");
+	        httpPost.setEntity(reqEntity);
+	        CloseableHttpResponse response = client.execute(httpPost);
+	        try 
+	        {
+	        	HttpEntity entity = response.getEntity();
+	        	System.out.println(response.getStatusLine());
+	        	if (entity != null) {
+	        		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(),"UTF-8"));
+	        		String text="";
+	        		while ((text = bufferedReader.readLine()) != null) {
+		                 sb.append(text);
+	        		}
+		         }
+		         EntityUtils.consume(entity);
+	        }
+	        catch(Exception e)
+	        {
+		         e.printStackTrace();
+	        }
+	        finally 
+	        {
+	         	try
+	         	{
+		            response.close();
+		        } catch (IOException e) 
+	         	{
+		            e.printStackTrace();
+		        }
+	        }
+     	} 
+     	catch (Exception e)
+     	{
+		     e.printStackTrace();
+		}
+     	
+     	return sb.toString();
+     	
+	}
 }  
