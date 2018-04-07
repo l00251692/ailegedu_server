@@ -14,6 +14,15 @@ import java.net.URLEncoder;
 import java.util.List; 
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.util.Auth;
+
 import ytx.org.apache.http.HttpEntity;
 import ytx.org.apache.http.HttpResponse;
 import ytx.org.apache.http.client.methods.HttpPost;
@@ -139,7 +148,7 @@ public class HttpRequest {
     return result; 
   } 
   
-  public static String httpPostWithJSON(String url, String json,String outpath,String id)  
+  public static String httpPostWithJSONQr(String url, String json,String outpath,String id)  
           throws Exception {  
       String result = null;  
       // 将JSON进行UTF-8编码,以便传输中文  
@@ -162,12 +171,37 @@ public class HttpRequest {
             //  File saveFile = new File(uploadSysUrl+id+".jpg");  
               //String uploadSysUrl = "D:\\upload"+"/";  
               File saveFile = new File(outpath+id+".jpg");  
-                 // 判断这个文件（saveFile）是否存在  
-                 if (!saveFile.getParentFile().exists()) {  
-                     // 如果不存在就创建这个文件夹  
-                     saveFile.getParentFile().mkdirs();  
-                 }  
-              saveToImgByInputStream(instreams, outpath, id+".jpg");  
+              // 判断这个文件（saveFile）是否存在  
+              if (!saveFile.getParentFile().exists()) {  
+			     // 如果不存在就创建这个文件夹  
+			     saveFile.getParentFile().mkdirs();  
+              }  
+              //将文件保存到七牛云
+              
+              Configuration cfg = new Configuration(Zone.zone0()); //zone0为华东
+              //...其他参数参考类注释
+              UploadManager uploadManager = new UploadManager(cfg);
+              String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
+              Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
+      		  String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
+      		
+      		  try{
+      			Response response2 = uploadManager.put(instreams,key,upToken,null, null);
+                
+                //解析上传成功的结果
+                DefaultPutRet putRet = new Gson().fromJson(response2.bodyString(), DefaultPutRet.class);
+               // System.out.println(putRet.key+"二维码");
+                return putRet.key; //文件名
+			  
+      		  }
+      		  catch(QiniuException ex)
+      		  {
+      			  Response r = ex.response;
+      			  System.err.println(r.toString());
+      		  }
+              
+              //将文件保存到目的路径
+              //saveToImgByInputStream(instreams, outpath, id+".jpg");  
           }  
       }  
       return result;  

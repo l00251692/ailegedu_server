@@ -582,7 +582,7 @@ public class ProjectController {
 	
 	@RequestMapping("/getShareQrWx")
     public @ResponseBody Map<String,Object> getShareQrWx(@RequestParam String project_id, HttpServletRequest request) throws Exception {
-		
+		Map<String,Object> data = new HashMap<String, Object>();
 		//接口B：生成无限制但需要先发布的小程序
 		//String url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit";
 		
@@ -605,13 +605,19 @@ public class ProjectController {
         String path = request.getSession().getServletContext().getRealPath("/");
         path = path.concat("JiMuImage/project/QrCode/");
         
-        HttpRequest.httpPostWithJSON(url,body,path, project_id);
+        String resultstr = HttpRequest.httpPostWithJSONQr(url,body,path, project_id);
+        if(resultstr == null)
+        {
+        	data.put("State", "Fail");
+    		data.put("info", "生成二维码失败");				
+    		return data;
+        }
         
         JSONObject rtn = new JSONObject();
-        String putpath = Constants.localIp + "/project/QrCode/" + project_id + ".jpg";
+        String putpath = Constants.QINIU_IP + resultstr;
         rtn.put("path", putpath);
         
-        Map<String,Object> data = new HashMap<String, Object>();
+        
 		data.put("State", "Success");
 		data.put("data", rtn);				
 		return data;
