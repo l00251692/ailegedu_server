@@ -44,6 +44,14 @@ import com.changyu.foryou.service.OrderService;
 import com.changyu.foryou.service.RedisService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.ThreadPoolUtil;
+import com.google.gson.Gson;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.util.Auth;
 
 /**
  * 食品控制类
@@ -917,6 +925,7 @@ public class FoodController {
             realPath = realPath.concat("JiMuImage/food/");
 
             List<String> imageUrl = new ArrayList<String>();
+            String pic_url = "";
             for (MultipartFile file : myfile) {
                 if (file.isEmpty()) {
                     System.out.println("文件未上传");
@@ -925,11 +934,28 @@ public class FoodController {
                     String contentType = file.getContentType();
 
                     if (contentType.startsWith("image")) {
-                        String newFileName = new Date().getTime() + ""
-                                + new Random().nextInt() + ".jpg";
-                        FileUtils.copyInputStreamToFile(file.getInputStream(),
-                                new File(realPath, newFileName)); // 写文件
-                        imageUrl.add(Constants.localIp + "/food/" + newFileName);
+                    	//将文件上传到七牛云
+                        Configuration cfg = new Configuration(Zone.zone0()); //zone0为华东
+                        //...其他参数参考类注释
+                        UploadManager uploadManager = new UploadManager(cfg);
+                        String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
+                        Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
+                		String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
+                		
+                		try{
+                			Response response2 = uploadManager.put(file.getInputStream(),key,upToken,null, null);
+                          
+                			//解析上传成功的结果
+                			DefaultPutRet putRet = new Gson().fromJson(response2.bodyString(), DefaultPutRet.class);
+                			
+                			pic_url = Constants.QINIU_IP + putRet.key; //文件名
+          			  
+                		}
+                		catch(QiniuException ex)
+                		{
+    						Response r = ex.response;
+    						System.err.println(r.toString());
+                		}
                     }
                 }
             }
@@ -940,7 +966,7 @@ public class FoodController {
             }
       
             Food food = new Food(campusId, foodId, name, price, discountPrice,
-                    imageUrl.get(0), null, status, foodFlag, isDiscount,
+                    pic_url, null, status, foodFlag, isDiscount,
                     categoryId, primeCost);
             food.setMessage(message);
             food.setFoodCount(foodCount);

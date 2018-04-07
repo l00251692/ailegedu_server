@@ -53,7 +53,6 @@ public class SellerController {
 				&& !campusAdmin.trim().equals("")
 				&& !password.trim().equals("")) {
 			Sellers sellers = sellerService.selectByCampusAdmin(campusAdmin);
-			System.out.println("sellers111111111");
 			if (sellers != null) {
 				if (sellers.getPassword().equals(Md5.GetMD5Code(password))) {
 					map.put(Constants.STATUS, Constants.SUCCESS);

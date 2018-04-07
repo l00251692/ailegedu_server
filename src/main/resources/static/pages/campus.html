@@ -580,12 +580,14 @@
 			var deliver = $("#plus_campus_deliver").val().trim();
 			var openTime = $("#plus_open_time").val().trim();
 			var closeTime = $("#plus_close_time").val().trim();
-			//var status = $("#span_plus_status").text().trim();
+			var minPrice = $("#plus_campus_minPrice").text().trim();
+			var deliveryFee = $("#plus_campus_deliveryFee").text().trim();
+			var reachTime = $("#plus_campus_reachTime").text().trim();
 			var customService = $("#plus_custom_service").val().trim();
 			var $campusCommitDataForm=document.getElementById("plus_campus_form");
 
 			//判空
-			if(!campusName||!openTime||!closeTime||!customService){
+			if(!campusName||!address||!minPrice||!deliveryFee||!reachTime||!openTime||!closeTime||!customService){
 				alert("对不起，请补填未填写的地方！");
 				return;
 			}

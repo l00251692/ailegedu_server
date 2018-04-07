@@ -16,6 +16,14 @@ import com.changyu.foryou.service.FoodService;
 import com.changyu.foryou.service.PreferentialService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.Md5;
+import com.google.gson.Gson;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.util.Auth;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +78,7 @@ public class CampusController {
     }
     
     /**
-     * 获取校区
+     * 获取所有店铺
      *
      * @return
      */
@@ -357,6 +365,7 @@ public class CampusController {
 	        realPath = realPath.concat("JiMuImage/shop/");
 	        
 	        List<String> imageUrl = new ArrayList<String>();
+	        String pic_url = "";
 	        for (MultipartFile file : myfile) {
 	            if (file.isEmpty()) {
 	                System.out.println("文件未上传");
@@ -367,9 +376,30 @@ public class CampusController {
 	                System.out.println("contentType:" + contentType);
 	                if (contentType.startsWith("image"))
 	                {
-	                    String newFileName = new Date().getTime() + "" + new Random().nextInt() + ".jpg";
-	                    FileUtils.copyInputStreamToFile(file.getInputStream(),new File(realPath, newFileName)); // 写文件
-	                    imageUrl.add(Constants.localIp + "/shop/" + newFileName);
+	                    //String newFileName = new Date().getTime() + "" + new Random().nextInt() + ".jpg";
+	                    //FileUtils.copyInputStreamToFile(file.getInputStream(),new File(realPath, newFileName)); // 写文件
+	                    //将文件上传到七牛云
+	                    Configuration cfg = new Configuration(Zone.zone0()); //zone0为华东
+	                    //...其他参数参考类注释
+	                    UploadManager uploadManager = new UploadManager(cfg);
+	                    String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
+	                    Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
+	            		String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
+	            		
+	            		try{
+	            			Response response2 = uploadManager.put(file.getInputStream(),key,upToken,null, null);
+	                      
+	            			//解析上传成功的结果
+	            			DefaultPutRet putRet = new Gson().fromJson(response2.bodyString(), DefaultPutRet.class);
+	            			
+	            			pic_url = Constants.QINIU_IP + putRet.key; //文件名
+	      			  
+	            		}
+	            		catch(QiniuException ex)
+	            		{
+							Response r = ex.response;
+							System.err.println(r.toString());
+	            		}
 	                }
 	            }
 	        }
@@ -390,7 +420,7 @@ public class CampusController {
 	        paramMap.put("closeTime", closeTimeDate);
 	        paramMap.put("status", status);   
 	        paramMap.put("sales", 0);//默认开启校区
-	        paramMap.put("pic_url", imageUrl.get(0));   
+	        paramMap.put("pic_url", pic_url);   
 	        paramMap.put("customService", customService);
 	        paramMap.put("min_price", minPrice);
 	        paramMap.put("delivery_fee", deliveryFee);
@@ -406,6 +436,7 @@ public class CampusController {
         }
         catch (Exception e)
         {
+        	System.out.println(e);
         	return "redirect:/pages/uploadError.html";
         }
         return "redirect:/pages/campus.html";
@@ -512,6 +543,7 @@ public class CampusController {
         System.out.println("closeTime:" + closeTime);
         
         List<String> imageUrl = new ArrayList<String>();
+        String pic_url = "";
         for (MultipartFile file : myfile) {
             if (file.isEmpty()) {
                 System.out.println("文件未上传");
@@ -523,8 +555,29 @@ public class CampusController {
                 if (contentType.startsWith("image"))
                 {
                     String newFileName = new Date().getTime() + "" + new Random().nextInt() + ".jpg";
-                    FileUtils.copyInputStreamToFile(file.getInputStream(),new File(realPath, newFileName)); // 写文件
-                    imageUrl.add(Constants.localIp + "/shop/" + newFileName);
+                    //FileUtils.copyInputStreamToFile(file.getInputStream(),new File(realPath, newFileName)); // 写文件
+                    //将文件上传到七牛云
+                    Configuration cfg = new Configuration(Zone.zone0()); //zone0为华东
+                    //...其他参数参考类注释
+                    UploadManager uploadManager = new UploadManager(cfg);
+                    String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
+                    Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
+            		String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
+            		
+            		try{
+            			Response response2 = uploadManager.put(file.getInputStream(),key,upToken,null, null);
+                      
+            			//解析上传成功的结果
+            			DefaultPutRet putRet = new Gson().fromJson(response2.bodyString(), DefaultPutRet.class);
+            			
+            			pic_url = Constants.QINIU_IP + putRet.key; //文件名
+      			  
+            		}
+            		catch(QiniuException ex)
+            		{
+						Response r = ex.response;
+						System.err.println(r.toString());
+            		}
                 }
             }
         }
@@ -544,10 +597,12 @@ public class CampusController {
         paramMap.put("openTime", openTimeDate);
         paramMap.put("closeTime", closeTimeDate);
         paramMap.put("status", status); //默认开启校区
-        if(imageUrl.get(0) != null)
+
+        if (pic_url != null && !pic_url.isEmpty())
         {
-        	paramMap.put("pic_url", imageUrl.get(0));   
+        	paramMap.put("pic_url", pic_url);  
         }
+         
         paramMap.put("customService", customService);
         paramMap.put("min_price", minPrice);
         paramMap.put("delivery_fee", deliveryFee);
@@ -803,23 +858,38 @@ public class CampusController {
 		float totalService = 0.0f;
         
         List<FoodComment> commentlist = foodService.getAllComments(paramMap2);
-        for (FoodComment comment:commentlist){
-        	
-        	totalQuality = totalQuality + comment.getQuality();
-        	totalService = totalService + comment.getService();  	
+        String overAll = "5";
+        if(commentlist.size() == 0) //没有评论
+        {
+        	node.put("overall", 5);//综合评分
+    		node.put("quality", 5);//商家评分
+    		node.put("service", 5);//配送评分
         }
-        DecimalFormat decimalFormat=new DecimalFormat(".0");
+        else
+        {
+        	for (FoodComment comment:commentlist){
+            	
+            	totalQuality = totalQuality + comment.getQuality();
+            	totalService = totalService + comment.getService();  	
+            }
+            DecimalFormat decimalFormat=new DecimalFormat(".0");
+            
+            float quality = totalQuality/commentlist.size();
+            float service = totalService/commentlist.size();
+            
+            overAll = decimalFormat.format((quality + service)/2);
+            
+            node.put("overall", overAll);//综合评分
+    		node.put("quality", decimalFormat.format(quality));//商家评分
+    		node.put("service", decimalFormat.format(service));//配送评分
+        }
         
-        float quality = totalQuality/commentlist.size();
-        float service = totalService/commentlist.size();
-		node.put("overall", decimalFormat.format((quality + service)/2));//综合评分
-		node.put("quality", decimalFormat.format(quality));//商家评分
-		node.put("service", decimalFormat.format(service));//配送评分
+		
 		
 		//更新店铺评分（可能会稍晚）
 		Map<String, Object> paramMap3 = new HashMap<String, Object>();
 		paramMap3.put("campusId", seller_id);
-		paramMap3.put("overAll", (quality + service)/2);
+		paramMap3.put("overAll", overAll);
 		int flag = campusService.updateCampusOverAll(paramMap3);
 		
 		if(flag == 0 || flag == -1){

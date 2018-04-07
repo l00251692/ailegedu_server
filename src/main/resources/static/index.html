@@ -2,7 +2,7 @@
 <html lang='en'>
 <meta charset='utf-8'>
 <head>
-<title>积木平台</title>
+<title>小蓝鲸平台</title>
 <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css'>
 <link rel='stylesheet' type='text/css' href='css/style.css'>
 <link rel="shortcut icon" href="img/icon.png">
@@ -51,13 +51,13 @@ a:hover {
 	<header class='navbar blue blue2 navbar-fixed-top'>
 		<div class='navbar-inner'>
 			<div class='container-fluid'>
-				<a class='brand pull-left'><img src="img/icon.png" width="20px" height="auto">&nbsp;积木平台</a>
+				<a class='brand pull-left'><img src="img/icon.png" width="20px" height="auto">&nbsp;小蓝鲸</a>
 				<ul class='nav pull-right'>
-					<li>
+					<!-- <li>
 						<div>
 							<button type="button" id="one_key_open" onclick="oneKeyOpen()" class="btn btn-default">一键开店</button>
 						</div>
-					</li>
+					</li> -->
 					<li>
 						<!-- 添加校区下拉菜单 -->
 						<div class="dropdown" id="campusDropdown">
@@ -119,12 +119,12 @@ a:hover {
 						</figure>
 						<hr/>
 					</li>
-					<li><figure>
+					<!-- <li><figure>
 							<a href="pages/food_comment.html" target="content"> <i
 								class='icon-thumbs-up'></i> 商品评价&nbsp;&nbsp;
 
 							</a>
-						</figure><hr /></li>
+						</figure><hr /></li> -->
 
 
 					<li><figure>
@@ -157,14 +157,14 @@ a:hover {
 							<a href="pages/news.html" target="content"> <i
 								class='icon-th-large'></i> 主页图片&nbsp;&nbsp;
 							</a>
-						</figure><hr/></li> -->
+						</figure><hr/></li>
 					<li><figure>
 							<a href="pages/push.html" target="content"> <i
 								class='icon-arrow-right'></i> 消息推送&nbsp;&nbsp;
 							</a>
-						</figure><hr /></li>
+						</figure><hr /></li>-->
 
-					<li id="li-campus-admin">
+					<!-- <li id="li-campus-admin">
 						<figure>
 							<a href="pages/campus_admin.html" target="content">
 								<i class="icon-wrench"></i>
@@ -179,19 +179,19 @@ a:hover {
 								店铺管理&nbsp;&nbsp;
 							</a>
 						</figure><hr/>
-					</li>
+					</li> -->
 					<!-- <li id="hotsearch"><figure>
 							<a href="pages/hotsearch.html" id="hotsearch" target="content"><i
 								class='icon-zoom-out'></i>搜索标签 </a>
 						</figure><hr/></li>
 					<li> -->
-					<li id="closeStore">
+					<!-- <li id="closeStore">
 						<figure>
 							<a href="pages/close.html" target="content">
 								<i class="icon-off"></i>一键关店
 							</a>
 						</figure><hr/>
-					</li>
+					</li> -->
 					<!-- <li><figure>
 							<a href="pages/help.html" target="content"><i
 								class='icon-question-sign'></i> 帮助 </a>
@@ -248,7 +248,7 @@ function oneKeyOpen(){
 $(function(){
 	//根据校区状态显示或隐藏“一键开店”按钮
 	//如果是总校区管理员，隐藏“一键开店”按钮
-	if(adminType==0){
+/*	if(adminType==0){
 		//商户
 		if(status==0){
 			//店铺处于休息状态
@@ -259,11 +259,11 @@ $(function(){
 	}else if(adminType==1){
 		//系统管理员
 		$("#one_key_open").hide();
-	}
+	}*/
 
 	//根据管理员类型判断是否显示校区下拉菜单
 	//如果是校区管理员，使用他管理的校区Button替换校区下拉菜单，且隐藏校区管理和校区管理员管理
-	if(getCookie("type")==1){//商户
+	if(getCookie("type")==1){//系统管理员
 		$("#campusDropdown").css("visibility", "visible");
 		if(campusId!=null&&typeof(campusId)!="undefined"){
 			$.post('campus/getCampusById', {
@@ -273,9 +273,9 @@ $(function(){
 			},"json");
 		}
 	}else{
-		//隐藏校区管理和校区管理员管理
-		$("#li-campus-admin").hide();
-		$("#li-campus").hide();
+		//普通商户
+		$("#li-campus-admin").hide(); //账号管理
+		$("#li-campus").hide(); //店铺管理
 		//$("#campusDropdown").css("visibility", "hidden");
 		//根据校区id获取校区名称
 		$.post('campus/getCampusById?server=56846a8a2fee49d14901d39cc48b8b2a', {

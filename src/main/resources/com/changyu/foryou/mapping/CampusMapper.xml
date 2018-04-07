@@ -255,7 +255,9 @@
 		 from 
 		 campus,city 
 		 where campus.city_id=city.city_id 
-		 and campus.univ_name = #{univName,jdbcType=VARCHAR}
+		 <if test="univName != null">
+			and campus.univ_name = #{univName,jdbcType=VARCHAR}
+		 </if>
 		 order by sales desc,status desc
 		 <if test="limit !=null and offset !=null">
 			LIMIT #{limit,jdbcType=INTEGER} OFFSET

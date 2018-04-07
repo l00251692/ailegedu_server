@@ -170,12 +170,12 @@ public class HttpRequest {
             //  String uploadSysUrl = systemConfig.getString("agentImgUrl")+id+"/";  
             //  File saveFile = new File(uploadSysUrl+id+".jpg");  
               //String uploadSysUrl = "D:\\upload"+"/";  
-              File saveFile = new File(outpath+id+".jpg");  
+              //File saveFile = new File(outpath+id+".jpg");  
               // 判断这个文件（saveFile）是否存在  
-              if (!saveFile.getParentFile().exists()) {  
+              //if (!saveFile.getParentFile().exists()) {  
 			     // 如果不存在就创建这个文件夹  
-			     saveFile.getParentFile().mkdirs();  
-              }  
+			     //saveFile.getParentFile().mkdirs();  
+              //}  
               //将文件保存到七牛云
               
               Configuration cfg = new Configuration(Zone.zone0()); //zone0为华东

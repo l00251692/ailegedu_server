@@ -2,7 +2,7 @@
 <html lang='en'>
 <meta charset='utf-8'>
 <head>
-	<title>积木平台</title>
+	<title>小蓝鲸</title>
 	<link rel='stylesheet' type='text/css' href='css/bootstrap.min.css'>
 	<link rel="shortcut icon" href="img/icon.png">
 	<script type='text/javascript' src="js/jquery-1.7.2.min.js"></script>
@@ -27,12 +27,12 @@
 		function toLogin(){
 			var phone=document.getElementById("phone").value;
 			var password=document.getElementById("password").value;
-			
+
 			if ((phone==null||phone=="")||(password==null||password=="")) {
 				$("#message").html("账号或者密码为空，请检查后输入");
 				return;
 			};
-			
+
 			if($('#dropdownMenu1').text()!='系统管理员'&&$('#dropdownMenu1').text()!='商户'){
 				$("#message").html("请选择您的角色");
 				return;
@@ -67,7 +67,7 @@
 											//跳转到主页
 											window.location.href="index.html?backurl="+window.location.href;
 										},"json");
-										
+
 									},"json");
 								}else if($("#dropdownMenu1").text()=='商户'){
 									$("#message").html("对不起，您不是商户！");
