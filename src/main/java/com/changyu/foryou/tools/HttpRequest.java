@@ -148,7 +148,7 @@ public class HttpRequest {
     return result; 
   } 
   
-  public static String httpPostWithJSONQr(String url, String json,String outpath,String id)  
+  public static String httpPostWithJSONQr(String url, String json,String id)  
           throws Exception {  
       String result = null;  
       // 将JSON进行UTF-8编码,以便传输中文  

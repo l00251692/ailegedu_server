@@ -369,14 +369,10 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping("/updateOrderAddrWx")
-	public @ResponseBody Map<String, String> updateOrderAddrWx(
+	public @ResponseBody Map<String, Object> updateOrderAddrWx(
 			@RequestParam String user_id,  @RequestParam String quasi_order_id, @RequestParam String addr_id){
-		Map<String,String> map = new HashMap<String, String>();
+		Map<String,Object> map = new HashMap<String, Object>();
 		JSONObject node = new JSONObject();
-		float packingFee = 0.0f;
-		float orderPrice = 0.0f;
-		float cutMoneyTotal = 0.0f;
-		
 		
 		System.out.println("updateOrderAddrWx:" + user_id + "," + quasi_order_id + "," + addr_id);
 
@@ -386,8 +382,8 @@ public class OrderController {
 			Order order = orderService.getOrderByIdWx(paramMap);
 			if(order == null)
 			{
-				map.put("State", "False");
-				map.put("data", "生成订单失败");	
+				map.put("State", "Fail");
+				map.put("data", "获取订单信息失败");	
 
 				return map;
 			}
@@ -410,39 +406,8 @@ public class OrderController {
 					node.put("receiver_addr", receiver.getAddress());
 				}
 				
-				JSONArray goods = new JSONArray();
-				JSONArray goodsTmp = JSON.parseArray(order.getGoods());
-				
-				for (int i = 0; i < goodsTmp.size(); i ++)
-				{
-					JSONObject good = new JSONObject();
-					good.put("goods_name",goodsTmp.getJSONObject(i).getString("goods_name"));
-					good.put("num",goodsTmp.getJSONObject(i).getString("num"));
-					good.put("select_property",goodsTmp.getJSONObject(i).getString("select_property"));
-					good.put("price_sum",String.valueOf(goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num")));
-					goods.add(good);
-					packingFee = packingFee + goodsTmp.getJSONObject(i).getFloatValue("packing_fee");
-					orderPrice = orderPrice + goodsTmp.getJSONObject(i).getFloatValue("price") * goodsTmp.getJSONObject(i).getFloatValue("num");
-				}
-				
-				Map<String, Object> paramMap3 = new HashMap<String, Object>();
-				paramMap3.put("campusId",  order.getCampusId());
-				Campus campus = campusService.getCampusById(paramMap3);
-				
-				node.put("seller_name", campus.getCampusName());
-				
-				node.put("goods", goods);
-				node.put("packing_fee", String.valueOf(packingFee));
-				node.put("delivery_fee", campus.getDelivery_fee().toString());
-				
-				node.put("cut_money", String.valueOf(0)); //优惠多少
-				node.put("coupon_money", String.valueOf(0)); //优惠多少
-				node.put("cut_money_total", String.valueOf(cutMoneyTotal)); //总优惠
-				node.put("pay_price", String.valueOf(orderPrice + campus.getDelivery_fee() - cutMoneyTotal)); 
-				node.put("order_price", String.valueOf(orderPrice));
-				
 				map.put("State", "Success");
-				map.put("data", node.toString());	
+				map.put("data", node);	
 
 				return map;
 			} else 

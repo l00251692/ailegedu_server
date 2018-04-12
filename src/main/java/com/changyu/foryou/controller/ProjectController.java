@@ -601,11 +601,8 @@ public class ProjectController {
         params.put("width", 160);
         String body = JSON.toJSONString(params);
         System.out.println("createQr:" + body);
-        
-        String path = request.getSession().getServletContext().getRealPath("/");
-        path = path.concat("JiMuImage/project/QrCode/");
-        
-        String resultstr = HttpRequest.httpPostWithJSONQr(url,body,path, project_id);
+           
+        String resultstr = HttpRequest.httpPostWithJSONQr(url,body, project_id);
         if(resultstr == null)
         {
         	data.put("State", "Fail");

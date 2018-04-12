@@ -418,7 +418,7 @@ public class PayController {
 				} }).start();*/
 			Map<String, Object> paramMap3 = new HashMap<String, Object>();
 			paramMap3.put("campusId", order.getCampusId());
-			Users user = userService.getUserByCampusId(paramMap3);
+			Users user = userService.getUserByCampusId(paramMap3);//获得店铺运营商家
 			if(user != null)
 			{
 				webSocketHandler.sendMessageToUser(user.getUserId(), new TextMessage("新订单"));

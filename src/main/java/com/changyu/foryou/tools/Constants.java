@@ -41,9 +41,9 @@ public  class Constants {
     public  static final String QINIU_AK = "YxW2_V1FQj2yOYNlHlzhHiAHI4cwWkPWNIxiT_ae";
     public  static final String QINIU_SK = "1d1Uo7S3x7qJXSL8ljbW46b2dKgWL0fPjHxG4PdI";
     public  static final String QINIU_BUCKET = "lanjing";
-    public static final String QINIU_IP = "https://p6sm3pvn3.bkt.clouddn.com/";
+    public static final String QINIU_IP = "https://img.ailogic.xin/"; //采用绑定的域名，否则真机上不显示
   
-    
+    //public static final String QINIU_IP = "http://p6sm3pvn3.bkt.clouddn.com/";
 	
     
 }

@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 //import javax.security.auth.message.callback.PrivateKeyCallback.IssuerSerialNumRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -382,9 +383,11 @@ public class CampusController {
 	                    Configuration cfg = new Configuration(Zone.zone0()); //zone0为华东
 	                    //...其他参数参考类注释
 	                    UploadManager uploadManager = new UploadManager(cfg);
-	                    String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
+	                    //String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
 	                    Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
 	            		String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
+	            		
+	            		String key = "shop_" + UUID.randomUUID().toString().replaceAll("-","");
 	            		
 	            		try{
 	            			Response response2 = uploadManager.put(file.getInputStream(),key,upToken,null, null);
@@ -535,9 +538,9 @@ public class CampusController {
         
         System.out.println("updateCampus:customService=" + customService);
         
-        String realPath = request.getSession().getServletContext().getRealPath("/");
+/*        String realPath = request.getSession().getServletContext().getRealPath("/");
 
-        realPath = realPath.concat("JiMuImage/shop/");
+        realPath = realPath.concat("JiMuImage/shop/");*/
         
         System.out.println("openTime:" + openTime);
         System.out.println("closeTime:" + closeTime);
@@ -560,9 +563,11 @@ public class CampusController {
                     Configuration cfg = new Configuration(Zone.zone0()); //zone0为华东
                     //...其他参数参考类注释
                     UploadManager uploadManager = new UploadManager(cfg);
-                    String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
+                    //String key = null;//默认不指定key的情况下，以文件内容的hash值作为文件名
                     Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
             		String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
+            		
+            		String key = "shop_" + UUID.randomUUID().toString().replaceAll("-","");
             		
             		try{
             			Response response2 = uploadManager.put(file.getInputStream(),key,upToken,null, null);
