@@ -18,7 +18,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
     // 用户进入系统监听
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        
+        System.out.println("afterConnectionEstablished entered");
         users.add(session);
         String userId = session.getAttributes().get("user_id").toString();
 
@@ -36,7 +36,6 @@ public class WebSocketPushHandler implements WebSocketHandler {
         //sendMessagesToUsers(msg);
         // 给指定用户群发消息
         //sendMessageToUser(userId, msg);
-
     }
 
     // 后台错误信息处理方法

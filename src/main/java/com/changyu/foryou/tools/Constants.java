@@ -19,10 +19,10 @@ public  class Constants {
     public static final String REDISPREFIX = "orderId=";
     
     public static final int COUNTDELAY = 10; //服务器返回给前台的剩余时间增加10s防止前台时间计数器到了后后端还未及时更细数据
-    public static final int PAYDELAYTIME = 60; //300即为等待5min 300
-    public static final int WAITRCVTIME = 60;  //300
-    public static final int WAITCONFIRM = 60; //24小时自动确认收货 24*60*60
-    public static final int WAITREVIEW  = 60; //2天自动评价为5星  2*24*60*60
+    public static final int PAYDELAYTIME = 60;//600; //300即为等待5min 300
+    public static final int WAITRCVTIME = 60;//300;  //300 商家接单时间
+    public static final int WAITCONFIRM = 60;//24*60*60; //24小时自动确认收货 24*60*60
+    public static final int WAITREVIEW  = 60;//2*24*60*60; //2天自动评价为5星  2*24*60*60
     
     public static final Long REDISSAVETIME =  365*24*60l;   //缓存一年，分钟
     

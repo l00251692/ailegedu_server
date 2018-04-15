@@ -404,6 +404,7 @@
 		from orders
 		where campus_id = #{campusId,jdbcType=VARCHAR}
 		and status > 1 
+		and status != 5
 		order by
 		create_time DESC
 		<if test="limit !=null and offset !=null">

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.TextMessage;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -38,6 +40,7 @@ import com.changyu.foryou.model.SmallOrder;
 import com.changyu.foryou.model.SuperAdminOrder;
 import com.changyu.foryou.model.TogetherOrder;
 import com.changyu.foryou.model.TradeInfo;
+import com.changyu.foryou.model.Users;
 import com.changyu.foryou.payment.ChargeInterface;
 import com.changyu.foryou.service.CampusService;
 import com.changyu.foryou.service.DelayService;
@@ -73,6 +76,9 @@ public class OrderController {
 	private ReceiverService receiverService;
 	private CampusService  campusService;
 	private PushService pushService;
+	
+	@Resource  
+    private WebSocketPushHandler webSocketHandler;  
 	
 	@Autowired
 	private PayService payService;
@@ -260,7 +266,8 @@ public class OrderController {
 				{
 					System.out.println("catch exception" + e);
 				}
-				System.out.println("SubmitOrderWx ok");				
+				
+				System.out.println("CreateOrderWx ok");				
 				node.put("quasi_order_id", String.valueOf(orderId));
 				map.put("State", "Success");
 				map.put("data", node.toString());	
@@ -525,6 +532,16 @@ public class OrderController {
 		                  String resultCode = map.get("result_code").toString();
 		                  if(resultCode.equals("SUCCESS")){
 		                	//返回订单取消成功
+		                	order.setStatus(Constants.ORDER_REFUND_SUCCESS);
+  		          			
+  		          			JSONArray recordes2 = JSON.parseArray(order.getRecords());
+  		          			JSONObject record2 = new JSONObject();
+  		          			record2.put("status",Constants.ORDER_REFUND_SUCCESS);
+  		          			record2.put("time", new Date());
+  		          			recordes2.add(record2);
+  		          			order.setRecords(recordes2.toString());
+  		          			
+  		          			int flag2 = orderService.updateOrder(order);
 		      				node.put("order_id", order_id);
 		      				result.put("State", "Success");
 		      				result.put("data", node.toString());
@@ -743,23 +760,19 @@ public class OrderController {
 			
 			rtnOrder.put("add_time", order.getCreateTime());
 			rtnOrder.put("flow", flowarray);
-			switch (order.getStatus())
+			
+			DSHOrder dshOrder = redisServie.get(Constants.REDISPREFIX  + order_id);
+			
+			if(dshOrder != null && (order.getStatus() == Constants.ORDER_CREATE || order.getStatus() == Constants.ORDER_PAY_SUCCESS))
 			{
-				case Constants.ORDER_CREATE:
-				{
-					DSHOrder dshOrder = redisServie.get(Constants.REDISPREFIX  + order_id);
-					if(dshOrder != null)
-					{
-						rtnOrder.put("left_time", dshOrder.getDelay(TimeUnit.SECONDS) + Constants.COUNTDELAY);//剩余多少秒
-					}
-					else
-					{
-						rtnOrder.put("left_time", 0);
-					}
-					break;
-				}
+				rtnOrder.put("left_time", dshOrder.getDelay(TimeUnit.SECONDS) + Constants.COUNTDELAY);//剩余多少秒
 			}
-			 //当前步骤剩余时间计时器，s为单位，小程序会启动定时器，到时间后重新获得订单状态
+			else
+			{
+				rtnOrder.put("left_time", 0);
+			}
+
+			//当前步骤剩余时间计时器，s为单位，小程序会启动定时器，到时间后重新获得订单状态
 			rtnOrder.put("seller_name", campus.getCampusName());
 			rtnOrder.put("is_reviews", String.valueOf(0));
 			rtnOrder.put("state", order.getStatus());
@@ -2405,7 +2418,7 @@ s	 * @return
 		
 		JSONArray recores = JSON.parseArray(order.getRecords());
 		JSONObject record = new JSONObject();
-		record.put("status",9);
+		record.put("status",Constants.ORDER_REJECT);
 		record.put("time", new Date());
 		recores.add(record);
 		
@@ -2424,6 +2437,16 @@ s	 * @return
 	                  String resultCode = map.get("result_code").toString();
 	                  if(resultCode.equals("SUCCESS")){
 	                	//返回订单取消成功
+                	    order.setStatus(Constants.ORDER_REFUND_SUCCESS);
+	          			
+	          			JSONArray recordes2 = JSON.parseArray(order.getRecords());
+	          			JSONObject record2 = new JSONObject();
+	          			record2.put("status",Constants.ORDER_REFUND_SUCCESS);
+	          			record2.put("time", new Date());
+	          			recordes2.add(record2);
+	          			order.setRecords(recordes2.toString());
+	          			
+	          			int flag2 = orderService.updateOrder(order);
 	                	result.put("State", "Success");
 	          			result.put("data", null);
 	      				return result;

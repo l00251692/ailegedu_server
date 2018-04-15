@@ -271,6 +271,8 @@ public class PayController {
                 data.put("State", "Success");
         		data.put("data", node);	
             //}  
+        		
+        		
               
             
 
@@ -354,10 +356,10 @@ public class PayController {
 			return null;
 		}
 		
-		order.setStatus((short)2);
+		order.setStatus(Constants.ORDER_PAY_SUCCESS);
 		JSONArray records = JSON.parseArray(order.getRecords());
 		JSONObject record = new JSONObject();
-		record.put("status", 2);
+		record.put("status", Constants.ORDER_PAY_SUCCESS);
 		record.put("time", new Date());
 		
 		records.add(record);
@@ -483,7 +485,7 @@ public class PayController {
     public @ResponseBody Map<String, Object> refundWx(@RequestParam String order_id,String user_id,Float fee) {
           Map<String,Object> result = new HashMap<String,Object>();
           
-          String resultStr = payService.refund(order_id, String.valueOf(fee*100));
+          /*String resultStr = payService.refund(order_id, String.valueOf(fee*100));
           
           System.out.println("调试模式_统一下单接口 返回XML数据：" + result);  
             
@@ -514,7 +516,9 @@ public class PayController {
           {
               e.printStackTrace();
               result.put("State", "Fail");
-          }
+          }*/
+          result.put("State", "Success");
+          result.put("data", null);	
           return result;
     }
 	
