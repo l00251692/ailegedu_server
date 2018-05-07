@@ -59,14 +59,15 @@
 										//alert(data.seller.type);
 										document.cookie = "campusId="+data.seller.campusId;
 										document.cookie = "type="+data.seller.type;
+										window.location.href="index.html?backurl="+window.location.href;
 										//获取校区状态（0休息，1营业）并写入Cookie
-										$.post("campus/getCampusById",{
+										/*$.post("campus/getCampusById",{
 											campusId : data.seller.campusId,server:"56846a8a2fee49d14901d39cc48b8b2a"
 										},function(data){
 											document.cookie = "status="+data.campus.status;
 											//跳转到主页
 											window.location.href="index.html?backurl="+window.location.href;
-										},"json");
+										},"json");*/
 
 									},"json");
 								}else if($("#dropdownMenu1").text()=='商户'){

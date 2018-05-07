@@ -85,12 +85,12 @@ public class CampusController {
      */
     @RequestMapping("getAllCampus")
     public @ResponseBody
-    JSONArray getAllCampus() {
+    List<Campus> getAllCampus() {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         List<Campus> campus = campusService.getAllCampus(paramMap);
-        JSONArray array = JSON.parseArray(JSON.toJSONStringWithDateFormat(
+/*        JSONArray array = JSON.parseArray(JSON.toJSONStringWithDateFormat(
                 campus, "HH:mm:ss"));//yyyy-MM-dd HH:mm:ss
-        return array;
+*/        return campus;
     }
 
     /**

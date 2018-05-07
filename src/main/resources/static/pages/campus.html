@@ -472,9 +472,20 @@
 			return html.join('');
 		}
 
-		$table.bootstrapTable({
-			url : "../campus/getCampusById2?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+getCookie("campusId")
-		});
+		if(getCookie("type")==1){//系统管理员
+
+			//获取所有店铺列表
+			$table.bootstrapTable({
+				url : "../campus/getAllCampus?server=56846a8a2fee49d14901d39cc48b8b2a"
+			});
+
+		}else
+		{
+
+			$table.bootstrapTable({
+				url : "../campus/getCampusById2?server=56846a8a2fee49d14901d39cc48b8b2a&campusId="+getCookie("campusId")
+			});
+		}
 
 		//表格上方的3个按钮监听
 		//显示Modal并初始化Modal的input标签中的值
@@ -580,25 +591,53 @@
 			var deliver = $("#plus_campus_deliver").val().trim();
 			var openTime = $("#plus_open_time").val().trim();
 			var closeTime = $("#plus_close_time").val().trim();
-			var minPrice = $("#plus_campus_minPrice").text().trim();
-			var deliveryFee = $("#plus_campus_deliveryFee").text().trim();
-			var reachTime = $("#plus_campus_reachTime").text().trim();
+			var minPrice = $("#plus_campus_minPrice").val().trim();
+			var deliveryFee = $("#plus_campus_deliveryFee").val().trim();
+			var reachTime = $("#plus_campus_reachTime").val().trim();
 			var customService = $("#plus_custom_service").val().trim();
 			var $campusCommitDataForm=document.getElementById("plus_campus_form");
 
 			//判空
-			if(!campusName||!address||!minPrice||!deliveryFee||!reachTime||!openTime||!closeTime||!customService){
-				alert("对不起，请补填未填写的地方！");
+			if(!campusName){
+				alert("对不起，请填写店铺名称！");
 				return;
 			}
 
-			//alert(cityName);
-			//status值是“休息”或“营业”，要转换成0或1
-			//if(status=="休息"){
-			//	status = 0;
-			//}else if(status == "营业"){
-			//	status=1;
-			//}
+			if(!address){
+				alert("对不起，请填写店铺地址！");
+				return;
+			}
+
+			if(!minPrice){
+				alert("对不起，请填写起送价！");
+				return;
+			}
+
+			if(!deliveryFee){
+				alert("对不起，请填写配送费！");
+				return;
+			}
+
+			if(!reachTime){
+				alert("对不起，请填写预计送达时长！");
+				return;
+			}
+
+			if(!openTime){
+				alert("对不起，请填写开店时间！");
+				return;
+			}
+
+			if(!closeTime){
+				alert("对不起，请填写关店时间！");
+				return;
+			}
+
+			if(!customService){
+				alert("对不起，请填写联系电话！");
+				return;
+			}
+
 
 			$campusCommitDataForm.submit();
 		}

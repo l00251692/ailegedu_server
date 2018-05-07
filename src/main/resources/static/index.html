@@ -265,13 +265,12 @@ $(function(){
 	//如果是校区管理员，使用他管理的校区Button替换校区下拉菜单，且隐藏校区管理和校区管理员管理
 	if(getCookie("type")==1){//系统管理员
 		$("#campusDropdown").css("visibility", "visible");
-		if(campusId!=null&&typeof(campusId)!="undefined"){
-			$.post('campus/getCampusById', {
-				campusId : getCookie("campusId"),server:"56846a8a2fee49d14901d39cc48b8b2a"
-			},function(data){
-			   $("#dropdownMenu1").html(data.campus.campusName+'<span class="caret"></span>');
-			},"json");
-		}
+
+		//获取所有店铺列表
+
+		$("#dropdownMenu1").html("系统管理员"+'<span class="caret"></span>');
+
+
 	}else{
 		//普通商户
 		$("#li-campus-admin").hide(); //账号管理
