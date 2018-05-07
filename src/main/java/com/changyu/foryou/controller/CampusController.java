@@ -670,6 +670,7 @@ public class CampusController {
         List<Campus> campuslist = campusService.getAllCampus(paramMap);
 						
 		JSONArray jsonarray = new JSONArray(); 
+		JSONArray closeCampus = new JSONArray(); 
 				
 		for (Campus campus: campuslist)
 		{
@@ -687,22 +688,74 @@ public class CampusController {
     		Date now = df.parse(df.format(new Date()));
             Date beginTime = df.parse(df.format(campus.getOpenTime()));
             Date endTime = df.parse(df.format(campus.getCloseTime()));
-            if(belongCalendar(now, beginTime, endTime) && (campus.getStatus()==1)){
+            
+			node.put("overall", campus.getOverAll());//综合评分
+			if(belongCalendar(now, beginTime, endTime) && (campus.getStatus()==1)){
             	node.put("status", 1);//status 为营业
+            	jsonarray.add(node);
             }
             else{
             	node.put("status", 0);//status 为休息
+            	closeCampus.add(node);
             }
 			
-			node.put("overall", campus.getOverAll());//综合评分
-			jsonarray.add(node);
 		}
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("State", "Success");
-		data.put("data", jsonarray);				
+		data.put("data", joinJSONArray(jsonarray,closeCampus));				
 		return data;
 		
 	}	
+	
+	public static JSONArray joinJSONArray(JSONArray j1 , JSONArray j2){
+        
+        StringBuffer sb = new StringBuffer();
+        
+        try{
+            int len = j1.size();
+            
+            for(int i = 0; i<len ; i++)
+            {
+                JSONObject obj1 = j1.getJSONObject(i);
+                
+                if(i == len - 1)
+                {
+                    sb.append(obj1.toString());
+                }
+                else{
+                    sb.append(obj1.toString()).append(",");
+                }
+            }
+            len = j2.size();
+            
+            if((len > 0) && !j1.isEmpty())
+            {
+                sb.append(",");
+            }
+            for(int i = 0 ; i < len ; i++){
+                
+                JSONObject obj2 = j2.getJSONObject(i);
+                
+                if( i == len - 1)
+                {
+                    sb.append(obj2.toJSONString());
+                    
+                }else {
+                    sb.append(obj2.toJSONString()).append(",");
+                }
+            }
+                
+            sb.insert(0, "[").append("]");
+        
+            return JSONArray.parseArray(sb.toString());    
+            
+        }catch(Exception  e){
+            
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
 	
 	/**
      * 判断时间是否在时间段内
