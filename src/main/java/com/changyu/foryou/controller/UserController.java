@@ -177,8 +177,6 @@ public class UserController {
 	Map<String, Object> toLoginWx(@RequestParam String wx_code,@RequestParam String encryptedData,@RequestParam String iv) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
-		System.out.println("toLoginWx enter");
-		
 		//登录凭证不能为空 
 		if (wx_code == null || wx_code.length() == 0) 
 		{ 
@@ -193,7 +191,6 @@ public class UserController {
 		String wxspSecret = context.getAppSecrct();
 	    //授权（必填） 
 		String grant_type = "authorization_code"; 
-	
 	
 		//////////////// 1、向微信服务器 使用登录凭证 code 获取 session_key 和 openid //////////////// 
 		//请求参数 
@@ -211,7 +208,6 @@ public class UserController {
 		//////////////// 2、对encryptedData加密数据进行AES解密 //////////////// 
 		try { 
 		  String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
-		  System.out.println(result);
 		  if (null != result && result.length() > 0) 
 		  { 
 		
@@ -240,7 +236,6 @@ public class UserController {
 				Users users = userService.checkLogin(userInfoJSON.get("openId").toString());
 				if (users != null)
 				{
-					System.out.println("用户已存在，更新用户信息");
 					users.setImgUrl(userInfoJSON.get("avatarUrl").toString());
 					users.setNickname(userInfoJSON.get("nickName").toString());
 					users.setLastLoginDate(new Date());
@@ -429,7 +424,7 @@ public class UserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 	
 		Users users=userService.selectByUserId(user_id);
-		System.out.println("getMineInfoWx:" + user_id);
+;
 		if(users == null)
 		{
 			map.put("State", "False"); 
@@ -465,7 +460,7 @@ public class UserController {
 			Calendar calendar=Calendar.getInstance();
 			Date date=calendar.getTime();   //设置反馈时的日期
 			feedback.setDate(date);
-             System.out.println(suggestion);
+
 			if(userService.addFeedbackSuggestion(feedback)!=-1){
 				map.put(Constants.STATUS, Constants.SUCCESS);
 				map.put(Constants.MESSAGE, "添加意见成功");

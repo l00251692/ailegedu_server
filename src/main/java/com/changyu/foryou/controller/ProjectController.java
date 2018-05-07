@@ -226,7 +226,7 @@ public class ProjectController {
 			
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("projectId", project_id);
-		System.out.println("getProjectInfoWx:" + project_id);
+
         Project project = projectService.getProjectInfo(paramMap);
         if(project == null)
         {
@@ -234,7 +234,7 @@ public class ProjectController {
     		data.put("data", null);
     		return data;
         }
-        System.out.println("getProjectInfoWx:" + project_id);
+
 		JSONObject node = new JSONObject(); 
 		node.put("project_id", project.getProjectId());
 		node.put("item_title", project.getTitle());
@@ -464,8 +464,6 @@ public class ProjectController {
 		
 		Map<String,Object> map = new HashMap<String, Object>();
 		
-		System.out.println("sendProjdecCommentWx:" + comment);
-		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("userId", user_id);
 		paramMap.put("projectId", project_id);
@@ -527,8 +525,6 @@ public class ProjectController {
 		
 		JSONArray provinceList = new JSONArray(); 
 		JSONArray univList = new JSONArray(); 
-		
-		System.out.println("getUnivListWx enter:" + String.valueOf(flag));
         
         List<University> provicelist = projectService.getProviceList();
         for(University provTmp: provicelist)
@@ -561,18 +557,11 @@ public class ProjectController {
             univ.put("univs", univs);
             univList.add(univ);
         }
-        
-		
-		
-		
-		
+	
 		JSONObject rtn = new JSONObject();
 		rtn.put("provinceList", provinceList);
 		rtn.put("univList", univList);
-		
-		System.out.println("getUnivListWx:" + rtn.toJSONString() );
-				
-		
+						
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("State", "Success");
 		data.put("data", rtn);				
@@ -600,7 +589,6 @@ public class ProjectController {
 		params.put("path", "pages/project/detail?id=" + project_id);
         params.put("width", 160);
         String body = JSON.toJSONString(params);
-        System.out.println("createQr:" + body);
            
         String resultstr = HttpRequest.httpPostWithJSONQr(url,body, project_id);
         if(resultstr == null)
@@ -626,8 +614,6 @@ public class ProjectController {
 		
 		Auth auth = Auth.create(Constants.QINIU_AK, Constants.QINIU_SK);
 		String upToken = auth.uploadToken(Constants.QINIU_BUCKET);
-		
-		System.out.println("QINIU upToken:" + upToken);
 		
 		JSONObject rtn = new JSONObject();
         rtn.put("upToken", upToken);

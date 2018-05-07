@@ -230,7 +230,6 @@ public class FoodController {
                 map.put(Constants.STATUS, Constants.SUCCESS);
                 map.put(Constants.MESSAGE, "获取食品成功");
                 map.put("foods", foods);
-                System.out.println(JSON.toJSONString(foods));
             } else {
                 map.put(Constants.STATUS, Constants.SUCCESS);
                 map.put(Constants.MESSAGE, "没有其他零食喽，亲");
@@ -440,7 +439,7 @@ public class FoodController {
         } catch (Exception e) {
             System.out.println(e);
         }
-        System.out.println("foodsize:"+ String.valueOf(foods.size()));
+
         return foods;
     }
 
@@ -906,7 +905,7 @@ public class FoodController {
             Float primeCost = null;
 
             String message = request.getParameter("message");
-            System.out.println(message);
+
             /*String temp1 = request.getParameter("primeCost"); // 获取成本价*/
             String temp1 = null;
             String temp2 = request.getParameter("foodCount"); // 获取哭尊
@@ -1246,7 +1245,6 @@ public class FoodController {
             HttpServletRequest request) throws IOException {
         String foodId = request.getParameter("foodId");
         Integer campusId = Integer.valueOf(request.getParameter("campusId"));
-        System.out.println(campusId);
         String imageUrl = null;
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("foodId", foodId);

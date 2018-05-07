@@ -286,10 +286,8 @@ public class OrderServiceImpl implements OrderService {
 		Map<String,Object> paramMap=new HashMap<String,Object>();
 		paramMap.put("campusId",campusId);
 		paramMap.put("phoneId", phoneId);
-		System.out.println(paramMap);
 		List<Preferential> prefers = getPreferential(paramMap);
-		
-		System.out.println(JSON.toJSONString(prefers));
+
 		Float discountPrice=0f;         //折扣之后的总价
 		Float fullDiscount=0f;                //满减商品之后的总价
 		System.out.println(JSON.toJSONString(orderId));

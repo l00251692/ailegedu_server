@@ -194,8 +194,6 @@ public class OrderController {
 		float orderPrice = 0.0f;
 		float payPrice = 0.0f;
 		
-		System.out.println("createOrderWx:" + user_id + "," + seller_id + "," + goods);
-
 		try {
 			Order order = new Order(seller_id, user_id, goods,Float.valueOf(totalPackingFee));
 			Long orderId=order.getOrderId();
@@ -254,11 +252,10 @@ public class OrderController {
 			                //1 插入到待支付队列  
 			                DSHOrder dshOrder = new DSHOrder(orderId,Constants.ORDER_CREATE, Constants.PAYDELAYTIME);  
 			                delayService.add(dshOrder);  
-			                System.out.println("DSHOrder add delayQueue");
 			        
 			                //2插入到redis  
 			                redisServie.add(Constants.REDISPREFIX+orderId, dshOrder, Constants.REDISSAVETIME);  
-			                System.out.println("DSHOrder add redis");
+
 			            }  
 			        }); 
 				}
@@ -266,8 +263,7 @@ public class OrderController {
 				{
 					System.out.println("catch exception" + e);
 				}
-				
-				System.out.println("CreateOrderWx ok");				
+							
 				node.put("quasi_order_id", String.valueOf(orderId));
 				map.put("State", "Success");
 				map.put("data", node.toString());	
@@ -304,7 +300,6 @@ public class OrderController {
 		JSONObject node = new JSONObject();
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		System.out.println("getQuasiOrderInfoWx enter:" + quasi_order_id);
 		
 		paramMap.put("orderId",Long.parseLong(quasi_order_id));
 		Order order = orderService.getOrderByIdWx(paramMap);
@@ -361,8 +356,6 @@ public class OrderController {
 		data.put("State", "Success");
 		data.put("data", node.toString());	
 		
-		System.out.println("getQuasiOrderInfoWx rtn:" + node.toString());
-
 		return data;
 	}
 	
@@ -381,8 +374,6 @@ public class OrderController {
 		Map<String,Object> map = new HashMap<String, Object>();
 		JSONObject node = new JSONObject();
 		
-		System.out.println("updateOrderAddrWx:" + user_id + "," + quasi_order_id + "," + addr_id);
-
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("orderId",Long.parseLong(quasi_order_id));
@@ -423,8 +414,7 @@ public class OrderController {
 				map.put("data", null);	
 				return map;
 			}
-			
-			
+				
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -593,7 +583,6 @@ public class OrderController {
 			paramMap.put("offset", page * 5);//默认一次5条
 	
 			List<Order> myOrdersList =orderService.getCampusOrders(paramMap);
-			System.out.println("getShopOrdersWx:" + campus_id + ",size:" + String.valueOf(myOrdersList.size()));
 			
 			Map<String, Object> paramMap2 = new HashMap<String, Object>();
 			paramMap2.put("campusId",  campus_id);
@@ -657,10 +646,7 @@ public class OrderController {
 
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
-			paramMap.put("userId", user_id);
-			
-			System.out.println("page:" + String.valueOf(page) + "user_id:" + user_id);
-			
+			paramMap.put("userId", user_id);	
 			paramMap.put("limit", 5);
 			paramMap.put("offset", page * 5);//默认一次5条
 	
@@ -729,7 +715,6 @@ public class OrderController {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		try {
-			System.out.println("getOrdersInfoWx enter:" + user_id +"," + order_id);
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("orderId",order_id);
 			Order order = orderService.getOrderByIdWx(paramMap);
@@ -790,8 +775,6 @@ public class OrderController {
 			paramMap3.put("userId",user_id);
 			paramMap3.put("addressId",order.getAddrId());
 			Receiver reveiver = receiverService.selectByPrimaryKey(paramMap3);
-			
-			System.out.println("receiver:" + user_id + "," + order.getAddrId());
 			
 			if (reveiver != null)
 			{
@@ -856,8 +839,6 @@ public class OrderController {
 			}
 			paramMap.put("status", status);
 			List<String> togetherIds = orderService.getTogetherId(paramMap);
-			
-			//System.out.println(JSON.toJSONString(togetherIds));
 			
 			if (togetherIds.size() != 0) {
 				
@@ -1368,7 +1349,6 @@ public class OrderController {
 
 					 public void run() { //推送
 						String userPhone=userService.getUserPhone(togetherId);
-						System.out.println(userPhone);
 						pushService.sendPush(userPhone,
 								"您有一笔订单正在配送中,请稍候。感谢您对For优的支持", 1);
 
@@ -1595,10 +1575,6 @@ public class OrderController {
         paramMap.put("offset", offset);
         paramMap.put("search", search);
         paramMap.put("status", status);
-        System.out.println("limit:" + limit);
-        System.out.println("offset:" + offset);
-        System.out.println("search:" + search);
-        System.out.println("status:" + status);
 		
 		List<PCOrder> listsresult = new ArrayList<>();
 	
@@ -1736,12 +1712,8 @@ public class OrderController {
 				paramMap.put("offset", (page - 1) * limit);
 			}
 
-			System.out.println("getOrdersByDate:" + date);
-			System.out.println("campusId:" +campusId);
-
 			List<DeliverOrder> deliverOrders = orderService.selectOrdersByDate(paramMap);
 			Float totalPrice = 0f;
-			System.out.println("deliverOrders size:" + String.valueOf(deliverOrders.size()));
 			for (DeliverOrder deliverOrder : deliverOrders)
 			{
 				totalPrice = totalPrice + deliverOrder.getPayPrice();
@@ -2102,7 +2074,7 @@ public class OrderController {
 		}
 		
 	    List<SuperAdminOrder> refundOrders=orderService.getPCOrders(paramMap);
-		System.out.println(refundOrders);
+
 	    return JSONArray.parseArray(JSON.toJSONStringWithDateFormat(refundOrders, "yyyy-MM-dd"));
 	}
 	
@@ -2405,7 +2377,6 @@ s	 * @return
 			@RequestParam String  user_id, @RequestParam String order_id) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
-		System.out.println("setRejectOrderWx enter:" + user_id +"," + order_id);
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("orderId",order_id);
 		Order order = orderService.getOrderByIdWx(paramMap);
@@ -2479,7 +2450,6 @@ s	 * @return
 	public @ResponseBody Map<String, Object> setOrderReceiveWx( @RequestParam String order_id) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		System.out.println("setOrderReceiveWx enter:" +"," + order_id);
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("orderId",order_id);
 		Order order = orderService.getOrderByIdWx(paramMap);

@@ -84,7 +84,6 @@ public class PayController {
 		while (headerNames.hasMoreElements()) {
 			String key = (String) headerNames.nextElement();
 			String value = request.getHeader(key);
-			System.out.println(key+" "+value);
 		}
 		// 获得 http body 内容
 		BufferedReader reader = request.getReader();
@@ -147,8 +146,7 @@ public class PayController {
 		String chargeId=charge.getId();
 		paramMap.put("togetherId",charge.getOrderNo());
 		paramMap.put("amount",charge.getAmount()*1.0/100);
-		paramMap.put("chargeId",chargeId);
-		System.out.println(paramMap);
+		paramMap.put("chargeId",chargeId);;
 		int flag=orderService.updateOrderStatusAndAmount(paramMap);         //支付完成后更新订单状态以及更新价格 ,以及chargeId
 		
 		List<Order> orders = orderService.getAllOrdersByTogetherId(charge.getOrderNo()); // 获取该笔订单的消息				
@@ -192,8 +190,7 @@ public class PayController {
 	public @ResponseBody Map<String, Object> getPaymentWx(@RequestParam String order_id,@RequestParam String user_id,@RequestParam String pay_money, HttpServletRequest request){
 		//user_id就是openid
 		Map<String,Object> data = new HashMap<String, Object>();
-		JSONObject node = new JSONObject();
-		System.out.println("getPaymentWx enter");
+		JSONObject node = new JSONObject();;
 		
 		try{
             //生成的随机字符串
@@ -240,12 +237,9 @@ public class PayController {
                     + "<sign>" + mysign + "</sign>"  
                     + "</xml>";  
               
-            System.out.println("调试模式_统一下单接口 请求XML数据：" + xml);  
   
             //调用统一下单接口，并接受返回的结果  
-            String result = PayUtil.httpRequest("https://api.mch.weixin.qq.com/pay/unifiedorder", "POST", xml);  
-              
-            System.out.println("调试模式_统一下单接口 返回XML数据：" + result);  
+            String result = PayUtil.httpRequest("https://api.mch.weixin.qq.com/pay/unifiedorder", "POST", xml);     
               
             // 将解析结果存储在HashMap中     
             Map map = PayUtil.doXMLParse(result);  
@@ -301,8 +295,7 @@ public class PayController {
         }  
         //sb为微信返回的xml  
         String notityXml = sb.toString();  
-        String resXml = "";  
-        System.out.println("接收到的报文：" + notityXml);  
+        String resXml = "";   
       
         Map map = PayUtil.doXMLParse(notityXml);  
           
@@ -322,9 +315,6 @@ public class PayController {
             resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"  
             + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";  
         }  
-        System.out.println(resXml);  
-        System.out.println("微信支付回调数据结束");  
-  
   
         BufferedOutputStream out = new BufferedOutputStream(  
                 response.getOutputStream());  
@@ -463,8 +453,8 @@ public class PayController {
 				params = new String(buffer.toString().getBytes("UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
-			}
-			System.out.println("发送模板消息");
+			};
+			
 			String sr = HttpRequest.sendPost(url,params);
 			
 			return map;

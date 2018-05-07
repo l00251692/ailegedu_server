@@ -55,7 +55,6 @@ public class ReceiverController {
 		paramMap.put("address",addr);
 		paramMap.put("detail",detail);
 		
-		System.out.println("addUserAddrWx:" + gps);
 		String gpstmp[] = gps.split(",");
 		paramMap.put("longitude",gpstmp[0]);
 		paramMap.put("latitude",gpstmp[1]);
@@ -69,8 +68,6 @@ public class ReceiverController {
 		//通过时间生成该记录的序列号，和userId一起唯一表志收货人信息
 		Calendar calendar=Calendar.getInstance();
 		paramMap.put("addressId", String.valueOf(calendar.getTimeInMillis()));
-		
-		System.out.println("addUserAddrW:" + paramMap.toString());
 		
 		try 
 		{
@@ -135,7 +132,6 @@ public class ReceiverController {
 			paramMap.put("address",addr);
 			paramMap.put("detail",detail);
 			
-			System.out.println("addUserAddrWx:" + gps);
 			String gpstmp[] = gps.split(",");
 			paramMap.put("longitude",gpstmp[0]);
 			paramMap.put("latitude",gpstmp[1]);
@@ -202,7 +198,6 @@ public class ReceiverController {
 		Map<String, Object> map=new HashMap<String ,Object>();
 		try 
 		{
-			System.out.println("deleteUserAddrWx:"+ user_id + "," +addr_id );
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("userId",user_id);
 			paramMap.put("addressId",addr_id);

@@ -218,11 +218,10 @@ public class CampusController {
 
     	try 
         {
-    		System.out.println("getCampusById2 enter:" + campusId);
             Map<String, Object> paramMap = new HashMap<String, Object>();
             paramMap.put("campusId", campusId);
             Campus campus = campusService.getCampusById(paramMap);  
-            System.out.println("campus:" + campus.toString());
+
             JSONArray array = new JSONArray();
             array.add(campus);
             //JSONArray array = JSON.parseArray(JSON.toJSONStringWithDateFormat(
@@ -345,7 +344,6 @@ public class CampusController {
     public String addCampus(@RequestParam MultipartFile[] myfile,HttpServletRequest request){
         Map<String, Object> responseMap;
         Map<String, Object> paramMap = new HashMap<String, Object>();
-        System.out.println("addCampus enter");
         
         String campusName = request.getParameter("campusName"); 
         String cityName = "南京" ;
@@ -374,7 +372,7 @@ public class CampusController {
 	            } else 
 	            {
 	                String contentType = file.getContentType();
-	                System.out.println("contentType:" + contentType);
+
 	                if (contentType.startsWith("image"))
 	                {
 	                    //String newFileName = new Date().getTime() + "" + new Random().nextInt() + ".jpg";
@@ -536,15 +534,12 @@ public class CampusController {
         String deliveryFee = request.getParameter("deliveryFee");
         String reachTime = request.getParameter("reachTime");
         
-        System.out.println("updateCampus:customService=" + customService);
         
 /*        String realPath = request.getSession().getServletContext().getRealPath("/");
 
         realPath = realPath.concat("JiMuImage/shop/");*/
         
-        System.out.println("openTime:" + openTime);
-        System.out.println("closeTime:" + closeTime);
-        
+
         List<String> imageUrl = new ArrayList<String>();
         String pic_url = "";
         for (MultipartFile file : myfile) {
@@ -746,7 +741,7 @@ public class CampusController {
     Map<String, Object> setCampusStatusWx(@RequestParam String seller_id, @RequestParam Boolean status) {
         Map<String, Object> requestMap = new HashMap<String, Object>();
         Map<String, Object> map = new HashMap<String, Object>();
-        System.out.println("setCampusStatusWx:" +seller_id + String.valueOf(status));
+
         try {
             requestMap.put("campusId", seller_id);
             requestMap.put("closeReason", "");
@@ -819,8 +814,6 @@ public class CampusController {
 	
 	@RequestMapping("/getCampusByIdWx")
     public @ResponseBody Map<String,Object> getCampusByIdWx(@RequestParam String seller_id) {
-		
-		System.out.println("enter:");
 				
 		Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("campusId", seller_id);
@@ -927,7 +920,6 @@ public class CampusController {
 				//将每个商品添加到返回的店铺商品信息里面
 				if(category.getCategoryId().equals(foods.get(i).getCategoryId()))
 				{
-					System.out.println("3:"+ foods.get(i).getName());
 					JSONObject shangpin = new JSONObject();
 					shangpin.put("goods_id", String.valueOf(foods.get(i).getFoodId()));
 					shangpin.put("pic_url", foods.get(i).getImgUrl());
@@ -943,18 +935,14 @@ public class CampusController {
 					{	
 						JSONArray subgoods = new JSONArray();
 						String tmp = foods.get(i).getPrice();
-						System.out.println("666:"+ tmp);
 						tmp = tmp.replace('：', ':');
 						tmp = tmp.replace('；', ';');
-						System.out.println("777:"+ tmp);
 						String[] strArray = tmp.split("\\;");
 						int minPrice = 0;
 						for (int j = 0; j < strArray.length; j++)
 						{
 							JSONObject nodeTmp = new JSONObject();
-							System.out.println("5:"+ strArray[j]);
 							String[] priceArray = strArray[j].split("\\:");
-							System.out.println("5:"+ priceArray[0]);
 							nodeTmp.put("sub_id", String.valueOf(j)); //子规格数组
 							nodeTmp.put("sub_name", priceArray[0]); //子规格数组
 							nodeTmp.put("price", priceArray[1]); //子规格数组
@@ -1081,14 +1069,12 @@ public class CampusController {
 			}
 			else
 			{
-				System.out.println("here2 enter");
 				good1.put("property", null);
 			}
 			
 			goods_map.add(good1);
 		}
 		node.put("goods_map", goods_map);
-		System.out.println("return:" + node.toString());
 
 		Map<String,Object> data = new HashMap<String, Object>();
 		data.put("State", "Success");
@@ -1131,8 +1117,7 @@ public class CampusController {
 			node.put("time", sdf.format(comment.getDate()));
 			jsonarray.add(node);
 		}
-		
-		System.out.println("reviews return:" + jsonarray.toString());		
+			
 		Map<String, String> map = new HashMap<String, String>();
         map.put("State", "Success");
         map.put("data", jsonarray.toString());				
