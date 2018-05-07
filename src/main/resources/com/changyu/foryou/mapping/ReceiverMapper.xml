@@ -32,7 +32,7 @@
 		<include refid="Base_Column_List" />
 		from receiver
 		where user_id = #{userId,jdbcType=VARCHAR}
-		and is_default = 1
+		limit 1
 	</select>
 	<select id="getReceiverList" resultMap="BaseResultMap">
 		select
@@ -238,10 +238,12 @@
 	</select> -->
 	
 	<select id="getReceiver" resultMap="BaseResultMap">
-		<!-- select 
-		   <include refid="Base_Column_List" />
-	    from 
-	       receiver -->
+		select
+		<include refid="Base_Column_List" />
+		from receiver
+		where user_id = #{userId,jdbcType=VARCHAR}
+		and address_id = #{addressId,jdbcType=VARCHAR}
 	</select>
+	
 
 </mapper>

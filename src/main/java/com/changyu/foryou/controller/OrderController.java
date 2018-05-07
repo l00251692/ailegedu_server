@@ -295,7 +295,7 @@ public class OrderController {
 	 * @return
 	 */
 	@RequestMapping("/getQuasiOrderInfoWx")
-	public @ResponseBody Map<String, String> getQuasiOrderInfoWx(@RequestParam String quasi_order_id, @RequestParam String user_id){
+	public @ResponseBody Map<String, String> getQuasiOrderInfoWx(@RequestParam String quasi_order_id, @RequestParam String last_addr_id,@RequestParam String user_id){
 		Map<String,String> data = new HashMap<String, String>();
 		JSONObject node = new JSONObject();
 		
@@ -310,12 +310,14 @@ public class OrderController {
 
 			return data;
 		}
+		Receiver receiver = null;
 		
 		Map<String, Object> paramMap2 = new HashMap<String, Object>();
 		paramMap2.put("userId",user_id);
+		paramMap2.put("addressId",last_addr_id);
 		
-		Receiver receiver = receiverService.getReceiverDefault(paramMap2);
 		
+		receiver = receiverService.getReceiver(paramMap2);
 		if (receiver != null)
 		{
 			node.put("receiver_addr_id", receiver.getAddressId());
@@ -323,6 +325,26 @@ public class OrderController {
 			node.put("receiver_phone", receiver.getPhone());
 			node.put("receiver_addr", receiver.getAddress());
 		}
+		else//如果没有找到对应的地址则选择第一个地址
+		{
+			Map<String, Object> paramMap22 = new HashMap<String, Object>();
+			paramMap22.put("userId",user_id);
+			
+			receiver = receiverService.getReceiverDefault(paramMap22);
+			if (receiver != null)
+			{
+				node.put("receiver_addr_id", receiver.getAddressId());
+				node.put("receiver", receiver.getName());
+				node.put("receiver_phone", receiver.getPhone());
+				node.put("receiver_addr", receiver.getAddress());
+			}
+		}
+		
+		
+		
+		
+		
+		
 		
 		JSONArray goods = new JSONArray();
 		JSONArray goodsTmp = JSON.parseArray(order.getGoods());
